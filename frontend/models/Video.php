@@ -7,6 +7,19 @@ use yii\behaviors\TimestampBehavior;
 
 class Video extends \common\models\Video
 {
+
+    /**
+     * Gets video by its unique ID (DB column: video_id)
+     * @param  string $videoId    Video ID
+     * @return array
+     */
+    public static function getById($videoId)
+    {
+        $video = self::find()->where(['id' => $videoId])->asArray()->one();
+        $video['service_id'] = VideoServices::getVideoServiceNameByServiceId($video['service_id']);
+        return $video;
+    }
+
     /* RELATIONS */
     public function comments()
     {

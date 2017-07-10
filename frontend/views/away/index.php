@@ -28,7 +28,11 @@ $this->beginBody();
 
 $script = <<< JS
 document.addEventListener('DOMContentLoaded', function() {
-    ga('away_page', 'click', '{$url}');
+    ga('send', 'event', {
+       eventCategory: 'away_page',
+       eventAction: 'click',
+       eventLabel: '{$url}'
+     });
     location.replace('{$url}');
 });
 JS;

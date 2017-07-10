@@ -94,14 +94,4 @@ class Video extends \yii\db\ActiveRecord
            'created_at' => 'Created'
         ];
     }
-
-    /**
-     * Gets video by its unique ID
-     * @param  string $videoId    Video ID
-     * @return array
-     */
-    public static function getById($videoId)
-    {
-        return self::find()->where(['id' => $videoId])->asArray()->one();
-    }
 }
