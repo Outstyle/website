@@ -27,6 +27,7 @@ class PortalAsset extends AssetBundle
         'css/outstyle/base.layout.css',
         'css/outstyle/base.boxes.css',
         'css/outstyle/misc.layout.css',
+        'css/outstyle/misc.modal.css',
     ];
     public $js = [
         'js/jquery.easyModal.js',
@@ -42,8 +43,8 @@ class PortalAsset extends AssetBundle
         'js/misc/preciseTextResize.js',
         'js/misc/way.min.js',
 
+        'js/outstyle.modal.js',
         'js/outstyle.analytics.js',
-
     ];
     public $depends = [
         'yii\web\YiiAsset',

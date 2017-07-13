@@ -14,6 +14,7 @@ class ElementsHelper extends Html
 {
     const DEFAULT_AJAX_ID = 'ajax';
     const DEFAULT_TARGET_ID = 'content';
+    const VIDEO_TARGET_ID = 'uservideo .modal__iframe';
     const DEFAULT_ID_PREFIX = 'outstyle_';
 
     const DEFAULT_AJAX_LOADER = '#outstyle_loader';
@@ -140,6 +141,29 @@ class ElementsHelper extends Html
           'ic-push-url' => 'false',
           'ic-select-from-response' => '#new_comment'
         ]);
+    }
+
+    /**
+     * Generates an active video link
+     * @param  string $video_hash
+     * @param  string $video_title
+     * @param  string $video_image
+     * @return HTML <a> tag
+     */
+    public static function videoLink($video_hash = '', $video_title = '')
+    {
+        return
+        Html::a($video_title, Url::toRoute('/video-'.$video_hash, true),
+          [
+            'class' => 'user__videotitle',
+            'ic-action' => 'userShowVideoModal',
+            'ic-get-from' => Url::toRoute('/video-'.$video_hash),
+            'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
+            'ic-target' => '#'.self::VIDEO_TARGET_ID,
+            'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+            'ic-push-url' => 'true',
+          ]
+        );
     }
 
     /**

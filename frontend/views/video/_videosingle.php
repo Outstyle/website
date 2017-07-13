@@ -33,7 +33,7 @@ echo Html::tag('div',
       Html::tag('div',
         Yii::t('app', '{video_date} via {video_provider}', [
           'video_date' => Yii::$app->formatter->asDateTime(strtotime($video['created_at']), Yii::$app->params['date']),
-          'video_provider' => Html::a($video['service_id'], ['/away?to=https://www.w3schools.com/php/filter_validate_url.asp'], ['target' => '_blank']),
+          'video_provider' => Html::a($video['service_id'], ['/away?to='.$video['service_link']], ['target' => '_blank']),
         ]),
         ['class' => 'video__provider']
       ),

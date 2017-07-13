@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Widget;
 use common\components\helpers\CryptoHelper;
 use app\models\Video;
+use app\models\VideoServices;
 
 /**
  * Handles User -> Videos block, showing videos of user
@@ -41,6 +42,7 @@ class UserVideosBlock extends Widget
             foreach ($this->videos as $k => $video) {
                 $videos[$k] = $video;
                 $videos[$k]['hash'] = CryptoHelper::hash($video['id']);
+                $videos[$k]['service_id'] = VideoServices::getVideoServiceNameByServiceId($videos[$k]['service_id']);
             }
             $this->videos = $videos;
         }

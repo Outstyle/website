@@ -126,11 +126,26 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
     ]
   );
 
-echo Html::endTag('div');
-echo Html::endTag('div');
+  /*
+      ==================================
+      Actions & stuff for all users
+      ==================================
+  */
+  echo $this->render('@modals/userVideo');
 
-/* TODO: Script init in jquery only on page, and other code in files without jquery wrap */
+echo Html::endTag('div');
+echo Html::endTag('div');
 ?>
+<script>
+jQuery(document).ready(function () {
+
+    /* --- After Intercooler has finished everything --- */
+    jQuery(document).on("handle.onpopstate.ic", function(evt) {
+        jQuery('.modal').trigger('closeModal');
+    });
+
+});
+</script>
 <div id="scrollup"><i class="icon-up-open-big icon-huge"></i></div>
 <div id="outstyle_loader"><div class="loader"></div></div>
 <div id="ohsnap"></div>

@@ -31,19 +31,10 @@ echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium']);
       echo Html::tag('div',
 
         # Video image
-        Html::a(Html::img($video['video_img'], ['class' => 'o-image user__videothumbnail']), Url::toRoute('/video-'.$video['hash'], true)).
+        ElementsHelper::videoLink($video['hash'], Html::img($video['video_img'], ['class' => 'o-image user__videothumbnail'])).
 
-        # Video title
-        Html::a($video['video_title'], Url::toRoute('/video-'.$video['hash'], true),
-          [
-            'class' => 'user__videotitle',
-            'ic-action' => 'userShowVideoModal',
-            'ic-get-from' => Url::toRoute('/video-'.$video['hash']),
-            'ic-select-from-response' => '#content',
-            'ic-target' => '#content',
-            'ic-push-url' => true,
-          ]
-        ).
+        # Video title and link
+        ElementsHelper::videoLink($video['hash'], $video['video_title']).
 
         # Video date and provider
         Html::tag('div',

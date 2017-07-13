@@ -12,16 +12,14 @@ body {
   margin: 0 auto;
   background: #fff;
 }
-.wrap-fix {
-  padding-top:45px;
-}
+
 .social #content {
   min-height: 100vh;
   height: 100%;
   background: #fff;
   vertical-align: top;
   margin: 0 0 0 142px;
-  padding: 0;
+  padding: 45px 0 0 0;
 }
 .portal #content {
 
@@ -1051,77 +1049,6 @@ p>img.img-fixedwidth {
   display:none;
 }
 
-
-
-
-
-/* --- MODAL WINDOW (see additional JS settings at /js/jquery.easyModal.js) --- */
-.modal {
-  display:none;
-}
-.modal__content {
-  min-width: 300px;
-  max-width: 1024px;
-  width: 500px;
-  background: #fff;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-}
-.modal__header {
-  background-color: #56646d;
-  border-bottom: 1px solid #a5a5a5;
-  font-family: 'OsnovaProLight', sans-serif;
-  height: 47px;
-  overflow: hidden;
-}
-.modal__header .modal__caption {
-  position: absolute;
-  font-size:1.3em;
-  color: #fff;
-  font-weight: normal;
-  left: 1em;
-}
-.modal__header--branded:before {
-  content: ' ';
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 58px;
-  height: 53px;
-  opacity: 0.15;
-  background-image: url('../img/logo.png');
-  background-repeat: no-repeat;
-  background-position: 0px -19px;
-}
-.modal__header .modal-close {
-  font-weight: normal;
-  border-radius: 0px;
-  color: #fff;
-  overflow: visible;
-  opacity:0.5;
-  background: transparent;
-  font-size: 19px;
-}
-.modal__header .modal-close:hover {
-  opacity: 1;
-  color: #fff;
-}
-.modal__body {
-  background: #f4f4f4;
-  color: #94a2aa;
-  border-bottom: 1px solid #eee;
-}
-.modal__body p {
-  font-size: 0.9em;
-  margin: 20px 0 20px 0;
-}
-.modal__body--bigblacktext p {
-  font-size: 13px;
-  color: #374045;
-}
-.modal__footer--centered {
-  text-align: center;
-}
 
 /* --- OHSNAP! Alerts --- http://justindomingue.github.io/ohSnap/ */
 .alert {

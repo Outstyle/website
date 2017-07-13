@@ -15,6 +15,7 @@ echo Html::beginTag('div', [
         'role' => 'dialog',
         'data-modal-width' => 760,
         'data-modal-height' => 500,
+        'data-modal-top' => 45,
     ]
 );
 
@@ -46,7 +47,7 @@ echo Html::tag('div',
             Html::tag('div', '', ['class' => 'clearfix']).
 
             # Modal main body text
-            '1'.
+            '...'.
 
             Html::tag('div', '', ['class' => 'clearfix']),
 

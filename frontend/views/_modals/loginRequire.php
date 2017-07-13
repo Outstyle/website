@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Modal, asking for login
  * Used in portal.php layout
@@ -30,9 +30,9 @@ $modal_id = 'loginRequire';
             </div>
 		</div>
 	</div>
-<?php 
+<?php
 
-/* 
+/*
     JS stuff, that is related ONLY to this form
     See actionLogin() in MainController -> Intercooler trigger
 */
@@ -47,4 +47,6 @@ $script = <<< JS
 JS;
 $this->registerJs($script, yii\web\View::POS_READY);
 
+// Reinit is needed for history.back stuff
 ?>
+<script>jQuery(document).ready(function(){modalInit();});</script>

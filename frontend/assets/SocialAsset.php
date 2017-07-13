@@ -25,6 +25,7 @@ class SocialAsset extends AssetBundle
         'css/outstyle/base.layout.css',
         'css/outstyle/base.boxes.css',
         'css/outstyle/misc.layout.css',
+        'css/outstyle/misc.modal.css',
         'css/outstyle/social.layout.css',
         'css/outstyle/social.header.css',
         'css/outstyle/social.sidebar.css',
@@ -48,6 +49,7 @@ class SocialAsset extends AssetBundle
 
         'js/outstyle.social.sidebar.js',
         'js/outstyle.user.video.js',
+        'js/outstyle.modal.js',
         'js/outstyle.analytics.js',
 
     ];

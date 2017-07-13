@@ -39,6 +39,3 @@ echo Html::beginTag('section', ['id' => 'rightBlock']);
     echo '123';
 
 echo Html::endTag('section');
-
-/* --- MISC: Modals --- */
-echo $this->render('@modals/userVideo');
