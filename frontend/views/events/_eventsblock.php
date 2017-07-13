@@ -56,7 +56,7 @@ if (isset($modelEvents)) {
             Html::tag('div',
               ElementsHelper::linkElement('category', $event['category'], $eventsCategoryUrl, false),
               [
-                'class' => "event__category block__category u-window-box--small c-text--shadow"
+                'class' => "event__category block__category c-text--shadow"
               ]
             ).
 
