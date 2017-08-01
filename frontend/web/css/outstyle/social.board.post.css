@@ -1,0 +1,87 @@
+#posts_section {
+  margin-left: -1px;
+  border-left: 1px solid #dadada;
+}
+#posts_section #comments_section {
+  display:none;
+}
+.post {
+  border-bottom: 1px solid #dadada;
+  padding-bottom:0;
+}
+.post__author {
+  float: left;
+  margin-top: 1.4em;
+}
+.post__date {
+  display: block;
+  line-height: 1.3em;
+  font-size: 0.8em;
+  color: #bcbcbc;
+  text-shadow: none;
+}
+.post__header {
+  padding-bottom: 0;
+}
+.post__actions .i-like {
+  margin-right: 1em;
+}
+.post__actionbox {
+  border-top: 1px solid #f0f0f0;
+}
+.post__actionbox .innactive {
+  color: #dadada;
+}
+.post__actionbox .views {
+  margin-right: 0;
+}
+.post__body {
+  padding-top:1em;
+  padding-bottom:1em;
+}
+.post__body p {
+  margin: 1.5em 0 1.5em 0;
+}
+.post__body p:first-child {
+  padding-top:0;
+  margin-top: 0;
+}
+.post__comments .comment {
+  border-bottom: 0;
+  border-top: 1px solid #f0f0f0;
+}
+.post__comments .comment__info {
+  padding-top: 0;
+}
+.post__comments .comment__username {
+  font-size: 0.9em;
+}
+.post__comments .avatar--medium {
+  width:42px;
+  height:42px;
+}
+
+.board__comments {
+  padding: 0;
+}
+.active-post {
+  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
+  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
+}
+
+.i-postbutton {
+  padding: 1em;
+  opacity: 0.2;
+}
+.i-postbutton:hover,
+.i-postbutton:active,
+.i-postbutton:focus {
+  opacity: 1;
+  color: #428bca;
+}
+.i-postbutton--right {
+  float: right;
+  padding-right: 0;
+  padding-top: 0;
+}

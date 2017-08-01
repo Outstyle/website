@@ -18,7 +18,7 @@ use common\components\helpers\ElementsHelper;
 /* @see @frontend/widgets/UserVideosBlock for vars */
 /* @var $videos */
 
-echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium']);
+echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium u-window-box--shadowed']);
 
   # Widget settings button
   echo ElementsHelper::widgetButton();
@@ -31,7 +31,7 @@ echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium']);
       echo Html::tag('div',
 
         # Video image
-        ElementsHelper::videoLink($video['hash'], Html::img($video['video_img'], ['class' => 'o-image user__videothumbnail'])).
+        ElementsHelper::videoLink($video['hash'], Html::img($video['video_img'], ['class' => 'o-image u-full-width user__videothumbnail'])).
 
         # Video title and link
         ElementsHelper::videoLink($video['hash'], $video['video_title']).

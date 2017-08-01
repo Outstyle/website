@@ -187,3 +187,7 @@ if (isset($modelNews)) {
         Html::endTag('div');
     }
 }
+
+/* JS: @see js/outstyle.portal.article.js */
+?>
+<script>jQuery(document).ready(function(){articleInit();});</script>

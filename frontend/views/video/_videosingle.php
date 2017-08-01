@@ -3,10 +3,13 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
+use frontend\widgets\WidgetComments;
+
+/* $video   array   @views/video/view */
 
 echo Html::tag('div',
 
-  # Video: https://github.com/felixgirault/multiplayer
+  # Video container using Multiplayer: https://github.com/felixgirault/multiplayer
   $this->render('_videocontainer', [
     'video' => $video ?? '',
     'options' => $options ?? []
@@ -71,16 +74,7 @@ echo Html::tag('div',
   'class' => 'o-grid__cell o-grid__cell--width-100'
 ]);
 
-# Video comments
-echo Html::tag('div',
-  $this->render('../comments/_form',
-    [
-      'modelComments' => $modelNews[0]['comments'] ?? '',
-      'modelElemId' => $modelNews[0]['id'] ?? '',
-    ]
-  ),
-  [
-    'id' => 'comments_section',
-    'class' => 'u-full-width c-comments',
-  ]
-);
+# Comments
+echo WidgetComments::widget([
+  'elem_id' => $video['id']
+]);

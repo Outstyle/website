@@ -17,7 +17,7 @@ if (!Yii::$app->user->isGuest) {
     ?>
     <div class="user-avatar__header">
        <a class="login-uzer login-form__user u-pull-right" href="/admin">
-            <img src="<?php echo Yii::$app->homeUrl; ?>images/avatar/<?php echo Yii::$app->user->id; ?>_small.jpg" class="roundborder" alt="" width="56">
+            <img src="<?php echo Yii::$app->homeUrl; ?>images/avatar/<?php echo Yii::$app->user->id; ?>_small.jpg" class="roundborder avatar" alt="" width="56">
         </a>
         <a class="exit-uzer" href="/site/logout/"></a>
     </div>

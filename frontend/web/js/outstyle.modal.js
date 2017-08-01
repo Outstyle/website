@@ -14,7 +14,7 @@ function modalInit() {
       }
   });
 
-  if(jQuery('.lean-overlay').length == 0) {
+  if(jQuery('.lean-overlay').length === 0) {
     jQuery('.modal').easyModal({
       overlayOpacity: 0.9,
       overlayColor: '#1b2022',
@@ -56,3 +56,8 @@ function modalInit() {
       }
   }
 }
+
+/* History.back support for closing up modal (IC) TODO: evt.currentTarget.URL.indexOf to handle video modal show up when going historyback */
+jQuery(document).on("handle.onpopstate.ic", function(evt) {
+    jQuery('.modal').trigger('closeModal');
+});

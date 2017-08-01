@@ -3,16 +3,17 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+use common\components\helpers\SEOHelper;
+
 use frontend\widgets\UserProfileBlock;
+use frontend\widgets\UserFriendsBlock;
 use frontend\widgets\UserVideosBlock;
-use common\components\helpers\ElementsHelper;
+use frontend\widgets\UserBoardPost;
 
 /* @var $this yii\web\View */
 /* @var $user @frontend/user/UsersController */
 
-$this->title = Yii::t('app', 'My page');
-$this->registerMetaTag(['name' => 'description', 'content' => $this->title]);
-
+SEOHelper::setMetaInfo($this);
 
 /* --- LEFT BLOCK SECTION --- */
 echo Html::beginTag('section', ['id' => 'leftBlock']);
@@ -22,7 +23,10 @@ echo Html::beginTag('section', ['id' => 'leftBlock']);
       'user' => $user
     ]);
 
-    echo ElementsHelper::separatorWidget(2, 'bottomborder');
+    # FRIENDS
+    echo UserFriendsBlock::widget([
+      'friends' => $user->friend
+    ]);
 
     # VIDEOS
     echo UserVideosBlock::widget([
@@ -32,10 +36,16 @@ echo Html::beginTag('section', ['id' => 'leftBlock']);
 echo Html::endTag('section');
 
 
-/* --- Right block section --- */
+/* --- RIGHT BLOCK SECTION --- */
 echo Html::beginTag('section', ['id' => 'rightBlock']);
 
-    # content
-    echo '123';
+    # USER BOARD: posts
+    echo UserBoardPost::widget([
+      'posts' => $user->board
+    ]);
 
 echo Html::endTag('section');
+
+/* JS: @see js/outstyle.userboard.js */
+?>
+<script>jQuery(document).ready(function(){userboardInit();});</script>

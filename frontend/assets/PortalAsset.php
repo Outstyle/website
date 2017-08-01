@@ -28,6 +28,8 @@ class PortalAsset extends AssetBundle
         'css/outstyle/base.boxes.css',
         'css/outstyle/misc.layout.css',
         'css/outstyle/misc.modal.css',
+
+        'css/outstyle/social.comments.css',
     ];
     public $js = [
         'js/jquery.easyModal.js',
@@ -44,6 +46,13 @@ class PortalAsset extends AssetBundle
         'js/misc/way.min.js',
 
         'js/outstyle.modal.js',
+        'js/outstyle.notifications.js',
+        'js/outstyle.comments.js',
+        'js/outstyle.portal.news.js',
+        'js/outstyle.portal.articles.grid.js',
+        'js/outstyle.portal.article.js',
+        'js/outstyle.portal.event.js',
+        'js/outstyle.portal.school.js',
         'js/outstyle.analytics.js',
     ];
     public $depends = [

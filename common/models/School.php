@@ -130,7 +130,7 @@ class School extends ActiveRecord
 
             ['img_block_size', 'integer', 'min' => 0, 'max' => 9],
             ['title', 'string', 'max' => 64],
-            ['price', 'integer', 'min' => 0, 'max' => 10000],
+            ['price', 'integer', 'min' => 0, 'max' => 100000],
             ['phone', 'match', 'pattern' => PhoneHelper::PHONE_INTERNATIONAL_REGEX],
             ['description', 'string', 'max' => 4096],
             ['site', 'url', 'defaultScheme' => 'http'],

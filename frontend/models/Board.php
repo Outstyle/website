@@ -78,6 +78,9 @@ class Board extends \yii\db\ActiveRecord
           'video' => function (\yii\db\ActiveQuery $query) {
               $query->orderBy(self::$boardOrderBy)->limit(2)->asArray()->all();
           },
+          'friend' => function (\yii\db\ActiveQuery $query) {
+              $query->orderBy(self::$boardOrderBy)->limit(6)->asArray()->all();
+          },
           'board' => function (\yii\db\ActiveQuery $query) {
               $query->orderBy(self::$boardOrderBy)->limit(self::$boardPageSize)->all();
           }
@@ -85,38 +88,5 @@ class Board extends \yii\db\ActiveRecord
         ->one();
 
         return $board;
-    }
-
-    public function getOwneruser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'owner']);
-    }
-    public function getOwnerDescription()
-    {
-        return $this->hasOne(UserDescription::className(), ['id' => 'owner']);
-    }
-
-    public function getBoardRepost()
-    {
-        return $this->hasOne(self::className(), ['id' => 'repost', 'repost_type' => 'repost_type']);
-    }
-
-    public function getPhotoRepost()
-    {
-        return $this->hasOne(Photo::className(), ['id' => 'repost', 'repost_type' => 'repost_type']);
-    }
-
-    public function getVideoRepost()
-    {
-        return $this->hasOne(Video::className(), ['id' => 'repost', 'repost_type' => 'repost_type']);
-    }
-
-    public function attachments()
-    {
-        return $this->hasMany(Attahments::className(), ['elem_id' => 'id', 'elem_type' => 'board']);
-    }
-    public function comments()
-    {
-        return $this->hasMany(Comments::className(), ['elem_id' => 'id'])->andWhere([ 'elem_type' => 'board']);
     }
 }

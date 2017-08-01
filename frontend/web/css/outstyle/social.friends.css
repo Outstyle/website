@@ -1,0 +1,10 @@
+/* --- SOCIAL FRIENDS --- */
+.user__friends {
+  position: relative;
+}
+.user__friends .friend {
+    display: block;
+    line-height: 1.3em;
+    font-size: 0.8em;
+    white-space: nowrap;
+}

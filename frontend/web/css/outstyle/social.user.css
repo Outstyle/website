@@ -28,6 +28,7 @@
 
 /* SOCIAL: Buttons show/hide */
 .user__info:hover .i-widgetbutton,
+.user__friends:hover .i-widgetbutton,
 .user__videos:hover .i-widgetbutton
 {
   display:block;

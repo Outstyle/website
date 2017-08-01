@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 use yii\data\Pagination;
 use yii\web\HttpException;
 use yii\filters\AccessControl;
@@ -23,6 +24,7 @@ use app\models\Attachments;
 use app\models\AuthAssignment;
 use app\models\UserDescription;
 use app\models\UserPrivacy;
+use app\models\UserAvatar;
 
 use frontend\components\ParentController;
 
@@ -50,6 +52,38 @@ class BoardController extends ParentController
                 ],
             ],
         ];
+    }
+
+    /**
+     * User board: profile itself
+     * @param  int $user 		User ID
+     * @return array
+     */
+    public function actionView($userId)
+    {
+        /* Exceptions */
+        if (!is_int($userId) && empty($userId)) {
+            throw new HttpException(404, Yii::t('app', 'User not found!'));
+        }
+
+        $model = Board::getByUserId($userId);
+
+        if (!$model) {
+            throw new HttpException(404, Yii::t('app', 'User not found!'));
+        }
+
+        /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
+        /* TODO: https://github.com/niallkennedy/open-graph-protocol-examples/blob/master/profile.html */
+        Yii::$app->opengraph->set([
+            'title' => $model->userDescription->name. ' '.$model->userDescription->last_name,
+            'description' => ArrayHelper::getValue(UserDescription::cultureList(true), $model->userDescription->culture),
+            'image' => Url::toRoute([UserAvatar::getAvatarPath($model->id)], true),
+            'type' => 'profile'
+        ]);
+
+        return $this->render('view', [
+            'user' => $model,
+        ]);
     }
 
     public function actionLoadboard()
@@ -560,12 +594,5 @@ class BoardController extends ParentController
         } else {
             echo "<option value='0'>-Не выбрано-</option>";
         }
-    }
-
-    public function actionIndex()
-    {
-        return $this->render('index', [
-            'data' => $data,
-        ]);
     }
 }

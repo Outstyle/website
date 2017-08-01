@@ -19,7 +19,7 @@ class UserNickname extends UserDescription
     {
         $user = self::find()->with([
                   'user' => function ($query) {
-                    $query->andWhere(['!=', 'status', User::STATUS_DELETED])->select('id');
+                      $query->andWhere(['!=', 'status', User::STATUS_DELETED])->select('id');
                   }
                 ])->where(['id' => $userId])->one();
 
@@ -32,13 +32,12 @@ class UserNickname extends UserDescription
      * @param  string $nickname   User nickname
      * @return string             If user is deleted, returns 'User deleted' instead real username
      */
-    public static function checkNicknameForDeleted($nickname = '')
+    public static function checkNicknameForDeleted($nickname = null)
     {
-        if (isset($nickname)) {
+        if (isset($nickname) && !empty($nickname)) {
             return $nickname;
         }
 
         return Yii::t('app', 'User deleted');
     }
-
 }

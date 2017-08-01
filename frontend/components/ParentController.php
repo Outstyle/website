@@ -12,6 +12,7 @@ class ParentController extends Controller
         parent::init();
 
         /* Запись времени последнего посещения в БД при триггере любого контроллера */
+        /* TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh */
         if (Yii::$app->user->id) {
             $userOnline = User::findOne(Yii::$app->user->id);
             $userOnline->lastvisit = time();

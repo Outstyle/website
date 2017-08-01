@@ -1,0 +1,59 @@
+/* --- COMMENTS ---- */
+.c-comments i.zmdi {
+  font-size: 19px;
+}
+.comment__info {
+  padding-top:10px;
+}
+.comment__username {
+  color:#606d75;
+}
+.comment {
+  border-bottom: 1px solid #d5d7d8;
+}
+.comment__avatar,
+.comment__wrap {
+  padding-top:1.5em;
+}
+.comment__body,
+.comment__actions,
+.comment__info {
+  padding-right: 1em;
+}
+.comment__time,
+.comment__body {
+  font-size:12px;
+}
+.comment__wrap {
+  position: relative;
+}
+.comment__avatar .avatar {
+  border-width: 2px;
+  border-style: solid;
+}
+.comment__delete {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+  display:none;
+  margin:0;
+}
+.comment__deleted {
+  background: #f5f5df;
+}
+.comment__highlight {
+  background: #f5f5df;
+}
+.c-comments {
+  padding: 0 6em 0 6em;
+}
+.comments_options {
+  background: #f9f9f9;
+}
+#comments_message {
+  border: 0;
+  padding: 0;
+}
+#comments_section {
+  border-top: 1px solid #dadada;
+}

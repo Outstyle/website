@@ -105,6 +105,7 @@ $this->endBody();
 
 jQuery(document).ready(function () {
 
+
     jQuery("a.c-nav__item").on("click", function() {
         var activeClass = 'c-text--loud';
         jQuery('#outstyle_loader').show();

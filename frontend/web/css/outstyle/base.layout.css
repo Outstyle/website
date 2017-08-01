@@ -7,6 +7,7 @@ body {
   color: #374045;
   background: #dfe9ed url('data:image/gif;base64,R0lGODlhAQAaAKIAAAAAAP///ykwNd/o7dLS0v///wAAAAAAACH5BAEAAAUALAAAAAABABoAAAMGKLrcvmQkADs=') repeat-x top;
 }
+
 .wrap {
   width: 1013px;
   margin: 0 auto;
@@ -546,7 +547,7 @@ img.school__image {
   overflow: hidden;
 }
 a.article__title {
-  font-size: 1.4em;
+  font-size: 1.25em;
   letter-spacing: -1px;
   max-height: 54px;
   overflow: hidden;
@@ -789,51 +790,6 @@ a.article__title:hover {
   display:block;
 }
 
-/* --- COMMENTS ---- */
-#comments_section .c-comments i.zmdi {
-  font-size: 19px;
-}
-#comments_section .comment__info {
-  padding-top:10px;
-}
-#comments_section .comment__username {
-  color:#606d75;
-}
-#comments_section .comment {
-  border-bottom: 1px solid #d5d7d8;
-}
-#comments_section .comment__avatar,
-#comments_section .comment__wrap {
-  padding-top:1.5em;
-}
-#comments_section .comment__body,
-#comments_section .comment__actions,
-#comments_section .comment__info {
-  padding-right: 1em;
-}
-#comments_section .comment__time,
-#comments_section .comment__body {
-  font-size:12px;
-}
-#comments_section .comment__wrap {
-  position: relative;
-}
-#comments_section .comment__avatar .avatar {
-  border-width: 2px;
-  border-style: solid;
-}
-#comments_section .comment__delete {
-  position: absolute;
-  right: 0px;
-  top: 10px;
-  display:none;
-}
-#comments_section .comment__deleted {
-  background: #f5f5df;
-}
-#comments_section .comment__highlight {
-  background: #f5f5df;
-}
 
 /* --- REGISTERED USER ELEMENTS --- */
 .user-registered .comment__actions .i-like.active {
@@ -845,33 +801,39 @@ a.article__title:hover {
 
 /* --- USER RELATED PARTS --- */
 .user-name--withavatar {
-  font-size: 1.2em;
+  font-size: 1em;
   line-height: 1;
   margin: 0;
   display:block;
-  text-shadow: 1px 1px #ddd;
 }
 .user-name--withavatar:hover {
   text-decoration: none;
 }
-.user-name--withavatar img {
-  margin-right: 5px;
-}
+
 .user-name--withavatar .avatar {
-  width: 26px;
-  height: 26px;
   border-width: 2px;
   border-style: solid;
   vertical-align: middle;;
 }
 .avatar--smallest {
-    width:32px;
+    width: 30px;
+    height: 30px;
+    margin-right: 0.7em;
 }
 .avatar--medium {
-    width:54px;
-    height: 54px;
+    width: 52px;
+    height: 52px;
+    margin-right: 1em;
 }
-
+.avatar--big {
+    width: 64px;
+    height: 64px;
+    margin-right: 1em;
+}
+.u-c .avatar {
+  display: block;
+  margin: 0 auto;
+}
 /* --- BREADCRUMBS --- */
 .c-breadcrumbs {
   margin: 10px auto;

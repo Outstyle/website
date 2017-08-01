@@ -61,6 +61,6 @@ echo Html::tag('div',
 
 echo Html::endTag('div');
 
-// Reinit is needed for history.back stuff
+/* JS: @see js/outstyle.modal.js */
 ?>
 <script>jQuery(document).ready(function(){modalInit();});</script>

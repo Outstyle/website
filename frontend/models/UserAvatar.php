@@ -7,8 +7,6 @@ use yii\helpers\Html;
 
 class UserAvatar extends UserDescription
 {
-    public $image;
-    
     /**
      * Available sizes of a user avatars
      * @var array
@@ -42,15 +40,14 @@ class UserAvatar extends UserDescription
     {
         /* Checking allowed avatar sizes */
         if (!in_array($avatarSize, self::$userAvatarSizes)) {
-          $avatarSize = 'small';
+            $avatarSize = 'small';
         }
 
         /* Avatar for deleted or inactive user */
         if (!$userId) {
-          return Yii::$app->params['imagesPathUrl'].'/images/54x54_avatar_deleted.png';
+            return Yii::$app->params['imagesPathUrl'].'/images/54x54_avatar_deleted.png';
         }
 
         return Yii::$app->params['avatarPathUrl'].$userId.'_'.$avatarSize.'.jpg';
     }
-
 }

@@ -119,7 +119,10 @@ class CommentsController extends Controller
         if (isset($data['ic-request'])) {
             $page = '';
             $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"comments":['.Json::encode($response).']}');
+
+            $headerResponse['target'] = $data['ic-target-id'];
+            $headerResponse['elem'] = $data['elem_type'];
+            $headers->add('X-IC-Trigger', '{"comments":['.Json::encode($headerResponse).']}');
 
             return $this->renderPartial('_commentblock', [
                 'modelComments' => $response,

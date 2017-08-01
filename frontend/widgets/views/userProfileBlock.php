@@ -59,7 +59,7 @@ echo Html::tag('div',
     Html::tag('div',
       $user->userBirthdayDate ?
         Html::tag('span', $user->labels['birthday'].':', ['class' => 'o-grid__cell']).
-        Html::tag('span', $user->userBirthdayDate , ['class' => 'o-grid__cell'])
+        Html::tag('span', $user->userBirthdayDate, ['class' => 'o-grid__cell'])
         : '',
       [
         'class' => 'o-grid o-grid--no-gutter ta-l user__birthday',
@@ -70,7 +70,7 @@ echo Html::tag('div',
     Html::tag('div',
       $user->userSex ?
         Html::tag('span', $user->labels['sex'].':', ['class' => 'o-grid__cell']).
-        Html::tag('span', $user->userSex , ['class' => 'o-grid__cell'])
+        Html::tag('span', $user->userSex, ['class' => 'o-grid__cell'])
         : '',
       [
         'class' => 'o-grid o-grid--no-gutter ta-l user__sex',
@@ -81,7 +81,7 @@ echo Html::tag('div',
     Html::tag('div',
       $user->userCulture ?
         Html::tag('span', $user->labels['culture'].':', ['class' => 'o-grid__cell']).
-        Html::tag('span', $user->userCulture , ['class' => 'o-grid__cell'])
+        Html::tag('span', $user->userCulture, ['class' => 'o-grid__cell'])
         : '',
       [
         'class' => 'o-grid o-grid--no-gutter ta-l user__culture',
@@ -146,3 +146,6 @@ echo Html::tag('div',
 [
   'class' => 'user__info u-window-box--medium'
 ]);
+
+# SEPARATOR
+echo ElementsHelper::separatorWidget(2, 'bottomborder');

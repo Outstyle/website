@@ -2,125 +2,97 @@
 /**
  * Comments form (used at particular single pages)
  * Questions? Feel free to ask: <scsmash3r@gmail.com> or skype: smash3rs
+ * Also used by widgets/WidgetComments.php
  */
-
-use app\models\UserAvatar;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
 
+use app\models\UserAvatar;
 use common\components\helpers\ElementsHelper;
 
-/* --- We are showing the comment form input only for registered users --- */
-    if (!Yii::$app->user->isGuest) {
-        ?>
-        <form class="o-grid o-grid--wrap o-grid--center u-letter-box--xlarge comments_add" way-data="comment" way-persistent>
-            <div class="o-grid__cell o-grid__cell--top o-grid__cell--width-20 comments_add__avatar">
-              <img src="<?=UserAvatar::getAvatarPath(Yii::$app->user->id);?>"
-                   alt="<?=Yii::t('app', 'Аватар пользователя {user}',
-                    ['user' =>
-                      Yii::$app->user->identity->userdescription->name.' '.
-                      Yii::$app->user->identity->userdescription->last_name
-                    ]); ?>"
-                   class="roundborder u-pull-right color-<?=Yii::$app->user->identity->userdescription->culture;?>--border avatar avatar--smallest">
-            </div>
-            <div class="o-grid__cell o-grid__cell--width-60 o-grid__cell--no-gutter comments_add__body">
-                <div class="o-field o-field--icon-right">
-                    <textarea id="comments_message"
-                              name="comments_message"
-                              class="c-field u-xsmall c-field--ordinary"
-                              placeholder="<?=Yii::t('app', 'Введите ваш комментарий...'); ?>"></textarea>
-                    <i class="zmdi zmdi-plus zmdi-hc-2x c-icon" style="display:none"></i>
-                </div>
-            </div>
-            <div class="o-grid__cell o-grid__cell--width-20">
-                <?=ElementsHelper::commentAddButton(Yii::$app->controller->id, $modelElemId);?>
-            </div>
-        </form>
-    <?php
+/* @var $modelElemId */
 
-    }
+# COMMENTS FORM: we are showing the comment FORM input only for registered users
+if (!Yii::$app->user->isGuest) {
+    echo Html::tag('form',
 
-    /**
-     * -------------- COMMENTS LIST BLOCK --------------
-     */
+      # COMMENTS ADD
+      Html::tag('div',
 
-    echo Html::beginTag('div', ['id' => 'outstyle_comments']),
-            Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--center comments_list']),
-                Html::tag('div', '', ['class' => 'o-grid__cell o-grid__cell--width-10']),
-                Html::beginTag('div', ['class' => 'o-grid__cell o-grid__cell--width-80 o-grid__cell--no-gutter comments_body']),
-                    $this->render('_commentblock', [
-                        'modelComments' => $modelComments,
-                    ]),
-                Html::endTag('div'),
-                    Html::tag('div', '', ['class' => 'o-grid__cell o-grid__cell--width-10']),
-            Html::endTag('div'),
-         Html::endTag('div');
+        # COMMENTS FORM USER AVATAR
+        Html::tag('div',
 
-/*
-    JS stuff, that is related ONLY to this form
-*/
-?>
-<script>
-jQuery(document).ready(function () {
+          Html::img(
+            UserAvatar::getAvatarPath(Yii::$app->user->id),
+            [
+              'alt' => Yii::$app->user->identity->userdescription->name.' '.Yii::$app->user->identity->userdescription->last_name,
+              'class' => 'roundborder color-'.Yii::$app->user->identity->userdescription->culture.'--border avatar avatar--smallest',
+            ]
+          ),
 
-    /* --- Restoring the values in case user side error (i.e. browser window refresh to prevent data loss) --- */
-    way.restore();
+          [
+            'class' => 'o-grid__cell o-grid__cell--top o-grid__cell--width-10 o-grid__cell--no-gutter u-c comments_add__avatar'
+          ]
+        ).
 
-    /* --- Showing 'delete' icon on single comment area hover [ONLY FOR REGISTERED] --- */
-    jQuery('.user-registered .comment__wrap').hover(function() {
-         jQuery(this).find('.comment__delete').show();
-    }, function() {
-         jQuery(this).find('.comment__delete').hide();
-    });
+        # COMMENTS INPUT
+        Html::tag('div',
 
-    /* --- Some bindings to the news view page --- */
-    /* off.on is necessary to prevent event duplicate, when getting from another page to this one and back and so on */
+          # COMMENTS TEXTFIELD
+          Html::tag('div',
+            Html::tag('textarea',
+              '',
+              [
+                'id' => 'comments_message',
+                'name' => 'comments_message',
+                'class' => 'c-field u-xsmall c-field--ordinary',
+                'placeholder' => Yii::t('app', 'Enter your comment...')
+              ]
+            ),
+            [
+              'class' => 'o-field o-field--icon-right'
+            ]
+          ),
 
-    jQuery("body").off("commentDelete").on("commentDelete", function(event, data) {
-        if (jQuery.type(data) === "number") {
-            jQuery(".user-registered div[data-comment-id='"+data+"']").addClass('comment__deleted').fadeOut('slow');
-        }
-    });
+          [
+            'class' => 'o-grid__cell o-grid__cell--width-80 o-grid__cell--no-gutter comments_add__body'
+          ]
+        ).
 
-    jQuery("body").off("commentAdd").on("commentAdd", function(event, data) {
+        Html::tag('div',
+          '',
+          ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-10 u-c']
+        ),
 
-        jQuery('#comments_message').html(); /* Also clearing message textarea */
-        jQuery('#ohsnap').empty();
+        [
+          'class' => 'o-grid o-grid--wrap o-grid--center u-letter-box--large comments_add',
+        ]
+      ).
 
-        setTimeout(function(){
-            if (jQuery.type(data) === "number") {
-                way.remove("comment"); /* Removing old comment contents from localStorage */
-                jQuery(".user-registered div[data-comment-id='"+data+"']")
-                .addClass('comment__added comment__highlight')
-                .hide()
-                .fadeIn("slow", function() {
-                    jQuery(this).removeClass('comment__highlight');
-                });
-            } else {
-              /* --- If we encounter an error --- */
-              ohSnap(data[Object.keys(data)[0]], {'color':'red'});
-            }
-        },50);
+      # COMMENT OPTIONS
+      Html::tag('div',
 
-    });
+        # COMMENTS ATTACHMENT BUTTONS
+        Html::tag('div',
+          '',
+          ['class' => 'o-grid__cell o-grid__cell--width-50']
+        ).
 
-    /* --- Autosizing for textareas: http://www.jacklmoore.com/autosize/ --- */
-    autosize(jQuery('textarea'));
+        # COMMENTS SEND BUTTON
+        Html::tag('div',
+          ElementsHelper::commentAddButton(Yii::$app->controller->id, $modelElemId),
+          ['class' => 'o-grid__cell o-grid__cell--width-50']
+        ),
 
-    var comment = way.get('comment.comments_message');
-    if (comment) {
-        jQuery('#comments_message').html(comment);
-    }
+        [
+          'class' => 'o-grid o-grid--wrap o-grid--center u-letter-box--large comments_options',
+        ]
+      ),
 
-    /* --- Before sending our Intercooler AJAX request, we check for stored values from way.js and pass them too --- */
-    jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
-        var comment = way.get("comment");
-        if (comment) {
-            comment = jQuery.param(comment);
-            settings.data = settings.data+'&'+comment;
-        }
-    });
-
-});
-</script>
+      [
+        'way-data' => 'comment',
+        'way-persistent' => true
+      ]
+    );
+}

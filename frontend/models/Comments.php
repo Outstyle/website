@@ -49,8 +49,9 @@ class Comments extends \yii\db\ActiveRecord
                 'range' => ElementsHelper::$allowedElements
             ],
             [
-                ['elem_id', 'user_id'],
-                'integer'
+                ['elem_id'],
+                'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number',
+                'message' => 'COMMENT_NO_ELEMENT'
             ],
             [
                 'created',
@@ -198,8 +199,6 @@ class Comments extends \yii\db\ActiveRecord
          * 'User' query is needed to check whether user (and his data) is active or not.
          *
          * @see: http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#relational-data.
-         * HACK: This approach with greedy 'user' query goes well, if you want to exclude comments from being populated, but violates SOLID principles
-         * 'user' => function ($query) {$query->andWhere(['!=', 'status', User::STATUS_DELETED])->select('id');}
          */
 
         $commentsQuery = self::find()->with([
@@ -210,10 +209,9 @@ class Comments extends \yii\db\ActiveRecord
           'likes' => function ($query) {
               $query->andWhere(['elem_type' => 'comments']);
           }
-        ])->where($where)->orderBy('id desc');
+        ])->where($where)->orderBy('id asc');
 
         $comments = $commentsQuery->all();
-
 
         /* If we don't have any comments found, we won't populate comments model */
         if (!$comments) {

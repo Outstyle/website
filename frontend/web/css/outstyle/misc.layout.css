@@ -46,6 +46,17 @@ ul {
   display: table;
   clear: both;
 }
+.u-window-box--shadowed .i-widgetbutton {
+  top: -15px;
+}
+.u-window-box--shadowed {
+  background: #fff;
+  margin-top:1em;
+  padding-top:0;
+}
+.u-pillar-box--xsuper {
+  padding: 0 7em 0 7em;
+}
 .cb {
   clear:both;
 }
@@ -139,7 +150,7 @@ ul {
 .c-button {
   background: #d8d8d8;
   color: #555;
-  font-size: 11px;
+  font-size: 0.9em;
   border-radius: 13px;
   text-transform: none;
 }
@@ -417,6 +428,7 @@ filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><
   z-index: -1;
   margin-top:-24px;
   height: 25px;
+  width: 100%;
 }
 .box__shadow--effect2:before, .box__shadow--effect2:after
 {

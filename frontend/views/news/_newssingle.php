@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use common\components\helpers\ElementsHelper;
+use frontend\widgets\WidgetComments;
 
 echo
 Html::tag('div',
@@ -253,43 +254,11 @@ Html::tag('div',
   ['class' => 'o-grid__cell o-grid__cell--width-100 u-letter-box--xlarge shareline branded']
 );
 
-// COMMENTS
-echo
-Html::tag('div',
-  $this->render('../comments/_form',
-    [
-      'modelComments' => $modelNews[0]['comments'] ?? '',
-      'modelElemId' => $modelNews[0]['id'] ?? '',
-    ]
-  ),
-  [
-    'id' => 'comments_section',
-    'class' => 'u-full-width c-comments',
-  ]
-);
+# Comments
+echo WidgetComments::widget([
+  'elem_id' => $modelNews[0]['id'] ?? ''
+]);
 
-/*
-    ----------------------------------------------------------------------------
-    JS stuff, that is related ONLY to this view
-    Using 'echo js' for lazy load images: https://www.npmjs.com/package/echo-js
-    ----------------------------------------------------------------------------
-*/
+/* JS: @see js/outstyle.portal.news.js */
 ?>
-<script>
-jQuery(document).ready(function () {
-
-    echo.init({
-      offset:500,
-      callback: function (element, op) {
-        jQuery("img").error(function(){
-          jQuery(this).hide();
-        });
-      }
-    });
-
-    jQuery("#news-single-recommended .grayscale, #news-single-similar .grayscale").hover(function() {
-      jQuery(this).toggleClass('grayscale');
-    });
-
-});
-</script>
+<script>jQuery(document).ready(function(){newsInit();});</script>

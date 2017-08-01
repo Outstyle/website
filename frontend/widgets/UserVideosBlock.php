@@ -54,6 +54,11 @@ class UserVideosBlock extends Widget
      */
     public function run()
     {
+        # Checking if we have any videos. If not - returning null
+        if (!$this->videos) {
+            return;
+        }
+
         return $this->render('userVideosBlock', [
           'videos' => $this->videos,
         ]);

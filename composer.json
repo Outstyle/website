@@ -30,7 +30,8 @@
         "developeruz/yii2-db-rbac": "*",
         "vova07/yii2-imperavi-widget": "*",
         "dragonjet/yii2-opengraph": "dev-master",
-        "fg/multiplayer": "dev-master"
+        "fg/multiplayer": "dev-master",
+        "mihaildev/yii2-ckeditor": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",
