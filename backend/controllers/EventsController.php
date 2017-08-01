@@ -7,6 +7,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use common\models\Events;
 use backend\models\search\EventsSearch;
