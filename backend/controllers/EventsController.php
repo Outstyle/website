@@ -35,11 +35,6 @@ class EventsController extends Controller
     public function actions()
     {
         return [
-            'imageupload' => [
-                'class' => 'backend\widgets\imperavi\actions\UploadAction',
-                'url' => Url::to('/images/events/'), // Directory URL address, where files are stored.
-                'path' => '@frontend/web/images/events/', // Or absolute path to directory where files are stored.
-            ],
             'deleteImage' => [
                 'class' => 'demi\image\DeleteImageAction',
                 'modelClass' => Events::className(),

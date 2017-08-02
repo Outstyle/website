@@ -19,8 +19,10 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+
         'css/jquery.datetimepicker.min.css',
         'css/select2.min.css',
+        'css/backend.ckeditor.css',
     ];
     public $js = [
         '../frontend/web/js/misc/ohsnap.min.js',

@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     if (strpos($model->getImageSrc(), 'noimage') === false) {
         $form = ActiveForm::begin([
-          'id' => 'form-news-create',
+          'id' => 'form-events-create',
           'enableAjaxValidation' => true,
           'options' => ['enctype' => 'multipart/form-data'],
         ]);
@@ -57,8 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
         echo $form->field($model, 'img')->widget('demi\image\FormImageWidget',
           [
             'imageSrc' => $model->getImageSrc(),
-            'deleteUrl' => ['deleteImage', 'id' => $model->getPrimaryKey()],
-            'cropUrl' => ['cropImage', 'id' => $model->getPrimaryKey()],
+            'deleteUrl' => ['deleteImage', 'id' => $model->primaryKey],
+            'cropUrl' => ['cropImage', 'id' => $model->primaryKey],
           ]);
 
         ActiveForm::end();

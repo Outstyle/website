@@ -80,7 +80,7 @@ echo
       ]);
 
     /* Event main photo */
-    if (strpos($model->getImageSrc(), 'noimage') !== false) {
+    if (strpos($model->getImageSrc(), 'noimage') !== false && $model->getPrimaryKey()) {
         echo $form->field($model, 'img')->widget('demi\image\FormImageWidget', [
           'imageSrc' => $model->getImageSrc('900_'),
           'deleteUrl' => ['deleteImage', 'id' => $model->getPrimaryKey()],

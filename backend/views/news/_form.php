@@ -7,6 +7,10 @@ use backend\widgets\imperavi\Widget;
 use backend\models\Category;
 use backend\models\StatusPublication; /* This must be in controller */
 
+/* CKEditor */
+use mihaildev\ckeditor\CKEditor;
+use mihaildev\elfinder\ElFinder;
+
 use common\components\helpers\BlocksHelper;
 
 /* @var $this yii\web\View */
@@ -36,25 +40,16 @@ echo
     $form->field($model, 'small')->textarea(['rows' => 8]),
 
     /**
-     * Main big text. Using imperavi widget: imperavi\Widget
-     * @see: https://imperavi.com/redactor/docs/
+     * CKEditor
+     * @see: https://github.com/MihailDev/yii2-ckeditor
+     * @see: http://docs.ckeditor.com/#!/guide/dev_toolbar
      */
     $form->field($model, 'text', ['options' => ['class' => 'textarea--enhanced']])->textarea([
-      'rows' => 12,
-      'id' => Yii::$app->controller->id.'-textarea', ])->widget(Widget::className(), [
-        'settings' => [
-          'lang' => 'ru',
-          'minHeight' => 300,
-          'pastePlainText' => true,
-          'buttonSource' => true,
-          'buttonAdvanced' => true,
-          'plugins' => ['fullscreen'],
-          'imageUpload' => Url::to([Yii::$app->controller->id.'/imageupload']),
-        ],
-        'plugins' => [
-          'videos' => 'backend\assets\RedactorAsset',
-          'imageuploader' => 'backend\assets\RedactorAsset'
-        ]
+      'id' => Yii::$app->controller->id.'-textarea', ])->widget(CKEditor::className(), [
+          'editorOptions' => ElFinder::ckeditorOptions([
+              'elfinder',
+              'path' => '/'.Yii::$app->controller->id.'/'.$model->primaryKey
+          ], Yii::$app->params['ckeditor']),
       ]);
 
     /* News main photo */
