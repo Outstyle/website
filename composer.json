@@ -31,8 +31,8 @@
         "vova07/yii2-imperavi-widget": "*",
         "dragonjet/yii2-opengraph": "dev-master",
         "fg/multiplayer": "dev-master",
-        "mihaildev/yii2-ckeditor": "*",
-        "mihaildev/yii2-elfinder": "*"
+        "mihaildev/yii2-elfinder": "*",
+        "sadovojav/yii2-ckeditor": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",

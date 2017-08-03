@@ -5,7 +5,9 @@ button::-moz-focus-inner {
 button::-moz-focus-inner {
   border: 0;
 }
-
+pre {
+  white-space: normal;
+}
 /* --- UTILS & BLAZE REWRITES + HACKS --- */
 /* Utility Classes from Skeleton.css */
 ul li {
@@ -14,6 +16,12 @@ ul li {
 ul {
   padding:0;
   margin:0;
+}
+.c-text--usual ul {
+  margin-left: 2em;
+}
+.c-text--usual ul li {
+  list-style-type: disc;
 }
 /* Make element full width */
 .u-full-width {

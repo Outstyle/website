@@ -8,7 +8,7 @@
 .comment__username {
   color:#606d75;
 }
-.comment {
+div.comment {
   border-bottom: 1px solid #d5d7d8;
 }
 .comment__avatar,
@@ -56,4 +56,8 @@
 }
 #comments_section {
   border-top: 1px solid #dadada;
+}
+.comments_add__avatar .u-c .avatar {
+  display: block;
+  margin: 0 auto;
 }

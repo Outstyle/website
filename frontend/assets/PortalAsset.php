@@ -28,6 +28,7 @@ class PortalAsset extends AssetBundle
         'css/outstyle/base.boxes.css',
         'css/outstyle/misc.layout.css',
         'css/outstyle/misc.modal.css',
+        'css/outstyle/portal.news.css',
 
         'css/outstyle/social.comments.css',
     ];

@@ -8,7 +8,7 @@ use backend\models\Category;
 use backend\models\StatusPublication; /* This must be in controller */
 
 /* CKEditor */
-use mihaildev\ckeditor\CKEditor;
+use sadovojav\ckeditor\CKEditor;
 use mihaildev\elfinder\ElFinder;
 
 use common\components\helpers\BlocksHelper;
@@ -16,6 +16,7 @@ use common\components\helpers\BlocksHelper;
 /* @var $this yii\web\View */
 /* @var $model app\models\News */
 /* @var $form yii\widgets\ActiveForm */
+
 
 /* TODO: get rid of this stuff */
 $categories = Category::getCategories(['id' => [1, 2, 3, 4]], '', true);
@@ -41,15 +42,20 @@ echo
 
     /**
      * CKEditor
-     * @see: https://github.com/MihailDev/yii2-ckeditor
+     * @see: https://github.com/sadovojav/yii2-ckeditor
+     * @see: https://github.com/MihailDev/yii2-elfinder
      * @see: http://docs.ckeditor.com/#!/guide/dev_toolbar
      */
     $form->field($model, 'text', ['options' => ['class' => 'textarea--enhanced']])->textarea([
       'id' => Yii::$app->controller->id.'-textarea', ])->widget(CKEditor::className(), [
           'editorOptions' => ElFinder::ckeditorOptions([
               'elfinder',
-              'path' => '/'.Yii::$app->controller->id.'/'.$model->primaryKey
+              'path' => '/'.Yii::$app->controller->id.'/'.rand(0, 9).'/'.rand(0, 9).'/'.rand(0, 9)
           ], Yii::$app->params['ckeditor']),
+          'extraPlugins' => [
+              ['codemirror', '@backend/web/js/ckeditor/plugins/codemirror/', 'plugin.js'],
+              ['image2', '@backend/web/js/ckeditor/plugins/image2/', 'plugin.js'],
+          ],
       ]);
 
     /* News main photo */

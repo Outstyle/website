@@ -1,3 +1,6 @@
 select.cke_dialog_ui_input_select {
   background-image: none;
 }
+.cke_source {
+  white-space: normal !important;
+}
