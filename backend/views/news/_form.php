@@ -55,6 +55,7 @@ echo
           'extraPlugins' => [
               ['codemirror', '@backend/web/js/ckeditor/plugins/codemirror/', 'plugin.js'],
               ['image2', '@backend/web/js/ckeditor/plugins/image2/', 'plugin.js'],
+              ['emojiremove', '@backend/web/js/ckeditor/plugins/emojiremove/', 'plugin.js'],
           ],
       ]);
 
