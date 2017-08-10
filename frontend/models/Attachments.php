@@ -29,9 +29,32 @@ class Attachments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['elem_type', 'elem_id', 'attachment_type', 'attachment_id'], 'required'],
-            [['elem_id', 'attachment_id'], 'integer'],
-            [['elem_type', 'attachment_type'], 'string', 'max' => 255]
+            [
+              [
+                'elem_type',
+                'elem_id',
+                'attachment_type',
+                'attachment_id'
+              ],
+               'required'
+            ],
+
+            [
+              [
+                'elem_id',
+                'attachment_id'
+              ],
+               'integer'
+            ],
+
+            [
+              [
+                'elem_type',
+                'attachment_type'
+              ],
+               'string', 'max' => 255
+            ]
+
         ];
     }
 
@@ -49,7 +72,7 @@ class Attachments extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function addAttachment($type,$id,$atype,$aid)
+    public static function addAttachment($type, $id, $atype, $aid)
     {
         $uid = Yii::$app->user->id;
         $attachment = new Attachments();
@@ -58,8 +81,8 @@ class Attachments extends \yii\db\ActiveRecord
         $attachment->attachment_type = $atype; // photo, video, mp3
         $attachment->attachment_id = $aid; // id вложения (фотки или видео)
 
-        if($attachment->save()){
-           return array('ok' => true);
+        if ($attachment->save()) {
+            return array('ok' => true);
         }
         return array('ok' => false);
     }

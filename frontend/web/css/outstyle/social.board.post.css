@@ -2,9 +2,6 @@
   margin-left: -1px;
   border-left: 1px solid #dadada;
 }
-#posts_section #comments_section {
-  display:none;
-}
 .post {
   border-bottom: 1px solid #dadada;
   padding-bottom:0;
@@ -61,6 +58,13 @@
   height:42px;
 }
 
+.post .zmdi-icon--hoverable {
+  color:#c5c5c5;
+}
+.post .zmdi-icon--hoverable:hover {
+  color:#7d7d7d;
+}
+
 .board__comments {
   padding: 0;
 }
@@ -72,7 +76,7 @@
 
 .i-postbutton {
   padding: 1em;
-  opacity: 0.2;
+  opacity: 0.8;
 }
 .i-postbutton:hover,
 .i-postbutton:active,

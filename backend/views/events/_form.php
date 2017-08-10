@@ -3,9 +3,12 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use backend\widgets\imperavi\Widget;
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\PriceHelper;
+
+/* CKEditor */
+use sadovojav\ckeditor\CKEditor;
+use mihaildev\elfinder\ElFinder;
 
 /*
  * @var $model      backend\models\Events
@@ -61,22 +64,23 @@ echo
     $form->field($model, 'site'),
     $form->field($model, 'email')->textInput(['type' => 'email']),
 
-    /* Main big description. Using imperavi widget: imperavi\Widget */
+    /**
+     * CKEditor
+     * @see: https://github.com/sadovojav/yii2-ckeditor
+     * @see: https://github.com/MihailDev/yii2-elfinder
+     * @see: http://docs.ckeditor.com/#!/guide/dev_toolbar
+     */
     $form->field($model, 'description', ['options' => ['class' => 'textarea--enhanced']])->textarea([
-      'rows' => 12,
-      'id' => Yii::$app->controller->id.'-textarea', ])->widget(Widget::className(), [
-        'settings' => [
-          'lang' => 'ru',
-          'minHeight' => 300,
-          'pastePlainText' => true,
-          'buttonSource' => true,
-          'buttonAdvanced' => true,
-          'imageUpload' => Url::to([Yii::$app->controller->id.'/imageupload']),
-        ],
-        'plugins' => [
-          'videos' => 'backend\assets\RedactorAsset',
-          'imageuploader' => 'backend\assets\RedactorAsset'
-        ]
+      'id' => Yii::$app->controller->id.'-textarea', ])->widget(CKEditor::className(), [
+          'editorOptions' => ElFinder::ckeditorOptions([
+              'elfinder',
+              'path' => '/'.Yii::$app->controller->id.'/'.rand(0, 9).'/'.rand(0, 9).'/'.rand(0, 9)
+          ], Yii::$app->params['ckeditor']),
+          'extraPlugins' => [
+              ['codemirror', '@backend/web/js/ckeditor/plugins/codemirror/', 'plugin.js'],
+              ['image2', '@backend/web/js/ckeditor/plugins/image2/', 'plugin.js'],
+              ['emojiremove', '@backend/web/js/ckeditor/plugins/emojiremove/', 'plugin.js'],
+          ],
       ]);
 
     /* Event main photo */

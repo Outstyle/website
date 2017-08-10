@@ -8,8 +8,8 @@ use common\components\helpers\ElementsHelper;
  * Single comment view
  * renders as partial from public function actionShow @CommentsController
  */
- echo Html::beginTag('div', ['id' => 'outstyle_comments']),
-         Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--center comments_list']),
+ echo Html::beginTag('div', ['id' => Yii::$app->controller->id.'_comments']),
+         Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--center comments_list comments_'.Yii::$app->controller->id]),
              Html::beginTag('div', ['class' => 'o-grid__cell o-grid__cell--width-100 o-grid__cell--no-gutter comments_body']);
 
 if (!empty($modelComments)) {

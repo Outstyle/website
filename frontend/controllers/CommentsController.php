@@ -52,8 +52,16 @@ class CommentsController extends Controller
 
         $response = Comments::addComment($data['elem_type'], $data['elem_id'], $data['comments_message']); // Returns comment ID
 
+        if (is_numeric($response)) {
+            $headerResponse['elem_type'] = $data['elem_type'];
+            $headerResponse['parent_id'] = (int)$data['elem_id'];
+            $headerResponse['elem_id'] = $response;
+        } else {
+            $headerResponse = $response;
+        }
+
         $headers = Yii::$app->response->headers;
-        $headers->add('X-IC-Trigger', '{"commentAdd":['.Json::encode($response).']}');
+        $headers->add('X-IC-Trigger', '{"commentAdd":['.Json::encode($headerResponse).']}');
 
         if (isset($data['ic-request']) && $response) {
             $where['id'] = $response;
@@ -121,7 +129,8 @@ class CommentsController extends Controller
             $headers = Yii::$app->response->headers;
 
             $headerResponse['target'] = $data['ic-target-id'];
-            $headerResponse['elem'] = $data['elem_type'];
+            $headerResponse['elem_type'] = $data['elem_type'];
+            $headerResponse['elem_id'] = $data['elem_id'];
             $headers->add('X-IC-Trigger', '{"comments":['.Json::encode($headerResponse).']}');
 
             return $this->renderPartial('_commentblock', [

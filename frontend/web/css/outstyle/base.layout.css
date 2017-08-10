@@ -517,10 +517,10 @@ a.article__title:hover {
 
 
 /* --- REGISTERED USER ELEMENTS --- */
-.user-registered .comment__actions .i-like.active {
+.user-registered .i-like.active {
   color: #3d8aef;
 }
-.user-registered .comment__actions .i-like.active:hover {
+.user-registered .i-like.active:hover {
   color: #5fb9fc;
 }
 

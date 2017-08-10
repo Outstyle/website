@@ -65,6 +65,11 @@ class UserBoardPost extends Widget
                     $posts[$id]['userNickname'] = $cachedUserInfo[$userId]['userNickname'];
                     $posts[$id]['userCulture'] = $cachedUserInfo[$userId]['userCulture'];
                 }
+
+                # Post likes
+                # TODO: can be cacheable?
+                $posts[$id]['likesCount'] = \app\models\Likes::findLikesCount(Yii::$app->controller->id, $id);
+                $posts[$id]['myLike'] = \app\models\Likes::findMyLike(Yii::$app->controller->id, $id);
             }
             $this->posts = $posts;
         }

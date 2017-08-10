@@ -80,7 +80,7 @@ foreach ($posts as $id => $post) {
       # ACTIONS BOX (like, view count, comment buttons)
       Html::tag('div',
         Html::tag('div',
-          ElementsHelper::likeButton(Yii::$app->controller->id, 0, 0, 0).
+          ElementsHelper::likeButton(Yii::$app->controller->id, $id, $post['likesCount'], $post['myLike']).
 
           # COMMENT FORM SHOW LINK
           Html::a('<i class="zmdi zmdi-comment-text-alt"></i><span>'.Yii::t('app', 'Post comment').'</span></a>',
@@ -89,6 +89,7 @@ foreach ($posts as $id => $post) {
               'class' => 'i-icon show-comment-form-link',
               'ic-include' => '{"elem_type":"'.Yii::$app->controller->id.'","elem_id":'.(int)$id.'}',
               'ic-target' => '#comments-'.$id,
+              'ic-indicator' => "#outstyle_loader",
               'ic-get-from' => Url::toRoute(['comments/show']),
             ]
           ),

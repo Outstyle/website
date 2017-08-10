@@ -64,6 +64,14 @@ class Comments extends \yii\db\ActiveRecord
                 'max' => 5000
             ],
             [
+                'comment',
+                'filter',
+                'filter' => function ($comment) {
+                    $comment = strip_tags($comment);
+                    return \yii\helpers\Html::encode($comment);
+                },
+            ],
+            [
                 'elem_type',
                 'string',
                 'max' => 255

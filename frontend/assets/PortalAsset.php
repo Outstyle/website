@@ -54,7 +54,7 @@ class PortalAsset extends AssetBundle
         'js/outstyle.portal.article.js',
         'js/outstyle.portal.event.js',
         'js/outstyle.portal.school.js',
-        'js/outstyle.analytics.js',
+        'js/outstyle.googletags.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

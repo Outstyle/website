@@ -139,8 +139,6 @@ echo Html::endTag('div');
 <div id="scrollup"><i class="icon-up-open-big icon-huge"></i></div>
 <div id="outstyle_loader"><div class="loader"></div></div>
 <div id="ohsnap"></div>
-<script type="text/javascript" src="/js/jquery.mousewheel.js"></script>
-<script type="text/javascript" src="/js/jquery.jscrollpane.js"></script>
 <?php $this->endBody() ?>
 <?php echo Html::endTag('body'); ?>
 </html>

@@ -1,7 +1,4 @@
 /* --- COMMENTS ---- */
-.c-comments i.zmdi {
-  font-size: 19px;
-}
 .comment__info {
   padding-top:10px;
 }
@@ -11,9 +8,8 @@
 div.comment {
   border-bottom: 1px solid #d5d7d8;
 }
-.comment__avatar,
-.comment__wrap {
-  padding-top:1.5em;
+.comments_body .comment {
+  padding-top: 1em;
 }
 .comment__body,
 .comment__actions,
@@ -34,9 +30,18 @@ div.comment {
 .comment__delete {
   position: absolute;
   right: 0px;
-  top: 10px;
+  top: -2px;
   display:none;
   margin:0;
+}
+.comment:hover .comment__delete {
+  display: block;
+}
+.comment:hover .comment__time {
+  display: none;
+}
+.comment__delete i {
+  margin: 0;
 }
 .comment__deleted {
   background: #f5f5df;
@@ -44,20 +49,32 @@ div.comment {
 .comment__highlight {
   background: #f5f5df;
 }
-.c-comments {
+.comments_video {
   padding: 0 6em 0 6em;
 }
 .comments_options {
   background: #f9f9f9;
 }
-#comments_message {
+.comments_add__body textarea {
   border: 0;
   padding: 0;
 }
-#comments_section {
+.board__comments {
   border-top: 1px solid #dadada;
 }
 .comments_add__avatar .u-c .avatar {
   display: block;
   margin: 0 auto;
+}
+#comments_section__board {
+  display:none;
+}
+.comments_options .zmdi-icon--hoverable i {
+  color:#428bca;
+}
+.comments_options .zmdi-icon--hoverable:hover i {
+  color:#42729a;
+}
+.comment__actions .i-icon {
+  font-size: 0.9em;
 }

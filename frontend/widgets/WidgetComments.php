@@ -24,7 +24,7 @@ class WidgetComments extends Widget
      * Element ID for comments to be shown
      * @var int
      */
-    public $elem_id = 568;
+    public $elem_id = 0;
 
     /**
      * Comments array

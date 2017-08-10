@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use backend\widgets\imperavi\Widget;
 use backend\models\Category;
 use backend\models\StatusPublication; /* This must be in controller */
 

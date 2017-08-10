@@ -21,14 +21,29 @@ class ElementsHelper extends Html
 
     public static $allowedElements = [
       'news',
+      'article',
       'school',
+      'events',
       'board',
       'comments',
       'photo',
       'video',
-      'article',
-      'events',
     ];
+
+    /**
+     * Transforms controller ID (string) into its numeric value (int)
+     * @param  string $controllerId     (see self::$allowedElements)
+     * @return int
+     */
+    public static function getElementIdByContollerId($controllerId = '')
+    {
+        # If element is not in our list
+        if (!in_array($controllerId, self::$allowedElements)) {
+            return;
+        }
+
+        return array_keys(self::$allowedElements, $controllerId)[0];
+    }
 
     /**
      * Wraps content into div containers, needed for receiving ajax requests
@@ -133,11 +148,57 @@ class ElementsHelper extends Html
           'ic-indicator' => self::DEFAULT_AJAX_LOADER,
           'ic-include' => '{"elem_type":"'.$elem_type.'","elem_id":'.(int) $elem_id.'}',
           'ic-trigger-delay' => '200ms',
-          'ic-target' => '#outstyle_comments .comments_body',
+          'ic-target' => '#'.$elem_type.'_comments .comments_body',
           'ic-get-from' => Url::toRoute(['comments/add']),
           'ic-append-from' => Url::toRoute(['comments/add']),
           'ic-push-url' => 'false',
           'ic-select-from-response' => '#new_comment'
+        ]);
+    }
+
+    /**
+     * Generates an active button element to send API requests for showing attahment modal
+     * @param  integer $attachment_type
+     * @param  integer $attachment_id
+     * @param  integer $elem_type
+     * @param  integer $elem_id
+     * @return HTML <a> tag
+     */
+    public static function attachmentAddButton($attachment_type = 0, $attachment_id = 0, $elem_type = 0, $elem_id = 0)
+    {
+        $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-addattachment u-pull-left"));
+
+        /*
+         * Setting icon for link
+         * ZMDI icons: http://zavoloklom.github.io/material-design-iconic-font/icons.html#comment.
+         */
+        switch ($attachment_type) {
+          case 0:
+            $icon = 'camera';
+            break;
+
+          case 1:
+            $icon = 'youtube-play';
+            break;
+
+          default:
+            $icon = 'more';
+        }
+
+        return
+        Html::button(
+          Html::tag('i', '', [
+            'class' => "u-pillar-box--xsmall zmdi zmdi-{$icon} zmdi-hc-2x",
+          ]),
+        [
+          'class' => $class,
+          'title' => Yii::t('app', 'Add attachment {type}', ['type' => $attachment_type]),
+          'ic-action' => 'addAttachment',
+          'ic-get-from' => Url::toRoute('/video'),
+          'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
+          'ic-target' => '#'.self::VIDEO_TARGET_ID,
+          'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+          'ic-push-url' => 'false',
         ]);
     }
 
