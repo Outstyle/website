@@ -10,6 +10,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 
 use app\models\Comments;
+use app\models\Attachments;
 
 class CommentsController extends Controller
 {
@@ -46,25 +47,30 @@ class CommentsController extends Controller
     {
         $data = Yii::$app->request->get();
 
-        if (!isset($data['comments_message'])) {
-            $data['comments_message'] = '';
-        }
+        $newCommentId = Comments::addComment($data['elem_type'], $data['elem_id'], $data['comments_message'] ?? ''); // Returns comment ID
+        $headerResponse = $newCommentId;
 
-        $response = Comments::addComment($data['elem_type'], $data['elem_id'], $data['comments_message']); // Returns comment ID
-
-        if (is_numeric($response)) {
+        if (is_numeric($newCommentId)) {
+            $headerResponse = [];
             $headerResponse['elem_type'] = $data['elem_type'];
             $headerResponse['parent_id'] = (int)$data['elem_id'];
-            $headerResponse['elem_id'] = $response;
-        } else {
-            $headerResponse = $response;
+            $headerResponse['elem_id'] = $newCommentId;
+
+            # Adds an attachment to comment, if valid data is present
+            if (isset($data['attachments'])) {
+                $attachments = Attachments::parseStringForAttachments($data['attachments']);
+                foreach ($attachments as $attachment) {
+                    $added_attachments[] = Attachments::addAttachment($attachment[0], $attachment[1], $data['elem_type'], $newCommentId);
+                }
+                $headerResponse['attachments'] = $added_attachments;
+            }
         }
 
         $headers = Yii::$app->response->headers;
         $headers->add('X-IC-Trigger', '{"commentAdd":['.Json::encode($headerResponse).']}');
 
-        if (isset($data['ic-request']) && $response) {
-            $where['id'] = $response;
+        if (isset($data['ic-request']) && $newCommentId) {
+            $where['id'] = $newCommentId;
             $modelComment = Comments::getComments($where); /* REDO! -req */
 
             return $this->renderPartial('_commentblock', [
@@ -73,7 +79,7 @@ class CommentsController extends Controller
         }
 
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return $response;
+        return $newCommentId;
     }
 
 /**
@@ -131,7 +137,7 @@ class CommentsController extends Controller
             $headerResponse['target'] = $data['ic-target-id'];
             $headerResponse['elem_type'] = $data['elem_type'];
             $headerResponse['elem_id'] = $data['elem_id'];
-            $headers->add('X-IC-Trigger', '{"comments":['.Json::encode($headerResponse).']}');
+            $headers->add('X-IC-Trigger', '{"commentsShow":['.Json::encode($headerResponse).']}');
 
             return $this->renderPartial('_commentblock', [
                 'modelComments' => $response,

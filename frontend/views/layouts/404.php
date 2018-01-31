@@ -32,7 +32,7 @@ Spaceless::begin();
   }
 </style>
 </head>
-<body class="error--404">
+<body class="error">
 <?php $this->beginBody(); ?>
   <?=$content;?>
 <?php $this->endBody(); ?>

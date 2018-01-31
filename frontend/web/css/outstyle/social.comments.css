@@ -62,7 +62,7 @@ div.comment {
 .board__comments {
   border-top: 1px solid #dadada;
 }
-.comments_add__avatar .u-c .avatar {
+.comments_add__avatar.u-c .avatar {
   display: block;
   margin: 0 auto;
 }

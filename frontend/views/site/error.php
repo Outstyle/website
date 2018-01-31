@@ -8,12 +8,12 @@ use yii\helpers\Url;
 /* @var $message string */
 /* @var $exception Exception */
 
-$this->title = Yii::t('app', '404 - Page not found');
+$this->title = $exception->statusCode;
 ?>
 <div id="banksy_was_here">
   <h1><?php
   if (isset($exception->statusCode)) {
-      echo $exception->statusCode.' '.Yii::t('app', 'Page not found!');
+      echo $exception->statusCode.' / '.Yii::t('app', $exception->getMessage());
   } else {
       echo '500! Что-то тут пошло не так... Попробуйте зайти позже.';
   } ?></h1>

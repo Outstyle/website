@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
 use frontend\widgets\WidgetComments;
+use app\models\VideoServices;
 
 /* $video   array   @views/video/view */
 
@@ -11,7 +12,7 @@ echo Html::tag('div',
 
   # Video container using Multiplayer: https://github.com/felixgirault/multiplayer
   $this->render('_videocontainer', [
-    'video' => $video ?? '',
+    'video' => $video ?? [],
     'options' => $options ?? []
   ]),
 
@@ -36,7 +37,11 @@ echo Html::tag('div',
       Html::tag('div',
         Yii::t('app', '{video_date} via {video_provider}', [
           'video_date' => Yii::$app->formatter->asDateTime(strtotime($video['created_at']), Yii::$app->params['date']),
-          'video_provider' => Html::a($video['service_id'], ['/away?to='.$video['service_link']], ['target' => '_blank']),
+          'video_provider' => Html::a(
+            VideoServices::getVideoServiceNameByServiceId($video['service_id']),
+            ['/away?to='.VideoServices::generateServiceLink($video['video_id'], $video['service_id'])],
+            ['target' => '_blank']
+          ),
         ]),
         ['class' => 'video__provider']
       ),

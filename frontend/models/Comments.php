@@ -107,18 +107,14 @@ class Comments extends \yii\db\ActiveRecord
  * @param string    $elem_type  Which type of element does this comment represents (i.e. news, school, board)
  * @param int       $elem_id    Element's id
  * @param string    $text       Comment's text (body)
- * @param string    $atype      Attachment type for comment (video, photo)
- * @param int       $aid        Attachment's ID
  * @return int      Added comment ID
  */
-    public static function addComment($elem_type, $elem_id, $text, $atype = null, $aid = null)
+    public static function addComment($elem_type, $elem_id, $text)
     {
-        $uid = Yii::$app->user->id;
-
         $comment = new Comments;
         $comment->elem_type = $elem_type;
         $comment->elem_id = $elem_id;
-        $comment->user_id = $uid;
+        $comment->user_id = Yii::$app->user->id;
         $comment->comment = $text;
 
         /* If our comment passes validation rules and is not a duplicate... */
@@ -126,11 +122,6 @@ class Comments extends \yii\db\ActiveRecord
             $comment->save();
         } else {
             return $comment->errors;
-        }
-
-        /* If our comment has an attachment */
-        if ($atype && $aid) {
-            $res = Attachments::addAttachment('comment', $id, $atype, $aid);
         }
 
         return $comment->id;
@@ -153,7 +144,7 @@ class Comments extends \yii\db\ActiveRecord
             'user_id' => $user_id,
         );
 
-        /* --- 'comments/delete' is a permission name for comment deleting --- */
+        /* --- TODO: This should be in commentsController + likes check too! 'comments/delete' is a permission name for comment deleting --- */
         if (Yii::$app->user->can('comments/delete')) {
             $args = array(
                 'id' => $id,
@@ -214,6 +205,9 @@ class Comments extends \yii\db\ActiveRecord
               $query->andWhere(['!=', 'status', User::STATUS_DELETED])->select('id');
           },
           'userDescription',
+          'attachments' => function ($query) use ($where) {
+              $query->andWhere(['elem_type' => 5]);
+          },
           'likes' => function ($query) {
               $query->andWhere(['elem_type' => 'comments']);
           }
@@ -238,8 +232,8 @@ class Comments extends \yii\db\ActiveRecord
             $modelComments[$i]['commentText']        = $comments[$i]->comment;
             $modelComments[$i]['likeCount']          = count($comments[$i]->likes);
             $modelComments[$i]['myLike']             = Likes::checkForMyLike($comments[$i]->likes, $comments[$i]->id);
+            $modelComments[$i]['attachments']        = count($comments[$i]->attachments);
         }
-
         return $modelComments;
     }
 
@@ -256,10 +250,6 @@ class Comments extends \yii\db\ActiveRecord
     }
 
     /* Relations */
-    public function attachments()
-    {
-        return $this->hasMany(Attachments::className(), ['elem_id' => 'id', 'elem_type' => 'comment']);
-    }
 
     public function getUser()
     {
@@ -274,5 +264,10 @@ class Comments extends \yii\db\ActiveRecord
     public function getLikes()
     {
         return $this->hasMany(Likes::className(), ['elem_id' => 'id']);
+    }
+
+    public function getAttachments()
+    {
+        return $this->hasMany(Attachments::className(), ['elem_id' => 'id']);
     }
 }

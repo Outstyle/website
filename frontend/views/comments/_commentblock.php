@@ -1,16 +1,19 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\Spaceless;
 
 use common\components\helpers\ElementsHelper;
+use common\components\helpers\html\AttachmentsHelper;
 
 /**
  * Single comment view
  * renders as partial from public function actionShow @CommentsController
  */
- echo Html::beginTag('div', ['id' => Yii::$app->controller->id.'_comments']),
-         Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--center comments_list comments_'.Yii::$app->controller->id]),
-             Html::beginTag('div', ['class' => 'o-grid__cell o-grid__cell--width-100 o-grid__cell--no-gutter comments_body']);
+Spaceless::begin();
+echo Html::beginTag('div', ['id' => Yii::$app->controller->id.'_comments']),
+        Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--center comments_list comments_'.Yii::$app->controller->id]),
+            Html::beginTag('div', ['class' => 'o-grid__cell o-grid__cell--width-100 o-grid__cell--no-gutter comments_body']);
 
 if (!empty($modelComments)) {
     $data = Yii::$app->request->get();
@@ -54,6 +57,12 @@ if (!empty($modelComments)) {
                         <?=$comment['commentText']; ?>
                     </div>
 
+                    <?php
+                    # Attachment zone for already published comment
+                    if ($comment['attachments']) {
+                        echo AttachmentsHelper::attachmentsArea($comment['type'], $comment['id']);
+                    } ?>
+
                     <div class="o-grid__cell o-grid__cell--width-100 u-letter-box--medium comment__actions">
                         <a href="javascript:void(0);"
                                class="i-repost i-icon"
@@ -78,3 +87,4 @@ if (!empty($modelComments)) {
 echo Html::endTag('div'),
           Html::endTag('div'),
        Html::endTag('div');
+Spaceless::end();

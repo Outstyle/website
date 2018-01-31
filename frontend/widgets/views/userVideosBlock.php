@@ -17,18 +17,20 @@ use common\components\helpers\ElementsHelper;
 
 /* @see @frontend/widgets/UserVideosBlock for vars */
 /* @var $videos */
+/* @var $options */
 
-echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium u-window-box--shadowed']);
-
-  # Widget settings button
-  echo ElementsHelper::widgetButton();
+echo Html::beginTag('div', ['class' => $options['class']]);
 
   # Widget title
-  echo Html::tag('h4', Yii::t('app', 'Videos'));
+  if (isset($options['title'])) {
+      echo Html::tag($options['titleTag'], $options['title']);
+  }
 
-
-  foreach ($videos as $video) {
+  foreach ($videos as $key => $video) {
       echo Html::tag('div',
+
+        # Widget settings button
+        ElementsHelper::widgetButton($options['widgetButton']['action'], $options['widgetButton']['position'], $options['widgetButton']['size']).
 
         # Video image
         ElementsHelper::videoLink($video['hash'], Html::img($video['video_img'], ['class' => 'o-image u-full-width user__videothumbnail'])).
@@ -50,7 +52,9 @@ echo Html::beginTag('div', ['class' => 'user__videos u-window-box--medium u-wind
         ),
 
         [
-          'class' => 'u-letter-box--medium user__video',
+          'class' => trim($options['cell_class'].' user__video'),
+          'data-lc-key' => $options['attachment']['elem_type'], /* Data for working with localstorage attachment */
+          'data-lc-elem' => ($options['attachment']['elem_type']) ? $key : false /* Data for working with localstorage attachment */
         ]
       );
   }

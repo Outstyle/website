@@ -30,6 +30,7 @@ class SocialAsset extends AssetBundle
         'css/outstyle/social.header.css',
         'css/outstyle/social.sidebar.css',
         'css/outstyle/social.user.css',
+        'css/outstyle/social.user.attachments.css',
         'css/outstyle/social.video.css',
         'css/outstyle/social.friends.css',
         'css/outstyle/social.comments.css',
@@ -53,12 +54,14 @@ class SocialAsset extends AssetBundle
         'js/outstyle.social.sidebar.js',
         'js/outstyle.user.video.js',
         'js/outstyle.user.friends.js',
-        'js/outstyle.modal.js',
-        'js/outstyle.notifications.js',
-        'js/outstyle.comments.js',
+        'js/outstyle.user.attachments.js',
         'js/outstyle.userboard.js',
         'js/outstyle.userboard.posts.js',
-        'js/outstyle.googletags.js',
+        'js/outstyle.modal.js',
+        'js/outstyle.comments.js',
+
+        'js/outstyle.notifications.js',
+        #'js/outstyle.googletags.js',
 
     ];
     public $depends = [

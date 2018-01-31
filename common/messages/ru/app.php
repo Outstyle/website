@@ -88,6 +88,7 @@ return [
     'School type' => 'Тип школы',
     'School main image' => 'Главное фото школы',
     'School name' => 'Название школы',
+    'Select attachment' => 'Выберите вложение',
     'Selected address' => 'Выбранный адрес',
     'Send' => 'Отправить',
     'Send a password' => 'Выслать пароль',

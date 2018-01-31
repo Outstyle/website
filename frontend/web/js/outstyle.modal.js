@@ -51,7 +51,7 @@ function modalInit() {
 
   if(window.location.hash) {
       var hash = window.location.hash;
-      if (hash != '#uservideo') {
+      if (hash != '#uservideo' && hash != '#userattachments') {
           jQuery(hash).trigger('openModal');
       }
   }

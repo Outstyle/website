@@ -30,7 +30,7 @@ class VideoServices extends Video
       ],
       4 => [
         'name' => 'rutube',
-        'link_template' => 'https://rutube.ru/{video_id}'
+        'link_template' => 'https://rutube.ru/play/embed/{video_id}'
       ],
     ];
 
@@ -57,7 +57,7 @@ class VideoServices extends Video
     public static function generateServiceLink($video_id = 0, $service_id = '')
     {
         # Converting service ID int to service name, as we will be working with service names
-        if (is_int($service_id)) {
+        if (is_numeric($service_id)) {
             $service_id = self::getVideoServiceNameByServiceId($service_id);
         }
 

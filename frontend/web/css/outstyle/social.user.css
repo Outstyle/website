@@ -43,7 +43,7 @@
 .user__videos {
   position: relative;
 }
-.user__video {
+.user__videos .user__video {
   margin-bottom: 0px;
   padding-bottom: 0px;
 }

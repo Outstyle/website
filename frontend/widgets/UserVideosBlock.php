@@ -22,11 +22,17 @@ use app\models\VideoServices;
 class UserVideosBlock extends Widget
 {
 
-  /**
-   * User videos array
-   * @var array
-   */
+    /**
+     * User videos array
+     * @var array
+     */
     public $videos = [];
+
+    /**
+     * Widget options
+     * @var array
+     */
+    public $options = [];
 
     /**
      * @inheritdoc
@@ -42,9 +48,49 @@ class UserVideosBlock extends Widget
             foreach ($this->videos as $k => $video) {
                 $videos[$k] = $video;
                 $videos[$k]['hash'] = CryptoHelper::hash($video['id']);
-                $videos[$k]['service_id'] = VideoServices::getVideoServiceNameByServiceId($videos[$k]['service_id']);
+                $videos[$k]['service_id'] = VideoServices::getVideoServiceNameByServiceId($video['service_id']);
+                $videos[$k]['service_link'] = VideoServices::generateServiceLink($video['video_id'], $video['service_id']);
             }
             $this->videos = $videos;
+        }
+
+        # Working with default options
+        if (!isset($this->options['titleTag'])) {
+            $this->options['titleTag'] = 'h4';
+        }
+
+        if (!isset($this->options['class'])) {
+            $this->options['class'] = Yii::$app->controller->id.'__videos';
+        }
+
+        if (!isset($this->options['cell_class'])) {
+            $this->options['cell_class'] = '';
+        }
+
+        if (!isset($this->options['view'])) {
+            $this->options['view'] = 'userVideosBlock';
+        }
+
+        # Widget button settings
+        if (!isset($this->options['widgetButton']['action'])) {
+            $this->options['widgetButton']['action'] = 'edit';
+        }
+
+        if (!isset($this->options['widgetButton']['position'])) {
+            $this->options['widgetButton']['position'] = 'topright';
+        }
+
+        if (!isset($this->options['widgetButton']['size'])) {
+            $this->options['widgetButton']['size'] = 'lg';
+        }
+
+        # Attachments
+        if (!isset($this->options['attachment']['elem_type'])) {
+            $this->options['attachment']['elem_type'] = '1337';
+        }
+
+        if (!isset($this->options['attachment']['elem_type_parent'])) {
+            $this->options['attachment']['elem_type_parent'] = 'undefined';
         }
     }
 
@@ -59,8 +105,9 @@ class UserVideosBlock extends Widget
             return;
         }
 
-        return $this->render('userVideosBlock', [
+        return $this->render($this->options['view'], [
           'videos' => $this->videos,
+          'options' => $this->options,
         ]);
     }
 }

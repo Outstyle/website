@@ -10,6 +10,7 @@ use yii\helpers\Html;
 
 use app\models\UserAvatar;
 use common\components\helpers\ElementsHelper;
+use common\components\helpers\html\AttachmentsHelper;
 
 /* @var $modelElemId */
 
@@ -50,9 +51,12 @@ if (!Yii::$app->user->isGuest) {
               ]
             ),
             [
-              'class' => 'o-field o-field--icon-right'
+              'class' => 'o-field'
             ]
-          ),
+          ).
+
+          # COMMENTS ATTACHMENTS AREA
+          AttachmentsHelper::attachmentsArea(Yii::$app->controller->id),
 
           [
             'class' => 'o-grid__cell o-grid__cell--width-80 o-grid__cell--no-gutter comments_add__body'
@@ -74,9 +78,9 @@ if (!Yii::$app->user->isGuest) {
 
         # COMMENTS ATTACHMENT BUTTONS
         Html::tag('div',
-          ElementsHelper::attachmentAddButton().
-          ElementsHelper::attachmentAddButton(1),
-          ['class' => 'o-grid__cell o-grid__cell--width-50']
+          AttachmentsHelper::attachmentShowModalButton('photo', 'comments', Yii::$app->controller->id, 'camera').
+          AttachmentsHelper::attachmentShowModalButton('video', 'comments', Yii::$app->controller->id, 'youtube-play'),
+          ['class' => 'o-grid__cell o-grid__cell--width-50 comments_add__attachments']
         ).
 
         # COMMENTS SEND BUTTON

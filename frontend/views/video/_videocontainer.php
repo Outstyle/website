@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use common\components\classes\Multiplayer;
+use app\models\VideoServices;
 
 /* $video   array   @views/video/_videosingle */
 
@@ -12,7 +13,10 @@ echo Html::tag('div',
 
   # Dynamic video container
   Html::tag('div',
-    $Multiplayer->html($video['service_link'], $options),
+    $Multiplayer->html(
+      VideoServices::generateServiceLink($video['video_id'], $video['service_id']),
+      $options
+    ),
     [
       'class' => 'video__multicontainer'
     ]

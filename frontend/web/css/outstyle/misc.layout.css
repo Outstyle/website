@@ -241,7 +241,7 @@ ul {
 /* --- Widgetbutton --- */
 .i-widgetbutton {
   opacity:0.3;
-  padding:15px;
+  padding:0.8em;
   display: none;
 }
 .i-widgetbutton:hover,

@@ -9,17 +9,24 @@ use yii\helpers\Url;
 /**
  * Provides all the needed HTML tag elements for better work with Outstyle layout
  * Using blazecss classes: http://blazecss.com/.
+ *
+ * TODO: Split into pieces, like with attachment helper (this one has too much methods already)
  */
 class ElementsHelper extends Html
 {
     const DEFAULT_AJAX_ID = 'ajax';
     const DEFAULT_TARGET_ID = 'content';
-    const VIDEO_TARGET_ID = 'uservideo .modal__iframe';
     const DEFAULT_ID_PREFIX = 'outstyle_';
-
     const DEFAULT_AJAX_LOADER = '#outstyle_loader';
 
+    /*
+     * !!! DO NOT CHANGE THE ORDER OF ELEMENTS! ONLY ADD NEW ONES BELOW!
+     * This list is needed for comparing allowed elements, that are about to be written to DB
+     * Since DB stores numeric values and not the element names, this list highly relies on array keys
+     * Use 'getElementIdByControllerId' method to get it's numeric value for DB storing
+     */
     public static $allowedElements = [
+      'NONE',
       'news',
       'article',
       'school',
@@ -32,17 +39,31 @@ class ElementsHelper extends Html
 
     /**
      * Transforms controller ID (string) into its numeric value (int)
+     * Since keys are counting from 0, we will add 1, so the 'news' could be first
      * @param  string $controllerId     (see self::$allowedElements)
      * @return int
      */
-    public static function getElementIdByContollerId($controllerId = '')
+    public static function getElementIdByControllerId($controllerId = '')
     {
         # If element is not in our list
         if (!in_array($controllerId, self::$allowedElements)) {
             return;
         }
 
-        return array_keys(self::$allowedElements, $controllerId)[0];
+        return (array_keys(self::$allowedElements, $controllerId)[0]);
+    }
+
+    /**
+     * Generates CSRF toekn for AJAX requests, where needed
+     * @return string
+     */
+    public static function getCSRFToken()
+    {
+        $csrf_token = Yii::$app->request->get('_csrf');
+        if (!$csrf_token) {
+            $csrf_token = Yii::$app->request->csrfToken;
+        }
+        return $csrf_token;
     }
 
     /**
@@ -147,58 +168,11 @@ class ElementsHelper extends Html
           'title' => Yii::t('app', 'Send'),
           'ic-indicator' => self::DEFAULT_AJAX_LOADER,
           'ic-include' => '{"elem_type":"'.$elem_type.'","elem_id":'.(int) $elem_id.'}',
-          'ic-trigger-delay' => '200ms',
           'ic-target' => '#'.$elem_type.'_comments .comments_body',
           'ic-get-from' => Url::toRoute(['comments/add']),
           'ic-append-from' => Url::toRoute(['comments/add']),
           'ic-push-url' => 'false',
           'ic-select-from-response' => '#new_comment'
-        ]);
-    }
-
-    /**
-     * Generates an active button element to send API requests for showing attahment modal
-     * @param  integer $attachment_type
-     * @param  integer $attachment_id
-     * @param  integer $elem_type
-     * @param  integer $elem_id
-     * @return HTML <a> tag
-     */
-    public static function attachmentAddButton($attachment_type = 0, $attachment_id = 0, $elem_type = 0, $elem_id = 0)
-    {
-        $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-addattachment u-pull-left"));
-
-        /*
-         * Setting icon for link
-         * ZMDI icons: http://zavoloklom.github.io/material-design-iconic-font/icons.html#comment.
-         */
-        switch ($attachment_type) {
-          case 0:
-            $icon = 'camera';
-            break;
-
-          case 1:
-            $icon = 'youtube-play';
-            break;
-
-          default:
-            $icon = 'more';
-        }
-
-        return
-        Html::button(
-          Html::tag('i', '', [
-            'class' => "u-pillar-box--xsmall zmdi zmdi-{$icon} zmdi-hc-2x",
-          ]),
-        [
-          'class' => $class,
-          'title' => Yii::t('app', 'Add attachment {type}', ['type' => $attachment_type]),
-          'ic-action' => 'addAttachment',
-          'ic-get-from' => Url::toRoute('/video'),
-          'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
-          'ic-target' => '#'.self::VIDEO_TARGET_ID,
-          'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-          'ic-push-url' => 'false',
         ]);
     }
 
@@ -218,7 +192,7 @@ class ElementsHelper extends Html
             'ic-action' => 'userShowVideoModal',
             'ic-get-from' => Url::toRoute('/video-'.$video_hash),
             'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
-            'ic-target' => '#'.self::VIDEO_TARGET_ID,
+            'ic-target' => '#uservideo .modal__iframe',
             'ic-indicator' => self::DEFAULT_AJAX_LOADER,
             'ic-push-url' => 'true',
           ]
@@ -488,28 +462,47 @@ class ElementsHelper extends Html
 
     /**
      * Widget button
-     * @param   string $style Icon name
+     * @param   string $action    Widget button action
+     * @param   string $position  Widget button position
+     * @param   string $size      Widget button size
      * @see:    http://zavoloklom.github.io/material-design-iconic-font/icons.html for icon name
      * @return  html
      */
-    public static function widgetButton($style = 'edit')
+    public static function widgetButton($action = 'edit', $position = 'topleft', $size = 'lg')
     {
-        $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-widgetbutton i-widgetbutton--topleft i-{$style}"));
+        /*
+         * Setting params for button, based on action
+         * For more names, please add manually here
+         */
+        switch ($action) {
+          case 'edit':
+            $title = Yii::t('app', 'Edit');
+            $icon = 'edit';
+            break;
+
+          case 'delete':
+            $title = Yii::t('app', 'Delete');
+            $icon = 'close-circle';
+            break;
+
+          default:
+            $title = 'UNTITLED';
+            $icon = 'http';
+        }
+
+        $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-widgetbutton i-widgetbutton--{$position} i-{$icon}"));
 
         return
         Html::button(
           Html::tag('i', '', [
-            'class' => "zmdi zmdi-{$style} zmdi-hc-lg",
+            'class' => "zmdi zmdi-{$icon} zmdi-hc-{$size}",
           ]),
         [
           'class' => $class,
-          'title' => Yii::t('app', ucfirst($style)),
+          'title' => $title,
           'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-          'ic-target' => '#outstyle_comments .comments_body',
-          'ic-get-from' => Url::toRoute(['comments/add']),
-          'ic-prepend-from' => Url::toRoute(['comments/add']),
-          'ic-push-url' => 'false',
-          'ic-select-from-response' => '#new_comment'
+          'ic-get-from' => Url::toRoute([Yii::$app->controller->id.'/'.$action]),
+          'ic-push-url' => 'false'
         ]);
     }
 

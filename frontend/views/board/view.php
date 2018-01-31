@@ -11,26 +11,31 @@ use frontend\widgets\UserVideosBlock;
 use frontend\widgets\UserBoardPost;
 
 /* @var $this yii\web\View */
-/* @var $user @frontend/user/UsersController */
+/* @var $user @frontend/controllers/BoardController */
 
 SEOHelper::setMetaInfo($this);
 
 /* --- LEFT BLOCK SECTION --- */
 echo Html::beginTag('section', ['id' => 'leftBlock']);
 
-    # PROFILE
+    # PROFILE widget | @frontend/widgets/UserProfileBlock.php
     echo UserProfileBlock::widget([
       'user' => $user
     ]);
 
-    # FRIENDS
+    # FRIENDS widget | @frontend/widgets/UserFriendsBlock.php
     echo UserFriendsBlock::widget([
       'friends' => $user->friend
     ]);
 
-    # VIDEOS
+    # VIDEOS widget | @frontend/widgets/UserVideosBlock.php
     echo UserVideosBlock::widget([
-      'videos' => $user->video
+      'videos' => $user->video,
+      'options' => [
+          'title' => Yii::t('app', 'Videos'),
+          'class' => 'user__videos u-window-box--medium u-window-box--shadowed',
+          'cell_class' => 'u-letter-box--medium',
+      ]
     ]);
 
 echo Html::endTag('section');
@@ -39,7 +44,7 @@ echo Html::endTag('section');
 /* --- RIGHT BLOCK SECTION --- */
 echo Html::beginTag('section', ['id' => 'rightBlock']);
 
-    # USER BOARD: posts
+    # USER BOARD widget | @frontend/widgets/UserBoardPost.php
     echo UserBoardPost::widget([
       'posts' => $user->board
     ]);

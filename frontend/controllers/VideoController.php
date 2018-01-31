@@ -26,7 +26,7 @@ use common\components\helpers\CryptoHelper;
 
 class VideoController extends ParentController
 {
-    public $layout='social';
+    public $layout = 'social';
 
     public function behaviors()
     {
@@ -47,33 +47,22 @@ class VideoController extends ParentController
         ];
     }
 
+    /**
+     * All user videos page
+     * @return array
+     */
     public function actionIndex()
     {
-        $model = Video::find()->where("user = :user", [':user' => Yii::$app->user->id])->orderBy("id desc")->all();
-        $countVideo = Video::find()->where("user = :user", [':user' => Yii::$app->user->id])->count();
-        $modelVideo = array();
-
-        for ($i=0; $i<$countVideo; $i++) {
-            $modelVideo[$i]['id'] = $model[$i]->id;
-            $modelVideo[$i]['user'] = $model[$i]->user;
-            $modelVideo[$i]['title'] = $model[$i]->title;
-            $modelVideo[$i]['description'] = $model[$i]->description;
-            $modelVideo[$i]['urlImg'] = $model[$i]->url_img;
-            $modelVideo[$i]['urlIframe'] = $model[$i]->url_iframe;
-            $modelVideo[$i]['created'] = $model[$i]->created;
-        }
+        $videos = Video::getByUserId();
 
         return $this->render('index', [
-            'modelVideo' => $modelVideo,
-            'countVideo' => $countVideo,
-            'model' => $model,
-
+            'videos' => $videos
         ]);
     }
 
     /**
      * Single video view
-     * Checks videohash, descrypts it, and if it has valid data - renders the view
+     * Checks videohash, decrypts it, and if it has valid data - renders the view
      *
      * @param  string $videoHash Hashed video ID
      * @return array
@@ -278,136 +267,6 @@ class VideoController extends ParentController
             ];
     }
 
-///получить c сервиса все данные о ссылке
-    public static function getVideoInfo($url)
-    {
-        $videoInfo = array();
-
-        if (stripos($url, 'youtube.com') !== false) {
-            preg_match('#v=([^\&]+)#is', $url, $videoId);
-            if (count($videoId) > 0) {
-                $videoInfo['idVideo'] = $videoId[1];
-                $videoInfo['service'] = 'youtube.com';
-            }
-        }
-        if (stripos($url, 'rutube.ru') !== false) {
-            preg_match('#video/([^\&]+)#is', $url, $videoId);
-            if (count($videoId) > 0) {
-                $videoInfo['idVideo'] = $videoId[1];
-                $videoInfo['service'] = 'rutube.ru';
-            }
-        }
-        if (stripos($url, 'vimeo.com') !== false) {
-            preg_match('#staffpicks/([^\&]+)#is', $url, $videoId);
-            if (count($videoId) > 0) {
-                $videoInfo['idVideo'] = $videoId[1];
-                $videoInfo['service'] = 'vimeo.com';
-            }
-        }
-
-        switch ($videoInfo['service']) {
-            case 'rutube.ru':
-                $page = file_get_contents('http://rutube.ru/api/oembed/?url=http://rutube.ru/video/'.$videoInfo['idVideo'].'&format=json');
-                $arrPage = json_decode($page);
-                $videoInfo['title'] = $arrPage->title;
-                $videoInfo['urlImg'] = $arrPage->thumbnail_url;
-                $videoInfo['iframeUrl'] = '//rutube.ru/play/embed/'.$videoInfo['idVideo'];
-                break;
-            case 'vimeo.com':
-                $page = file_get_contents('http://vimeo.com/api/v2/video/'.$videoInfo['idVideo'].'.json');
-                $arrPage = json_decode($page);
-                $videoInfo['title'] = $arrPage[0]->title;
-                $videoInfo['urlImg'] = $arrPage[0]->thumbnail_large;
-                $videoInfo['iframeUrl'] = 'https://player.vimeo.com/video/'.$videoInfo['idVideo'];
-                break;
-            case 'youtube.com':
-                $page = file_get_contents('https://www.googleapis.com/youtube/v3/videos?key=AIzaSyC0v-FlUSwTvDr8TSKMoIDu5gfl3DVGpXQ&part=snippet&id='.$videoInfo['idVideo']);
-                $arrPage = json_decode($page);
-                $videoInfo['title'] = $arrPage->items[0]->snippet->title;
-                $videoInfo['urlImg'] = $arrPage->items[0]->snippet->thumbnails->medium->url;
-                $videoInfo['iframeUrl'] = 'https://www.youtube.com/embed/'.$videoInfo['idVideo'].'?rel=0';
-                break;
-        }
-        return $videoInfo;
-    }
-
-    public function actionLike()
-    {
-        $data = Yii::$app->request->get();
-
-        $response = Likes::addLike($data['elem_type'], $data['id']);
-        $response['likeCount'] = Likes::countLikes($data['elem_type'], $data['id']);
-        $response['myLike'] = Likes::myLike($data['elem_type'], $data['id']);
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return $response;
-    }
-
-    public function actionCountlikes()
-    {
-        $data = Yii::$app->request->get();
-
-        if (Video::find()->where(['id' => $data['id']])->count() > 0) {
-            $response = Likes::countLikes('video', $data['id']);
-            $response = Likes::myLike('video', $data['id']);
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return $response;
-    }
-
-
-
-    public function actionComment()
-    {
-        $data = Yii::$app->request->post();
-
-        $atype = (!empty($data['atype'])) ? $data['atype'] : null;
-        $aid = (!empty($data['aid'])) ? $data['aid'] : null;
-
-        if (Video::find()->where(array('id' => $data['id']))->count() > 0) {
-            $response = Comments::addComment('video', $data['id'], $data['text'], $atype, $aid);
-        }
-
-        if ($response['ok']) {
-            $model = Comments::find()->where(array('elem_type' => 'video', 'elem_id' => $data['id']))->orderBy('id desc')->limit(1)->one();
-            $response['comment'] = $model->comment;
-            $response['created'] = self::getTimeRecord(strtotime($model->created));
-            $response['elem_id'] = $model->elem_id;
-            $response['idComment'] = $model->id;
-            $response['user_id'] = $model->user_id;
-            $response['user_name'] = UserDescription::getNickname($model->user_id);
-            $response['likeCount'] = Likes::countLikes("comments", $model->id);
-            $response['myLike'] = Likes::myLike("comments", $model->id);
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return $response;
-    }
-
-    public function actionCountcomments()
-    {
-        $data = Yii::$app->request->get();
-        if (Video::find()->where(array('id' => $data['id']))->count() > 0) {
-            $response = Comments::countComments('video', $data['id']);
-            $response = Likes::myLike('video', $data['id']);
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return $response;
-    }
-
-    public function actionDelcomment()
-    {
-        $data = Yii::$app->request->get();
-        if (Comments::find()->where(array('id' => $data['id']))->count() > 0) {
-            $response = Comments::delComment($data['id']);
-        }
-
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return $response;
-    }
-
     public function actionRepost()
     {
         $data = Yii::$app->request->get();
@@ -443,37 +302,5 @@ class VideoController extends ParentController
         return [
             'ok' => $ok,
             ];
-    }
-
-    public static function getTimeRecord($time)
-    {
-        if (date('d m Y', time()) === date('d m Y', $time)) {
-            return "Сегодня в ".date('H:i', $time);
-        } elseif ((date('d', time())-date('d', $time)) == 1 && date('m Y', time()) == date('m Y', $time)) {
-            return "Вчера в ".date('H:i', $time);
-        } else {
-            $monthes = array(
-            1 => 'января', 2 => 'февраля', 3 => 'марта', 4 => 'апреля',
-            5 => 'мая', 6 => 'июня', 7 => 'июля', 8 => 'августа',
-            9 => 'сентября', 10 => 'октября', 11 => 'ноября', 12 => 'декабря');
-
-            return date('j', $time).' '. $monthes[(int)date('m', $time)].' в '.date('H:i', $time);
-        }
-    }
-
-    public static function getAddTimeVideo($time)
-    {
-        if (date('d m Y', time()) === date('d m Y', $time)) {
-            return "Сегодня в ".date('H:i', $time);
-        } elseif ((date('d', time())-date('d', $time)) == 1 && date('m Y', time()) == date('m Y', $time)) {
-            return "Вчера в ".date('H:i', $time);
-        } else {
-            $monthes = array(
-            1 => 'января', 2 => 'февраля', 3 => 'марта', 4 => 'апреля',
-            5 => 'мая', 6 => 'июня', 7 => 'июля', 8 => 'августа',
-            9 => 'сентября', 10 => 'октября', 11 => 'ноября', 12 => 'декабря');
-
-            return date('j', $time).' '. $monthes[(int)date('m', $time)].' '.date('Y', $time);
-        }
     }
 }

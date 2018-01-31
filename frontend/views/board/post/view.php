@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
+use common\components\helpers\html\AttachmentsHelper;
 
 /**
 * Single board post
@@ -82,12 +83,12 @@ foreach ($posts as $id => $post) {
         Html::tag('div',
           ElementsHelper::likeButton(Yii::$app->controller->id, $id, $post['likesCount'], $post['myLike']).
 
-          # COMMENT FORM SHOW LINK
+          # COMMENT FORM SHOW LINK TODO: Move to elementsHelper -> commentsHelper
           Html::a('<i class="zmdi zmdi-comment-text-alt"></i><span>'.Yii::t('app', 'Post comment').'</span></a>',
             'javascript:void(0)',
             [
               'class' => 'i-icon show-comment-form-link',
-              'ic-include' => '{"elem_type":"'.Yii::$app->controller->id.'","elem_id":'.(int)$id.'}',
+              'ic-include' => '{"elem_type":"'.Yii::$app->controller->id.'","elem_id":'.(int)$id.',"'.Yii::$app->request->csrfParam.'":"'.AttachmentsHelper::getCSRFToken().'"}',
               'ic-target' => '#comments-'.$id,
               'ic-indicator' => "#outstyle_loader",
               'ic-get-from' => Url::toRoute(['comments/show']),

@@ -1,0 +1,59 @@
+/* --- SOCIAL USER ATTACHMENTS --- */
+.user__addattachment {
+  display: block;
+  position: relative;
+  margin-bottom: 0.5em;
+  background: #000;
+}
+.attachments_video .user__video i {
+  display: block;
+  color: #FFF;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top:20%;
+  opacity:0;
+}
+.attachments_video .user__video:hover i {
+  opacity: 1;
+  -webkit-transition: all .9s ease-in-out;
+	transition: all .9s ease-in-out;
+}
+.attachments_video .user__video:hover {
+  -webkit-transition: all .5s ease-in-out;
+	transition: all .5s ease-in-out;
+  background: #fff;
+  color: #000;
+}
+.attachments_video .user__video:hover img {
+  opacity: 0.4;
+}
+.attachments_area {
+  padding-top:1em;
+  position: relative;
+  width: 100%;
+}
+.attachments_area .user__attachment {
+  padding: 0;
+  margin-right: 0.5em;
+  position: relative;
+}
+.user__attachment:last-child {
+  margin-right: 0;
+}
+.user__attachment.o-grid__cell--no-wrap {
+  width: 100%;
+}
+
+#board_attachments .user__attachment:hover .i-widgetbutton {
+  display:block;
+  color:#fff;
+}
+#board_attachments .user__attachment .zmdi-icon--hoverable {
+  color: #fff;
+  opacity: 1;
+}
+#board_attachments .user__attachment .zmdi-icon--hoverable.i-close-circle:hover {
+  color: #fff;
+  opacity: 0.8;
+}

@@ -46,6 +46,7 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
           'class' => 'logo',
           'ic-get-from' => Url::to(['/id'.Yii::$app->user->id]),
           'ic-trigger-delay' => "200ms",
+          'ic-include' => '{"'.Yii::$app->request->csrfParam.'":"'.Yii::$app->request->csrfToken.'"}',
           'ic-select-from-response' => '#content',
           'ic-indicator' => '#outstyle_loader',
           'ic-target' => '#content'
@@ -109,6 +110,7 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
       [
           'class' => 'c-nav',
           'ic-target' => '#content',
+          'ic-include' => '{"'.Yii::$app->request->csrfParam.'":"'.Yii::$app->request->csrfToken.'"}',
           'ic-select-from-response' => '#ajax',
           'ic-push-url' => 'true',
       ]
@@ -116,7 +118,7 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
     ['class' => 'social__sidebar']
   );
 
-  # Main content
+  # Main content (ajaxed version copy -> ajax/social.php)
   echo Html::tag('main',
     $content,
     [
@@ -127,11 +129,12 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
   );
 
   /*
-      ==================================
-      Actions & stuff for all users
-      ==================================
+      ========================================
+      Actions & stuff for all registered users
+      ========================================
   */
   echo $this->render('@modals/userVideo');
+  echo $this->render('@modals/userAttachments');
 
 echo Html::endTag('div');
 echo Html::endTag('div');
