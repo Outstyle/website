@@ -31,6 +31,8 @@ class PortalAsset extends AssetBundle
         'css/outstyle/portal.news.css',
 
         'css/outstyle/social.comments.css',
+
+        'css/outstyle/portal.media.css',
     ];
     public $js = [
         'js/jquery.easyModal.js',

@@ -9,7 +9,6 @@
 /backend/web/assets
 /backend/web/index.php
 /console
-/tests
 /frontend/config
 /backend/config
 /common/config
@@ -47,3 +46,12 @@ phpunit.phar
 # robots, sitemap...
 /robots.txt
 /sitemap.xml
+
+#tests
+/tests
+/codeception.yml
+
+#other
+/banner.php
+/installer
+/readme.txt

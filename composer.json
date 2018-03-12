@@ -32,12 +32,20 @@
         "dragonjet/yii2-opengraph": "dev-master",
         "fg/multiplayer": "dev-master",
         "mihaildev/yii2-elfinder": "*",
-        "sadovojav/yii2-ckeditor": "dev-master"
+        "sadovojav/yii2-ckeditor": "dev-master",
+        "se/selenium-server-standalone": "dev-master",
+        "fzaninotto/faker": "1.4.0",
+        "aalaap/faker-youtube": "dev-master"
+
+
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
+        "yiisoft/yii2-faker": "*",
+        "codeception/codeception": "dev-master"
+
+
     },
     "config": {
         "process-timeout": 1800

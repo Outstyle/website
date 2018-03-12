@@ -84,7 +84,7 @@ Html::tag('div',
     ['class' => 'block__item--500x500 block__item--abs']
   ),
 
-  ['class' => "o-grid__cell o-grid__cell--width-50 {$controllerId}__item {$controllerId}__item--{$school[0]['categoryUrl']} block__item"]
+  ['class' => "o-grid__cell o-grid__cell--width-50 {$controllerId}__item {$controllerId}__item--{$school[0]['categoryUrl']} block__item image"]
 );
 
 /*
@@ -96,7 +96,7 @@ Html::tag('div',
   '',
   [
     'id' => 'map__canvas--single',
-    'class' => "o-grid__cell o-grid__cell--500x500 o-grid__cell--width-50 {$controllerId}__item {$controllerId}__item--{$school[0]['categoryUrl']} block__item",
+    'class' => "o-grid__cell o-grid__cell--500x500 o-grid__cell--width-50 {$controllerId}__item {$controllerId}__item--{$school[0]['categoryUrl']} block__item map",
     'data-country' => $school[0]['geolocation']['country'],
     'data-city' => $school[0]['geolocation']['city'],
     'data-address' => $school[0]['geolocation']['address'],
@@ -104,7 +104,15 @@ Html::tag('div',
     'data-lng' => $school[0]['geolocation']['lng'],
   ]
 );
-
+/*
+ * Mobile map block
+ * Button visible map
+ */
+echo
+Html::tag('div','Показать карту',[
+    'class'=>'mobile map__canvas__visible',
+    'data-toggle-text' => 'Скрыть карту'
+]);
 /*
  * MAIN SCHOOL TEXT
  */
@@ -234,4 +242,19 @@ Html::tag('div',
 
 /* JS: @see js/outstyle.portal.school.js */
 ?>
-<script>jQuery(document).ready(function(){schoolInit();});</script>
+<script>
+    jQuery(document).ready(function(){
+        schoolInit();
+        jQuery(function(){
+
+            jQuery('.map__canvas__visible').on('click', function(){
+                var toggleText = jQuery(this).data('toggle-text');
+                jQuery(this).data('toggle-text', jQuery(this).text())
+                    .text(toggleText);
+
+                jQuery('#map__canvas--single').toggleClass('visible');
+            });
+        });
+    });
+
+</script>

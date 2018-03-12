@@ -107,7 +107,7 @@ if (isset($modelNews)) {
         $outstyle_news_height = $outstyle_news_height-500;
       }
       if ($page == 1) {
-        $outstyle_news_height = 250;
+        $outstyle_news_height=50;
       }
         echo
         Html::tag('div',

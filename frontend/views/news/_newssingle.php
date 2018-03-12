@@ -113,7 +113,7 @@ Html::tag('div',
           ['class' => 'authorbox__date']
         ),
 
-        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--bottom o-grid__cell--width-25 color-default u-l']
+        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--bottom o-grid__cell--width-25 color-default u-l authorbox__date__wrap']
       ).
 
       //cell 2
@@ -144,7 +144,7 @@ Html::tag('div',
           ]
         ),
 
-        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-50 u-c']
+        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-50 u-c authorbox__author__wrap']
       ).
 
       //cell 3

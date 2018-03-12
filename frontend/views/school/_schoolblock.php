@@ -33,7 +33,7 @@ if (isset($model)) {
         $page_height = $page_height-500;
       }
       if ($page == 1) {
-        $page_height = 500;
+        $page_height = 10;
       }
         echo
         Html::tag('div',

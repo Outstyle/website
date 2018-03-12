@@ -63,8 +63,9 @@ jQuery(document).ready(function () {
     /* --- We need to initialize Packery at start --- */
     jQuery('#outstyle_news .news')
     .packery({
-      itemSelector: '.news__item',
-      gutter: 0
+        itemSelector: '.news__item',
+        gutter: 0,
+        percentPosition: true
     })
     .packery('layout');
 
