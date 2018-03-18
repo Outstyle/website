@@ -13,7 +13,11 @@ use common\components\helpers\SEOHelper;
  * @var $outstyle_news_height   common/models/News  needed for Packery layout
  */
 
+
+
 SEOHelper::setMetaInfo($this);
+SEOHelper::setCanonicalForPage($this);
+
 
 echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter',
     $this->render('_newsgrid',
