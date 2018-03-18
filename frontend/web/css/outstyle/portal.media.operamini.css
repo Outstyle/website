@@ -41,7 +41,11 @@
         padding-top: .1em;
         padding-bottom: .1em;
     }
-    /*article*/
+    #outstyle_news .news__filter-button, .block__filter-button{
+        border-radius: 50%;
+        -o-border-radius:50%;
+    }
+        /*article*/
     /*h1*/
     #outstyle_articles .c-diamond .c-diamond--small{
         left:20%;
