@@ -23,7 +23,7 @@ use app\models\UserDescription;
 
 use frontend\components\ParentController;
 
-class VideoController extends ParentController
+class VideoController extends \frontend\components\CsrfController
 {
     public $layout = 'social';
 

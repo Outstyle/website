@@ -63,3 +63,7 @@
 .user__videothumbnail {
   background: #eee;
 }
+.user__photo.o-grid__cell--width-100 {
+  border-top:1px solid #c7c7c7;
+  background: #f9f9f9;
+}

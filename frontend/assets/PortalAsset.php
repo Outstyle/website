@@ -23,7 +23,7 @@ class PortalAsset extends AssetBundle
         'css/fancybox/jquery.fancybox.min.css',
         'css/fancybox/jquery.fancybox.min.css',
         'css/misc/OverlayScrollbars.min.css',
-        
+
         'css/portal.css',
         'css/outstyle/base.layout.css',
         'css/outstyle/base.boxes.css',
@@ -48,14 +48,13 @@ class PortalAsset extends AssetBundle
         'js/misc/way.min.js',
 
         'js/outstyle.modal.js',
-        'js/outstyle.notifications.js',
         'js/outstyle.comments.js',
         'js/outstyle.portal.news.js',
         'js/outstyle.portal.articles.grid.js',
         'js/outstyle.portal.article.js',
         'js/outstyle.portal.event.js',
         'js/outstyle.portal.school.js',
-        'js/outstyle.googletags.js',
+        #'js/outstyle.googletags.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

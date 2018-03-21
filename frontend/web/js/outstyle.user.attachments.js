@@ -1,30 +1,28 @@
 var attachments = '';
 var attachments_container = '#userattachments';
 var attachments_main_loader = '#outstyle_loader';
-var attachments_allowed_elements = [5,6]; /* board, comments */
+var attachments_allowed_elements = [5, 6]; /* board, comments */
 
 /**
  * Fires on attachments choose modal window
  */
 function userShowAttachmentsModal() {
-    jQuery(attachments_container+' .modal__body').empty();
-    jQuery(attachments_container).trigger('openModal');
-    appendNotification(attachments_container); /* outstyle.notifications.js */
+  jQuery(attachments_container + ' .modal__body').empty();
+  jQuery(attachments_container).trigger('openModal');
 }
 
 /**
  * Fires on single attachment choose event
  */
 function userHideAttachmentsModal() {
-    jQuery(attachments_container).trigger('closeModal');
+  jQuery(attachments_container).trigger('closeModal');
 }
 
 /**
  * Fires on attachments modal close
  */
 jQuery(attachments_container).on('closeModal', function(e) {
-    jQuery(attachments_container+' .modal__body').empty();
-    removeNotification(attachments_container); /* outstyle.notifications.js */
+  jQuery(attachments_container + ' .modal__body').empty();
 });
 
 /**
@@ -32,10 +30,10 @@ jQuery(attachments_container).on('closeModal', function(e) {
  * @param  {int} key  Element type or element key in storage
  */
 function getAttachmentsLimit(key) {
-    if (key == 6) {
-      return 2; /* Attachments limit for comments */
-    }
-    return 0;
+  if (key == 6) {
+    return 2; /* Attachments limit for comments */
+  }
+  return 0;
 }
 
 /**
@@ -43,44 +41,44 @@ function getAttachmentsLimit(key) {
  * @param  {int} key  Element type or element key in storage
  */
 function checkAttachmentsLimit(key, count) {
-    /* Count limits and hide attachment buttons (visual stuff) */
-    if (count >= getAttachmentsLimit(key)) {
-        jQuery('.comments_add__attachments button').hide();
-    } else {
-        jQuery('.comments_add__attachments button').fadeIn(500);
-    }
+  /* Count limits and hide attachment buttons (visual stuff) */
+  if (count >= getAttachmentsLimit(key)) {
+    jQuery('.comments_add__attachments button').hide();
+  } else {
+    jQuery('.comments_add__attachments button').fadeIn(500);
+  }
 }
 
 /**
  * Deletes attachment from localstorage
  */
 function attachmentDelete(elt) {
-    var lc_key = jQuery(elt).parent().attr('data-lc-key');
-    var lc_elem = jQuery(elt).parent().attr('data-lc-elem');
+  var lc_key = jQuery(elt).parent().attr('data-lc-key');
+  var lc_elem = jQuery(elt).parent().attr('data-lc-elem');
 
-    if (typeof lc_key !== "undefined" && typeof lc_elem !== "undefined") {
-        var attachments = way.get('attachments.'+lc_key);
+  if (typeof lc_key !== "undefined" && typeof lc_elem !== "undefined") {
+    var attachments = way.get('attachments.' + lc_key);
 
-        if (attachments) {
-            var attachmentToRemove = attachments[lc_elem];
+    if (attachments) {
+      var attachmentToRemove = attachments[lc_elem];
 
-            /* Check if we still have something to remove from array */
-            if (attachmentToRemove) {
-                attachments.splice(jQuery.inArray(attachmentToRemove, attachments), 1);
-                checkAttachmentsLimit(lc_key, attachments.length);
-                if (attachments.length > 0) {
-                    way.set('attachments.'+lc_key, attachments);
-                } else {
-                    way.remove('attachments.'+lc_key);
-                }
-            } else {
-                way.remove('attachments.'+lc_key);
-            }
-
-            jQuery(elt).parent().slideUp(200);
-            way.backup();
+      /* Check if we still have something to remove from array */
+      if (attachmentToRemove) {
+        attachments.splice(jQuery.inArray(attachmentToRemove, attachments), 1);
+        checkAttachmentsLimit(lc_key, attachments.length);
+        if (attachments.length > 0) {
+          way.set('attachments.' + lc_key, attachments);
+        } else {
+          way.remove('attachments.' + lc_key);
         }
+      } else {
+        way.remove('attachments.' + lc_key);
+      }
+
+      jQuery(elt).parent().slideUp(200);
+      way.backup();
     }
+  }
 }
 
 /* ATTACHMENTS ADD: CHECK AND LIST
@@ -94,74 +92,74 @@ function attachmentDelete(elt) {
  */
 jQuery("body").on("attachmentPrepareAdd", function(event, data) {
 
-    var key = data.attachment.elem_type;
-    var limit = getAttachmentsLimit(key);
-    var newAttachment = [data.attachment.attachment_type+'_'+data.attachment.attachment_id];
-    var oldAttachments = way.get('attachments.'+key);
-    var count = jQuery(oldAttachments).length;
+  var key = data.attachment.elem_type;
+  var limit = getAttachmentsLimit(key);
+  var newAttachment = [data.attachment.attachment_type + '_' + data.attachment.attachment_id];
+  var oldAttachments = way.get('attachments.' + key);
+  var count = jQuery(oldAttachments).length;
 
-    if ((jQuery.inArray(key, attachments_allowed_elements) == -1)) {
-      return;
-    }
+  if ((jQuery.inArray(key, attachments_allowed_elements) == -1)) {
+    return;
+  }
 
-    if (oldAttachments) {
-        newAttachment = oldAttachments.concat(newAttachment);
-    }
+  if (oldAttachments) {
+    newAttachment = oldAttachments.concat(newAttachment);
+  }
 
-    way.set('attachments.'+key, newAttachment);
+  way.set('attachments.' + key, newAttachment);
+  way.backup();
+
+  if (count >= limit) {
+    var limitAttachments = way.get('attachments.' + key).splice(0, limit);
+    way.set('attachments.' + key, limitAttachments);
     way.backup();
+  }
 
-    if (count >= limit) {
-        var limitAttachments = way.get('attachments.'+key).splice(0,limit);
-        way.set('attachments.'+key, limitAttachments);
-        way.backup();
-    }
-
-    jQuery(attachments_main_loader).show();
-    Intercooler.triggerRequest(event.target, function (html) {
-        jQuery(event.target).html(html);
-        Intercooler.processNodes(event.target);
-        jQuery(attachments_main_loader).hide();
-    });
+  jQuery(attachments_main_loader).show();
+  Intercooler.triggerRequest(event.target, function(html) {
+    jQuery(event.target).html(html);
+    Intercooler.processNodes(event.target);
+    jQuery(attachments_main_loader).hide();
+  });
 
 });
 
 /* ATTACHMENT BEFORE DATA SEND */
 jQuery(document).on("beforeSend.ic", function(evt, elt, data) {
 
-    /**
-     * Triggering delete action without actual AJAX request
-     * Deleting data from localstorage, so we don't need to do actual request to server
-     * @param  {obj} jQuery [description]
-     * @return TODO: [MISC] Need to return something in case of error
-     */
-    if (jQuery(evt.target).attr('ic-src') == '/api/attachments/delete') {
-        attachmentDelete(elt);
-    }
+  /**
+   * Triggering delete action without actual AJAX request
+   * Deleting data from localstorage, so we don't need to do actual request to server
+   * @param  {obj} jQuery [description]
+   * @return TODO: [MISC] Need to return something in case of error
+   */
+  if (jQuery(evt.target).attr('ic-src') == '/api/attachments/delete') {
+    attachmentDelete(elt);
+  }
 
 });
 
 /* ATTACHMENT BEFORE AJAX SEND */
 jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
 
-    /* Before attachments list action */
-    if (settings.url == '/api/attachments/list') {
+  /* Before attachments list action */
+  if (settings.url == '/api/attachments/list') {
 
-        attachments = way.get('attachments');
+    attachments = way.get('attachments');
 
-        if (attachments) {
+    if (attachments) {
 
-            /* Check attachment limit for comments */
-            if (attachments.hasOwnProperty(6)) {
-              checkAttachmentsLimit(6, attachments[6].length);
+      /* Check attachment limit for comments */
+      if (attachments.hasOwnProperty(6)) {
+        checkAttachmentsLimit(6, attachments[6].length);
 
-              /* Set params for request */
-              attachments = jQuery.param(attachments);
-              settings.data = settings.data+'&'+attachments;
-            }
-
-        }
+        /* Set params for request */
+        attachments = jQuery.param(attachments);
+        settings.data = settings.data + '&' + attachments;
+      }
 
     }
+
+  }
 
 });

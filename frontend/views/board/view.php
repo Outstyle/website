@@ -62,6 +62,10 @@ echo Html::beginTag('section', ['id' => 'rightBlock']);
 
 echo Html::endTag('section');
 
+/* --- OTHER ELEMENTS RELATED TO THIS PAGE --- */
+echo $this->render('@modals/userVideo');
+echo $this->render('@modals/userAttachments');
+
 /* JS: @see js/outstyle.userboard.js */
 ?>
 <script>jQuery(document).ready(function(){userboardInit();});</script>

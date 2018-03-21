@@ -37,13 +37,22 @@
 #albums_area {
   display:none;
 }
+#photo__editbutton {
+  visibility: hidden;
+  margin-top: -2.3em;
+  margin-right: .4em;
+  padding: .3em;
+  width: 1.9em;
+  height: 1.9em;
+  font-size: 1.4em;
+}
 .i-newphotoalbum {
   font-size: 0.5em;
 }
 
 /* --- SOCIAL PHOTOALBUM --- */
-#photoalbum-privacy,
-#photoalbum-privacy_comments {
+.modal #photoalbum-privacy,
+.modal #photoalbum-privacy_comments {
   width: 32%;
   float:right;
 }
@@ -57,15 +66,30 @@
   padding-bottom:0;
 }
 
+#form-edit-photoalbum .form-group .control-label {
+  float:none;
+}
+#form-edit-photoalbum .form-control {
+  width:100%;
+}
+#form-edit-photoalbum .form-group--transparent .control-label {
+  float:left;
+}
+#form-edit-photoalbum .form-group--transparent .form-control {
+  float:right;
+}
+#form-edit-photoalbum .form-group--transparent .form-control {
+  width:30%;
+}
+
+.album {
+  border:1px solid #fff;
+}
 .album__highlight {
   background: #f5f5df;
 }
-
 .album__highlight .album .album__title {
   background: #cdcd7c;
-}
-.albums_area--loader {
-  margin-top: 1.5em;
 }
 
 
@@ -76,7 +100,11 @@
 .album-wrap:hover {
   background: #edeff0;
 }
-.album-wrap:hover .i-widgetbutton {
+.album-wrap:hover .album {
+  border:1px solid #edeff0;
+}
+
+.album-active:hover .i-widgetbutton {
   display: block;
   z-index: 2;
   border-radius: 50%;
@@ -86,7 +114,7 @@
   height: 24px;
   border:1px solid rgba(0,0,0,.2);
 }
-.album-wrap:hover .i-widgetbutton .zmdi {
+.album-active:hover .i-widgetbutton .zmdi {
   width: 1em;
   height: 1em;
   line-height: 1;
@@ -94,21 +122,31 @@
   color: rgba(0,0,0,.5);
   vertical-align: middle;
 }
-.album-wrap:hover .i-widgetbutton--topright {
+.album-active:hover .i-widgetbutton--topright {
   top:.8em;
   right:1em;
 }
-.album-wrap:hover .album {
-  border:1px solid #edeff0;
+.album-active:hover .i-widgetbutton--topleft {
+  top:.8em;
+  left:.8em;
 }
 
-.album {
-  border:1px solid #fff;
-}
 .album-active .album,
 .album-active:hover .album {
   border:1px solid rgba(0,0,0,0.5);
-  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
-  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
-  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.4);
+  -moz-box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.4);
+  box-shadow: 0px 0px 20px -1px rgba(0,0,0,0.4);
+}
+
+.albums_area--loader {
+  margin-top: 1.5em;
+}
+
+.photoalbum__edit {
+  display:none;
+  border-bottom: 1px solid #efefef;
+}
+.photoalbum__edit.active {
+  display:flex;
 }

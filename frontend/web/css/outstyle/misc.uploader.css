@@ -87,6 +87,10 @@ form .progress {
   color: #f20;
 }
 
+.file__deleted {
+  background:#ffd2cb;
+}
+
 /* --- Media Files --- */
 .files__media {
   border-bottom: 1px solid #dadada;

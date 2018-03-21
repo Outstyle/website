@@ -141,15 +141,6 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
     ]
   );
 
-  /*
-      ========================================
-      Actions & stuff for all registered users
-      ========================================
-  */
-  echo $this->render('@modals/userVideo');
-  echo $this->render('@modals/userAttachments');
-
-
 echo Html::endTag('div');
 echo Html::endTag('div');
 ?>

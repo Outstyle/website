@@ -6,6 +6,7 @@
 
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Modal ID
@@ -69,7 +70,10 @@ echo Html::tag('div',
             Yii::t('app', 'Delete album'),
             [
                 'id' => $modal_id.'-confirm',
-                'class' => 'c-button c-button--large c-button--withrightmargin'
+                'class' => 'c-button c-button--large c-button--withrightmargin',
+                'ic-target' => '#userphotoalbumdelete .modal__body',
+                'ic-post-to' => Url::toRoute(['api/photoalbum/delete']),
+                'ic-push-url' => 'false'
             ]
         ).
         Html::button(

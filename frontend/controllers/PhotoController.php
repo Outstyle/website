@@ -17,7 +17,9 @@ use app\models\Photoalbum;
 
 use frontend\components\ParentController;
 
-class PhotoController extends ParentController
+/* Move or merge Parent cont */
+
+class PhotoController extends \frontend\components\CsrfController
 {
     public $layout = 'social';
 
@@ -65,8 +67,20 @@ class PhotoController extends ParentController
      */
     public function actionUpload()
     {
+        $this->layout = false;
+
         $photo = new Photo();
         $photo->album = Yii::$app->request->post('album_id');
+
+        # Checking image file headers before image processing (resize and stuff)
+        $imageFile = UploadedFile::getInstance($photo, 'img');
+
+        if (isset($imageFile->tempName) && !exif_imagetype($imageFile->tempName)) {
+            throw new HttpException(400, Yii::t('err', 'Image type is not valid!'));
+        }
+
+        # If basic validation is passed, assigning image for rules() 'img' filter
+        $photo->img = $imageFile;
 
         if ($photo->validate()) {
             $photo->save();

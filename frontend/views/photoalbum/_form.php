@@ -5,6 +5,7 @@
  *
  * @var $this       yii\web\View
  * @var $model      common\models\Photoalbum
+ * @var $form_type  Form can be 'create' (with empty $model) or 'edit' (with populated $model)
 **/
 
 use yii\helpers\Html;
@@ -13,32 +14,34 @@ use yii\widgets\ActiveForm;
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\PrivacyHelper;
 
-use common\models\Photoalbum;
+echo Html::beginTag('div', [
+ 'id' => 'photoalbum-activeform'
+]);
 
-/**
- * Model for form to work with
- * @var object $model
- */
-$model = new Photoalbum();
+$this->beginPage();
+$this->beginBody();
 
 echo
 Html::beginTag('div', [
-  'class' => Yii::$app->controller->id.'-form u-window-box--super'
+  'class' => ($form_type == 'edit') ? Yii::$app->controller->id.'-form' : Yii::$app->controller->id.'-form u-window-box--super'
 ]);
 
   $form = ActiveForm::begin(
     [
-      'id' => 'form-create-'.Yii::$app->controller->id,
-      'action' => Url::toRoute(['api/photoalbum/create']),
+      'id' => 'form-'.$form_type.'-photoalbum',
+      'action' => Url::toRoute(['api/photoalbum/'.$form_type]),
       'enableAjaxValidation' => false,
-      'options' => ['enctype' => 'multipart/form-data']
+      'options' => [
+        'enctype' => 'multipart/form-data',
+        'csrf' => false /* Already automatically passing it via jQuery.ajax() data param, so no need to generate hidden input field */
+      ]
     ]
   );
 
 echo
-    /* Form fields */
+    /* Form fields for new photoalbum */
     $form->field($model, 'name')->textInput(['maxlength' => 64]),
-    $form->field($model, 'text')->textarea(['maxlength' => 255, 'rows' => 8]),
+    $form->field($model, 'text')->textarea(['maxlength' => 255, 'rows' => 4]),
 
     $form->field($model, 'privacy', [
       'options' => ['class' => 'form-group form-group--transparent form-group--small form-group--separated']
@@ -46,21 +49,45 @@ echo
 
     $form->field($model, 'privacy_comments', [
       'options' => ['class' => 'form-group form-group--transparent form-group--small']
-    ])->dropDownList(PrivacyHelper::getPrivacyList()),
+    ])->dropDownList(PrivacyHelper::getPrivacyList());
 
-    /* Submit button */
-    Html::tag('div',
-        Html::submitButton(
-            Yii::t('app', 'Create album'),
-            [
-                'id' => 'createphotoalbum-submit',
-                'class' => 'c-button u-small i-createphotoalbum u-pull-right',
+    /* Additional fields for photoalbum edit mode */
+    if ($form_type == 'edit') {
+        echo $form->field($model, 'id')->hiddenInput(['maxlength' => 11])->label(false);
+
+        /* Edit photoalbum submit button */
+        echo Html::tag('div',
+            Html::submitButton(
+                Yii::t('app', 'Save changes'),
+                [
+                  'id' => $form_type.'photoalbum-submit',
+                  'class' => 'c-button u-small i-'.$form_type.'photoalbum',
+                  'title' => Yii::t('app', 'Save changes')
+                ]
+            ),
+            ['class' => 'u-letter-box--large clearfix']
+        );
+    } else {
+
+      /* Create new photoalbum submit button */
+      echo Html::tag('div',
+          Html::submitButton(
+              Yii::t('app', 'Create album'),
+              [
+                'id' => $form_type.'photoalbum-submit',
+                'class' => 'c-button u-small i-'.$form_type.'photoalbum u-pull-right',
                 'title' => Yii::t('app', 'Create album')
-            ]
-        ),
-        ['class' => 'modal__footer modal__footer--centered u-letter-box--large clearfix']
-    );
+              ]
+          ),
+          ['class' => 'modal__footer modal__footer--centered u-letter-box--large clearfix']
+      );
+    }
 
   ActiveForm::end();
+
+echo Html::endTag('div');
+
+$this->endBody();
+$this->endPage();
 
 echo Html::endTag('div');

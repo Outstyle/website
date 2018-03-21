@@ -8,6 +8,7 @@ button::-moz-focus-inner {
 pre {
   white-space: normal;
 }
+
 /* --- UTILS & BLAZE REWRITES + HACKS --- */
 /* Utility Classes from Skeleton.css */
 ul li {
@@ -65,6 +66,7 @@ ul {
 .u-pillar-box--xsuper {
   padding: 0 7em 0 7em;
 }
+
 .cb {
   clear:both;
 }
@@ -176,16 +178,20 @@ ul {
   margin-right:1em;
 }
 .c-button--white {
-  padding: .3em;
-  width: 1.95em;
   background: #fff;
 }
 .c-button--white:hover,
 .c-button--white:focus {
   background: #d8d8d8;
 }
+.c-button--round {
+  border-radius: 50%;
+}
 
-
+/* BLAZE GRID */
+.o-grid--lightbg {
+  background: #f9f9f9;
+}
 /* --- MISC --- Custom Outstyle CSS workarounds here, please */
 .o-field{position:relative}.o-field .c-field--success~.c-icon{color:#4caf50}.o-field .c-field--error~.c-icon{color:#f44336}.o-field .c-field:disabled~.c-icon{color:#96a8b2}.o-field .c-icon{position:absolute;top:50%;transform:translateY(-50%);color:#96a8b2}.o-field--icon-right .c-field+.c-icon{right:.5em}.o-field--icon-right .c-field{padding-right:2em}.o-field--icon-left .c-icon:first-child{left:.5em}.o-field--icon-left .c-field{padding-left:2em}
 .clearfix:after {

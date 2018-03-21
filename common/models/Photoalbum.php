@@ -40,7 +40,7 @@ class Photoalbum extends \yii\db\ActiveRecord
 {
 
     /**
-     * Custom variable: photoalbums limit per user
+     * Photoalbums limit per user
      * @var int
      */
     public $photoalbumsLimit = 100;
@@ -69,7 +69,7 @@ class Photoalbum extends \yii\db\ActiveRecord
             ],
             [
               ['name', 'text'],
-              'match', 'pattern' => '/^[a-zA-Zа-яА-Я0-9\-\.\,\!\?\:\;\s_]+$/i',
+              'match', 'pattern' => '/^[а-яА-ЯЁёa-zA-Z0-90-9\-\.\,\!\?\:\;\s_]+$/ui',
               'message' => Yii::t('app', 'This field can only contain letters and numbers'),
             ],
             [
@@ -104,11 +104,11 @@ class Photoalbum extends \yii\db\ActiveRecord
               'max' => 32
             ],
             [
-              'photoalbumsLimit',
+              ['photoalbumsLimit'],
               'default', 'value' => $this->photoalbumsLimit
             ],
             [
-              'photoalbumsLimit', 'checkPhotoalbumsLimitForUser',
+              ['photoalbumsLimit'], 'checkPhotoalbumsLimitForUser',
               'skipOnEmpty' => false,
               'skipOnError' => false
             ],

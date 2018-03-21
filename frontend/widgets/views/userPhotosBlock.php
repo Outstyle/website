@@ -14,7 +14,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
-use common\components\helpers\TooltipsHelper;
+use common\models\Photo;
 
 /* @see @frontend/widgets/UserPhotosBlock for vars */
 /* @var $photos */
@@ -22,29 +22,6 @@ use common\components\helpers\TooltipsHelper;
 
 # Widget wrapper
 echo Html::beginTag('div', ['class' => $options['class']]);
-
-# Widget "+" button for title
-if (isset($options['titlePlusButton'])) {
-    $options['title'] .= Html::button(
-      '<i class="zmdi zmdi-plus zmdi-hc-lg"></i>',
-    [
-      'id' => 'photo__editbutton',
-      'class' => 'c-button c-button--white c-button--large tooltip u-pull-right',
-      'data-tooltip-content' => '#photos_edit_tooltip_content',
-      'title' => Yii::t('app', 'Edit'),
-    ]);
-
-    # Widget "+" tooltip container, shown on click (binds via 'data-tooltip-content')
-    echo TooltipsHelper::tooltipContainerForPhotoalbum();
-}
-
-# Widget title
-if (isset($options['title'])) {
-    echo Html::tag(
-      $options['titleTag'],
-      $options['title']
-    );
-}
 
 # Working with each image
 if (!empty($photos)) {
@@ -60,7 +37,12 @@ if (!empty($photos)) {
           ).
 
           # Photo image
-          ElementsHelper::photoLink($photo['id'], Html::img($photo['img'], ['class' => 'o-image u-full-width user__photothumbnail'])).
+          ElementsHelper::photoLink(
+            $photo['id'],
+            Html::img(
+              Photo::getByPrefix('//i.t2.local/'.$photo['img'], '210x126_'), ['class' => 'o-image u-full-width user__photothumbnail']
+            )
+          ).
 
           # Photo title and link
           ElementsHelper::photoLink($photo['id'], $photo['name']).
@@ -88,8 +70,3 @@ if (!empty($photos)) {
 
 # Widget wrapper END
 echo Html::endTag('div');
-
-
-/* JS: @see js/outstyle.user.photoalbums.js */
-?>
-<script>jQuery(document).ready(function(){photoalbumsInit()});</script>

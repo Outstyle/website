@@ -771,22 +771,4 @@ class ElementsHelper extends Html
         }
         echo Html::endTag('div');
     }
-
-    /**
-     * Generates an img tag for showing a praticular loader
-     * TODO: [?] Make routes to be in config file
-     *
-     * @param string Loader type/style
-     * @param string img tag class
-     *
-     * @return html IMG tag with predefined image
-     */
-    public static function loaderImage($image = '', $class = '')
-    {
-        if ($image == 'breakdance') {
-            return '<img src="/frontend/web/images/images/breakdance_loader.gif" class="'.$class.'">';
-        }
-
-        return '<img src="/frontend/web/images/images/breakdance_loader.gif">';
-    }
 }

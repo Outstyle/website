@@ -6,12 +6,13 @@
 
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use common\components\helpers\html\LoadersHelper;
 
 /**
  * Modal ID
  * @var string
  */
-$modal_id = 'userphotoalbum';
+$modal_id = 'userphotoalbumcreate';
 
 echo Html::beginTag('div', [
         'id' => $modal_id,
@@ -43,9 +44,11 @@ echo Html::tag('div',
         ['class' => 'modal__header modal__header--branded u-window-box--medium']
     ).
 
+    LoadersHelper::loaderImage('breakdance', 'modal__loader').
+
     # Modal body
     Html::tag('div',
-        $this->render('../photoalbum/_form'),
+        '',
         ['class' => 'modal__body']
     ),
 

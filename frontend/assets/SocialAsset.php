@@ -66,6 +66,10 @@ class SocialAsset extends AssetBundle
         'js/outstyle.user.friends.js',
         'js/outstyle.user.attachments.js',
         'js/outstyle.user.photoalbums.js',
+        'js/outstyle.user.photoalbum.create.js',
+        'js/outstyle.user.photoalbum.edit.js',
+        'js/outstyle.user.photoalbum.delete.js',
+        'js/outstyle.user.tooltips.js',
         'js/outstyle.userboard.js',
         'js/outstyle.userboard.posts.js',
         'js/outstyle.modal.js',
@@ -73,11 +77,12 @@ class SocialAsset extends AssetBundle
         'js/outstyle.files.upload.js',
 
         /* misc */
-        'js/outstyle.notifications.js',
         #'js/outstyle.googletags.js',
 
     ];
     public $depends = [
         'yii\web\YiiAsset',
+        'yii\widgets\ActiveFormAsset',
+        'yii\validators\ValidationAsset'
     ];
 }

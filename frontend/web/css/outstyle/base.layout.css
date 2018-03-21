@@ -52,7 +52,7 @@ a.c-nav__item:not(:disabled):focus {
 
 /* --- FORMS --- */
 .form-group {
-  margin: 5px 0 5px 0;
+  margin: 0.3em 0 0.3em 0;
   clear:both;
 }
 .form-group .hint-block {
@@ -109,6 +109,7 @@ a.c-nav__item:not(:disabled):focus {
 }
 .form-group--small {
   font-size: 0.9em;
+  margin: 0.1em 0 0 0;
 }
 .form-group--small .control-label {
   line-height: 1.4em;
@@ -805,6 +806,11 @@ p>img.img-fixedwidth {
   top: 5px;
   right: 5px;
   z-index: 9000;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
 }
 
 /* --- LOADER --- */

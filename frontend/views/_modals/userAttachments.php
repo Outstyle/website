@@ -7,6 +7,7 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 use common\components\helpers\ElementsHelper;
+use common\components\helpers\html\LoadersHelper;
 
 $modal_id = 'userattachments';
 
@@ -40,7 +41,7 @@ echo Html::tag('div',
         ['class' => 'modal__header modal__header--branded u-window-box--medium']
     ).
 
-    ElementsHelper::loaderImage('breakdance', 'modal__loader').
+    LoadersHelper::loaderImage('breakdance', 'modal__loader').
 
     # Modal body
     Html::tag('div',
@@ -55,4 +56,4 @@ echo Html::endTag('div');
 
 /* JS: @see js/outstyle.modal.js */
 ?>
-<script>jQuery(document).ready(function(){modalInit();});</script>
+<script>jQuery(document).ready(function(){modalInit('#<?=$modal_id;?>');});</script>

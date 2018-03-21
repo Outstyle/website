@@ -72,9 +72,13 @@ class Photo extends \common\models\Photo
         return $photos;
     }
 
-    /* RELATIONS */
-    public function getComments()
+    /**
+     * Delete all photos by photoalbum ID
+     * @param  integer $albumId
+     * @return int    	         The number of rows deleted
+     */
+    public static function deleteAllPhotosByPhotoalbumId($albumId = 0)
     {
-        return $this->hasMany(Comments::className(), ['elem_id' => 'id'])->andWhere(['elem_type' => 'photo']);
+        return self::deleteAll(['album' => $albumId]);
     }
 }

@@ -10,7 +10,7 @@ use Yii;
 
 /**
  * This is the model class for table "{{%photoalbum}}".
- * This model serves as a frontend one and should always extend common model.
+ * This model serves as a frontend one and should always extend common Photoalbum model.
  *
  * Only custom methods are stored here.
  *
@@ -23,16 +23,14 @@ class Photoalbum extends \common\models\Photoalbum
     /**
      * @var int $defaultPageSize        How much photoalbums per request to get
      */
-    public static $defaultPageSize = 15;
+    public static $defaultPageSize = 100;
 
 
     /**
      * Gets user photoalbums from DB and returns an array of data
-     *
      * @param  array   $where   WHERE clause to add for more precise selection.
      * @param  int     $page    Page number. Must be >0 for pagination to appear
      * @param  int     $userId  User's ID
-     *
      * @return array|null         Photos data
      */
     public static function getPhotoalbums($where = [], $page = null, $userId = 0)
@@ -77,5 +75,19 @@ class Photoalbum extends \common\models\Photoalbum
         }
 
         return $photoalbums;
+    }
+
+    /**
+     * Deletes photoalbum from DB
+     * @param  integer $userId
+     * @param  integer $albumId
+     * @return int|false
+     */
+    public static function deleteOneByUserId($userId = 0, $albumId = 0)
+    {
+        return self::find()->where("user = :user AND id = :id", [
+                      ':user' => $userId,
+                      ':id' => $albumId
+                    ])->one()->delete();
     }
 }

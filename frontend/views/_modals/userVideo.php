@@ -25,7 +25,7 @@ echo Html::tag('div',
 
         # Modal header
         Html::tag('span',
-            Yii::t('app', 'Просмотр видео'),
+            Yii::t('app', 'Watch video'),
             ['class' => 'modal__caption c-text--shadow']
         ).
 
@@ -63,4 +63,4 @@ echo Html::endTag('div');
 
 /* JS: @see js/outstyle.modal.js */
 ?>
-<script>jQuery(document).ready(function(){modalInit();});</script>
+<script>jQuery(document).ready(function(){modalInit('#<?=$modal_id;?>');});</script>

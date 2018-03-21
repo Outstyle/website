@@ -116,7 +116,7 @@ class StringHelper
      */
     public static function clearString($string)
     {
-        return preg_replace('/[^a-zа-яА-Я0-9\-\. _]/i', '', strip_tags($string));
+        return preg_replace('/[^a-zа-яА-Я0-9\-\. _]/i', '', trim(strip_tags($string)));
     }
 
     /**
