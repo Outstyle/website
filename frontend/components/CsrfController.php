@@ -32,7 +32,7 @@ class CsrfController extends Controller
       $csrf_token = Yii::$app->request->headers->get('x-csrf-token');
       $user_token = ElementsHelper::getCSRFToken();
 
-      if ($event->controller->id == Yii::$app->controller->id && $event->id == 'index') {
+      if ($event->controller->id == Yii::$app->controller->id && $event->id == 'index' || $event->id == 'view') {
           if (!$csrf_token) {
               $csrf_token = Yii::$app->request->csrfToken;
           }

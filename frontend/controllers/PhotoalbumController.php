@@ -47,7 +47,8 @@ class PhotoalbumController extends \frontend\components\CsrfController
                       'create',
                       'view',
                       'delete',
-                      'edit'
+                      'edit',
+                      'get'
                      ],
                     'roles' => ['@'],
                   ],
@@ -96,9 +97,28 @@ class PhotoalbumController extends \frontend\components\CsrfController
     }
 
     /**
+     * Lists photoalbums
+     * @return HTML
+     */
+    public function actionGet()
+    {
+        $where = [];
+        $photoalbums = Photoalbum::getPhotoalbums();
+
+        /* If it's an Intercooler request, also sending headers for photoalbum view event to fire */
+        if (Yii::$app->request->get('ic-request')) {
+            $headers = Yii::$app->response->headers;
+            $headers->add('X-IC-Trigger', '{"photoalbumGet":'.Json::encode($where).'}');
+        }
+
+        return $this->renderPartial('index', [
+            'photoalbums' => $photoalbums,
+        ]);
+    }
+
+    /**
      * Edit photoalbum photos and photoalbum
-     * TODO: Do not return mixed data!
-     * @return HTML|JSON
+     * @return JSON
      */
     public function actionEdit()
     {
@@ -116,9 +136,9 @@ class PhotoalbumController extends \frontend\components\CsrfController
 
         if ($photoalbum->load($_POST) && $photoalbum->validate()) {
             $photoalbum->save();
-            return $this->renderPartial('index', [
-                'photoalbums' => [$photoalbum]
-            ]);
+
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return $photoalbum;
         } else {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             return $photoalbum->errors;

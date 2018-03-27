@@ -94,4 +94,10 @@ class Video extends \yii\db\ActiveRecord
            'created_at' => 'Created'
         ];
     }
+
+    /* RELATIONS */
+    public function getComments()
+    {
+        return $this->hasMany(Comments::className(), ['elem_id' => 'id'])->andWhere(['elem_type' => 'video']);
+    }
 }

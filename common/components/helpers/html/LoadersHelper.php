@@ -42,6 +42,9 @@ class LoadersHelper extends ElementsHelper
      */
     public static function loaderDiv($elemClass = 'default', $loaderSize = 'smallest')
     {
-        return '<div class="'.$elemClass.'--loader loader--'.$loaderSize.'"></div>';
+        return Html::tag('div', '',
+        [
+          'class' => $elemClass.'--loader loader--'.$loaderSize
+        ]);
     }
 }

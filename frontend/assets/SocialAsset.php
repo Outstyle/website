@@ -63,6 +63,7 @@ class SocialAsset extends AssetBundle
         /* website related JS code */
         'js/outstyle.social.sidebar.js',
         'js/outstyle.user.video.js',
+        'js/outstyle.user.photo.js',
         'js/outstyle.user.friends.js',
         'js/outstyle.user.attachments.js',
         'js/outstyle.user.photoalbums.js',

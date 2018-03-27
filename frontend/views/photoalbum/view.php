@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use frontend\widgets\UserPhotosBlock;
 use yii\widgets\Spaceless;
 
+use common\components\helpers\ElementsHelper;
 use common\components\helpers\html\TooltipsHelper;
 
 /**
@@ -40,13 +41,6 @@ echo Html::beginTag('div', ['id' => 'photos_list']);
     if (isset($model)) {
         echo Html::tag('div',
 
-          # Photoalbum cover
-          Html::tag('div',
-            '123',
-          [
-            'class' => 'o-grid__cell o-grid__cell--width-30 o-grid__cell--no-gutter'
-          ]).
-
           # Photoalbum description
           Html::tag('div',
             $this->render('_form', [
@@ -54,7 +48,7 @@ echo Html::beginTag('div', ['id' => 'photos_list']);
               'form_type' => 'edit',
             ]),
           [
-            'class' => 'o-grid__cell o-grid__cell--width-70'
+            'class' => 'o-grid__cell o-grid__cell--width-100'
           ]),
 
         [
@@ -77,6 +71,9 @@ echo Html::beginTag('div', ['id' => 'photos_list']);
         ],
       ]
     ]);
+
+    # Load more photos_list
+    echo ElementsHelper::loadMore(Url::toRoute('api/photo/get'), '.photoalbum__photos', '{"album_id":'.(int)Yii::$app->request->post('album_id').'}');
 
 
     # PHOTOS ADD FORM

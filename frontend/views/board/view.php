@@ -64,6 +64,7 @@ echo Html::endTag('section');
 
 /* --- OTHER ELEMENTS RELATED TO THIS PAGE --- */
 echo $this->render('@modals/userVideo');
+echo $this->render('@modals/userPhoto');
 echo $this->render('@modals/userAttachments');
 
 /* JS: @see js/outstyle.userboard.js */

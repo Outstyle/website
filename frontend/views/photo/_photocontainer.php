@@ -1,28 +1,19 @@
 <?php
-
+/**
+ * @link https://github.com/Outstyle/website
+ * @copyright Copyright (c) 2018 Outstyle Network
+ * @license Beerware
+ */
 use yii\helpers\Html;
-use common\components\classes\Multiplayer;
-use app\models\VideoServices;
 
-/* $video   array   @views/video/_videosingle */
+/**
+ * Photo container
+ *
+ * @var $this               yii\web\View
+ * @var $photo
+ *
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
+*/
 
-# Multiplayer: https://github.com/felixgirault/multiplayer
-$Multiplayer = new Multiplayer();
-
-echo Html::tag('div',
-
-  # Dynamic video container
-  Html::tag('div',
-    $Multiplayer->html(
-      VideoServices::generateServiceLink($video['video_id'], $video['service_id']),
-      $options
-    ),
-    [
-      'class' => 'video__multicontainer'
-    ]
-  ),
-
-  [
-    'class' => 'o-grid__cell--width-100'
-  ]
-);
+echo 'Photo here';

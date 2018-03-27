@@ -41,7 +41,7 @@ class UserPhotosBlock extends Widget
 
         # Working with default options
         if (!isset($this->options['class'])) {
-            $this->options['class'] = 'o-grid o-grid--wrap '.Yii::$app->controller->id.'__photos';
+            $this->options['class'] = '';
         }
 
         if (!isset($this->options['cell_class'])) {

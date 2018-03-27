@@ -45,10 +45,4 @@ class Video extends \common\models\Video
         }
         return self::find()->where(['user' => $userId])->orderBy("id desc")->asArray()->all();
     }
-
-    /* RELATIONS */
-    public function getComments()
-    {
-        return $this->hasMany(Comments::className(), ['elem_id' => 'id'])->andWhere(['elem_type' => 'video']);
-    }
 }

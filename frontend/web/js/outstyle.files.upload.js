@@ -53,18 +53,17 @@ function uploadPhotoFormInit() {
     },
     onDragLeave: function() {
       this.removeClass('active');
-      jQuery("#photos_area .user__photo").hide();
+      jQuery("#photos_area .photoalbum__photos, #loadmore").hide();
     },
     onDocumentDragEnter: function() {
-      jQuery("#photos_area .user__photo").hide();
+      jQuery("#photos_area .photoalbum__photos, #loadmore").hide();
       this.show();
     },
     onDocumentDragLeave: function() {
-      jQuery("#photos_area .user__photo").show();
+      jQuery("#photos_area .photoalbum__photos").show();
       this.hide();
     },
     onNewFile: function(id, file) {
-      jQuery("#photos_area .user__photo").hide();
       ui_multi_add_file(id, file);
       if (typeof FileReader !== 'undefined') {
         var reader = new FileReader();
@@ -128,9 +127,10 @@ function uploadPhotoFormInit() {
 }
 
 function userShowUploadArea() {
-  jQuery("#photos_area .user__photo").hide();
+  jQuery("#photos_area .photoalbum__photos").hide();
   jQuery("#photos_area .photoalbum__edit").removeClass('active');
   jQuery(".photo__add, #form-upload-to-photoalbum").show();
+  jQuery("#loadmore").hide();
   photoalbumsTooltipsClose();
 }
 
@@ -145,6 +145,7 @@ function ui_multi_add_file(id, file) {
 
   jQuery('#files').find('li.empty').fadeOut(); // remove the 'no files yet'
   jQuery('#files').append(template);
+
 }
 
 /* Changes the status messages on our list */
@@ -172,4 +173,7 @@ function ui_multi_update_file_progress(id, percent, color, active) {
     bar.removeClass('bg-success bg-info bg-warning bg-danger');
     bar.addClass('bg-' + color);
   }
+
+  jQuery("#photos_area .photoalbum__photos").hide(); // Hide photos area while uploading
+
 }

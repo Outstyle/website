@@ -1,17 +1,32 @@
 <?php
-
+/**
+ * @link https://github.com/Outstyle/website
+ * @copyright Copyright (c) 2018 Outstyle Network
+ * @license Beerware
+ */
 namespace app\models;
 
 use Yii;
-use yii\behaviors\TimestampBehavior;
 
+use yii\behaviors\TimestampBehavior;
+use yii\data\Pagination;
+
+/**
+ * This is the model class for table "{{%photo}}".
+ * This model serves as a frontend one and should always extend common Photo model.
+ *
+ * Only custom methods are stored here.
+ *
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
+ */
 class Photo extends \common\models\Photo
 {
 
     /**
      * @var $defaultPageSize  How much photos per request to get
      */
-    public static $defaultPageSize = 15;
+    public static $defaultPageSize = 30;
 
     /**
      * Gets photo by its unique ID (DB column: id)
@@ -55,7 +70,7 @@ class Photo extends \common\models\Photo
             $pagination = new Pagination([
               'defaultPageSize' => self::$defaultPageSize,
               'totalCount' => $photosQuery->count(),
-              'page' => (int)$page - 1,
+              'page' => (int)$page,
             ]);
 
             $photosQuery = $photosQuery->offset($pagination->offset)->limit($pagination->limit);

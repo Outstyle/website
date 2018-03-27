@@ -17,120 +17,18 @@ use common\components\helpers\ElementsHelper;
  * @property timestamp  $created
  * @property string     $comment
  */
-class Comments extends \yii\db\ActiveRecord
+class Comments extends \common\models\Comments
 {
-    const SCENARIO_DEFAULT = 'default';
-    const SCENARIO_WITH_ATTACHMENT = 'attachment';
 
     /**
-     * @inheritdoc
+     * Adds a comment to DB
+     *
+     * @param string    $elem_type  Which type of element does this comment represents (i.e. news, school, board)
+     * @param int       $elem_id    Element's id
+     * @param string    $text       Comment's text (body)
+     * @param string    $scenario   Scenario to use (i.e. comment with attachments)
+     * @return int      Added comment ID
      */
-    public static function tableName()
-    {
-        return '{{%comments}}';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        return [
-            self::SCENARIO_DEFAULT => [
-              'comment',
-              'elem_type',
-              'elem_id',
-              'user_id'
-            ],
-            self::SCENARIO_WITH_ATTACHMENT => [
-              'comment',
-              'elem_type',
-              'elem_id',
-              'user_id'
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [
-                ['elem_type', 'elem_id', 'user_id'],
-                'required'
-            ],
-            [
-                'comment',
-                'required',
-                'message' => 'COMMENT_EMPTY',
-                'on' => self::SCENARIO_DEFAULT
-            ],
-            [
-                'elem_type',
-                'in',
-                'range' => ElementsHelper::$allowedElements
-            ],
-            [
-                ['elem_id'],
-                'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number',
-                'message' => 'COMMENT_NO_ELEMENT'
-            ],
-            [
-                'created',
-                'safe'
-            ],
-            [
-                'comment',
-                'string',
-                'message' => 'COMMENT_SYMBOLS_LIMIT',
-                'tooLong' => 'COMMENT_SYMBOLS_TOO_LONG',
-                'tooShort' => 'COMMENT_SYMBOLS_TOO_SHORT',
-                'min' => 5,
-                'max' => 5000
-            ],
-            [
-                'comment',
-                'filter',
-                'filter' => function ($comment) {
-                    $comment = strip_tags($comment);
-                    return \yii\helpers\Html::encode($comment);
-                },
-            ],
-            [
-                'elem_type',
-                'string',
-                'max' => 255
-            ]
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'elem_type' => 'Elem Type',
-            'elem_id' => 'Elem ID',
-            'user_id' => 'User ID',
-            'created' => 'Created',
-            'comment' => 'Comment',
-        ];
-    }
-
-
-/**
- * Adds a comment to DB
- *
- * @param string    $elem_type  Which type of element does this comment represents (i.e. news, school, board)
- * @param int       $elem_id    Element's id
- * @param string    $text       Comment's text (body)
- * @param string    $scenario   Scenario to use (i.e. comment with attachments)
- * @return int      Added comment ID
- */
     public static function addComment($elem_type, $elem_id, $text, $scenario = self::SCENARIO_DEFAULT)
     {
         $comment = new self(['scenario' => $scenario]);
@@ -149,15 +47,14 @@ class Comments extends \yii\db\ActiveRecord
         return $comment->id;
     }
 
-/**
- * Delete comment
- *
- * @param  int          $id         Comment ID
- * @param  int          $user_id    User's ID
- * @return int|false                Deleted comment ID or false in case of error
- *
- * Read more about user roles permissions here: https://github.com/developeruz/yii2-db-rbac
- */
+    /**
+     * Delete comment
+     * Read more about user roles permissions here: https://github.com/developeruz/yii2-db-rbac
+     *
+     * @param  int          $id         Comment ID
+     * @param  int          $user_id    User's ID
+     * @return int|false                Deleted comment ID or false in case of error
+     */
     public static function deleteComment($id, $user_id)
     {
         /* --- If it is user's own comment --- */
@@ -166,7 +63,7 @@ class Comments extends \yii\db\ActiveRecord
             'user_id' => $user_id,
         );
 
-        /* --- TODO: This should be in commentsController + likes check too! 'comments/delete' is a permission name for comment deleting --- */
+        /* TODO FIXME: This should be in commentsController + likes check too! 'comments/delete' is a permission name for comment deleting */
         if (Yii::$app->user->can('comments/delete')) {
             $args = array(
                 'id' => $id,
@@ -181,13 +78,13 @@ class Comments extends \yii\db\ActiveRecord
         return false;
     }
 
-/**
- * Edit comment
- *
- * @param  int       $id        Comment ID
- * @param  string    $text      Comment text
- * @return boolean   true|false
- */
+    /**
+     * Edit comment
+     *
+     * @param  int       $id        Comment ID
+     * @param  string    $text      Comment text
+     * @return boolean   true|false
+     */
     public static function editComment($id, $text)
     {
         $model = self::find()->where(array('id' => $id))->one();
@@ -199,13 +96,13 @@ class Comments extends \yii\db\ActiveRecord
         return false;
     }
 
-/**
- * Gets/retrieves comments from DB
- *
- * @param  array      $where    WHERE clause to add for more precise selection.
- * @param  int        $page     page number
- * @return array|null           Comments data
- */
+    /**
+     * Gets/retrieves comments from DB
+     *
+     * @param  array      $where    WHERE clause to add for more precise selection.
+     * @param  int        $page     page number
+     * @return array|null           Comments data
+     */
     public static function getComments($where = [], $page = null)
     {
         /* Init values */
@@ -269,27 +166,5 @@ class Comments extends \yii\db\ActiveRecord
     public static function countComments($elem_type, $elem_id)
     {
         return self::find()->where(array('elem_type' => $elem_type, 'elem_id' => $elem_id))->count();
-    }
-
-    /* Relations */
-
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    public function getUserDescription()
-    {
-        return $this->hasOne(UserDescription::className(), ['id' => 'user_id']);
-    }
-
-    public function getLikes()
-    {
-        return $this->hasMany(Likes::className(), ['elem_id' => 'id']);
-    }
-
-    public function getAttachments()
-    {
-        return $this->hasMany(Attachments::className(), ['elem_id' => 'id']);
     }
 }

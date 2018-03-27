@@ -19,39 +19,10 @@ function photoalbumEditFormInit() {
       type: 'post',
       data: form.serialize() + '&_csrf=' + csrfToken,
 
-      beforeSend: function() {
-        jQuery('#createphotoalbum-submit')
-          .hide()
-          .after(photoalbum_loader);
-      },
-
-      complete: function() {
-        jQuery('#createphotoalbum-submit')
-          .show()
-          .next()
-          .remove();
-      },
-
       success: function(data, status, jqXHR) {
 
-        var contentType = jqXHR.getResponseHeader('Content-type');
-
-        /* IF data is JSON | TODO: Make all requests JSON, untie from HTML parts */
-        if (contentType == 'application/json; charset=UTF-8') {
-
-          /* Prevent any actions if albums limit reached - show notice instead */
-          if (data.photoalbumsLimit) {
-            jQuery('#ohsnap').css({
-              'z-index': 90000000
-            });
-            ohSnapX();
-            ohSnap(data.photoalbumsLimit[0], {
-              'color': 'red'
-            });
-          }
-
-          return;
-        }
+        userPhotoalbumEdit();
+        changePhotoalbumTitle(data.name, data.id);
 
       }
     });
@@ -73,4 +44,10 @@ jQuery("body").on("photoalbumView", function(evt, data) {
 function userPhotoalbumEdit() {
   jQuery(photoalbum_edit_area).toggleClass('active');
   jQuery('.photo__add').toggle();
+}
+
+function changePhotoalbumTitle(title, id) {
+  jQuery('#album-' + id).find('.album__title>span').html(title);
+  jQuery('#album-' + id).find('.album__title').attr('title', title);
+  jQuery('#photos_area').find('h1').html(title);
 }

@@ -50,7 +50,7 @@ class Photoalbum extends \common\models\Photoalbum
          */
         $photoalbumsQuery = self::find()->with([
           'photo' => function ($query) {
-              $query->select('id, img, album');
+              $query->select('id, img, album, service_id');
           },
         ])->where($where)->orderBy('id desc');
         $photoalbumsQuery = $photoalbumsQuery->limit(self::$defaultPageSize);

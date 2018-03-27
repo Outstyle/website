@@ -79,6 +79,14 @@ ul {
 .c-text--small {
   font-size:0.8em;
 }
+.c-text--shadowed {
+  text-shadow:
+    1px 1px 0 #000,
+  -1px -1px 0 #000,
+   1px -1px 0 #000,
+   -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
 .c-link--decorated {
   text-decoration:none;
 }
@@ -158,34 +166,36 @@ ul {
   box-shadow: none;
 }
 .c-button {
-  background: #d8d8d8;
-  color: #555;
   font-size: 0.9em;
   border-radius: 1.5em;
   text-transform: none;
+  padding-left: 1em;
+  padding-right: 1em;
 }
-.c-button:hover {
-  background: #56646d;
-  color: #000;
+
+.c-button--default {
+  color: #fff;
+  background: #475359;
 }
-.c-button:focus {
+.c-button.c-button--default:hover {
+  background: #59686f;
+}
+.c-button--default:focus {
   color: #fff;
 }
+
 .c-button--large {
   padding: .5em 2em;
 }
 .c-button--withrightmargin {
   margin-right:1em;
 }
-.c-button--white {
-  background: #fff;
-}
-.c-button--white:hover,
-.c-button--white:focus {
-  background: #d8d8d8;
-}
+
 .c-button--round {
   border-radius: 50%;
+}
+.c-button--close {
+  padding: 0;
 }
 
 /* BLAZE GRID */
@@ -259,7 +269,7 @@ ul {
 
 /* --- Widgetbutton --- */
 .i-widgetbutton {
-  opacity:0.3;
+  opacity:1;
   padding:0.8em;
   display: none;
 }

@@ -191,12 +191,12 @@ class ElementsHelper extends Html
     public static function photoLink($photo_id = '', $photo_title = '')
     {
         return
-        Html::a($photo_title, Url::toRoute('/photo-'.$photo_id, true),
+        Html::a($photo_title, Url::toRoute('/photos/'.$photo_id, true),
           [
-            'class' => 'user__phototitle',
+            'class' => 'photo__link',
             'ic-action' => 'userShowPhotoModal',
-            'ic-get-from' => Url::toRoute('/photo-'.$photo_id),
-            'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
+            'ic-post-to' => Url::toRoute('/photos/'.$photo_id),
+            'ic-select-from-response' => '#'.self::DEFAULT_AJAX_ID,
             'ic-target' => '#userphoto .modal__iframe',
             'ic-indicator' => self::DEFAULT_AJAX_LOADER,
             'ic-push-url' => 'true',

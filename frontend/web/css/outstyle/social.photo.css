@@ -9,18 +9,25 @@
     font-size:1.6em;
     color: #606D75;
 }
+#photos_area .photo__link {
+  line-height: 0;
+  display: block;
+  font-size: .8em;
+  text-align:left;
+}
 .photos__albums .album {
     background: #f9f9f9;
     width:100%;
     height:112px;
     position: relative;
     cursor: pointer;
+    overflow: hidden;
 }
 .photos__albums .album__title {
     font-size: .8em;
     text-align: left;
     color: #FFF;
-    background: #999;
+    background: rgba(55,64,69,0.6);
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -110,15 +117,14 @@
   border-radius: 50%;
   background: #fff;
   padding: 0.2em;
-  width: 24px;
-  height: 24px;
-  border:1px solid rgba(0,0,0,.2);
+  width: 28px;
+  height: 28px;
 }
 .album-active:hover .i-widgetbutton .zmdi {
   width: 1em;
   height: 1em;
-  line-height: 1;
-  font-size: 12px;
+  line-height: 1.2;
+  font-size: 17px;
   color: rgba(0,0,0,.5);
   vertical-align: middle;
 }
@@ -149,4 +155,13 @@
 }
 .photoalbum__edit.active {
   display:flex;
+}
+
+
+.photoalbum__photos {
+  padding: 0.5em;
+}
+
+#photoalbums__loadmore {
+  position: fixed;
 }

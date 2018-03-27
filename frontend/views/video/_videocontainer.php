@@ -1,12 +1,27 @@
 <?php
-
+/**
+ * @link https://github.com/Outstyle/website
+ * @copyright Copyright (c) 2018 Outstyle Network
+ * @license Beerware
+ */
 use yii\helpers\Html;
 use common\components\classes\Multiplayer;
 use app\models\VideoServices;
 
-/* $video   array   @views/video/_videosingle */
+/**
+ * Video container
+ *
+ * Using:
+ * - Multiplayer: https://github.com/felixgirault/multiplayer
+ *
+ * @var $this               yii\web\View
+ * @var $video      array   @views/video/_videosingle
+ * @var $options    array   @views/video/_videosingle
+ *
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
+*/
 
-# Multiplayer: https://github.com/felixgirault/multiplayer
 $Multiplayer = new Multiplayer();
 
 echo Html::tag('div',

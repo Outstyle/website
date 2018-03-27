@@ -32,6 +32,7 @@ use common\components\helpers\StringHelper;
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
  */
+
 class Photo extends \yii\db\ActiveRecord
 {
     const ALLOWED_FILE_TYPES = 'jpg,jpeg,gif,png';
@@ -49,7 +50,7 @@ class Photo extends \yii\db\ActiveRecord
           'class' => 'demi\image\ImageUploaderBehavior',
           'imageConfig' => [
             'imageAttribute' => 'img',
-            'savePathAlias' => Yii::$app->params['imagesSubdomainDir'].'photo/'.Yii::$app->user->id,
+            'savePathAlias' => Yii::$app->params['imagesSubdomainDir'].self::_getPhotosPath(),
             'rootPathAlias' => Yii::$app->params['imagesSubdomainDir'],
             'noImageBaseName' => 'noimage.jpg',
             'imageSizes' => [
@@ -158,15 +159,28 @@ class Photo extends \yii\db\ActiveRecord
     {
         $photos = self::find()->where(array('album' => $album_id))->select('img')->asArray()->all();
         foreach ($photos as $i => $photo) {
-            $photos[$i]['img_thumbnail'] = self::addPrefixToPhoto($photo['img'], '150x150_');
+            $photos[$i]['img_thumbnail'] = self::_addPrefixToPhoto($photo['img'], '150x150_');
         }
 
         return $photos;
     }
 
-    public static function getByPrefix(string $img, string $photo_prefix)
-    {
-        return self::addPrefixToPhoto($img, $photo_prefix);
+    /**
+     * Gets an image path with size prefix
+     * @param  string $path           Original relative path to image
+     * @param  string $photo_prefix   Prefix to use (i.e. '150x150_')
+     * @param  int    $service_id     Service ID to get photo from (@see: self::$_services)
+     * @param  int    $user_id
+     * @return string                 Absolute URL path to image
+     */
+    public static function getByPrefixAndServiceId(
+      string $path,
+      string $photo_prefix,
+      int $service_id = 0,
+      int $user_id = 0
+    ) {
+        $path = self::_addPrefixToPhoto($path, $photo_prefix);
+        return Yii::$app->params['photoServices'][$service_id].self::_getPhotosPath($user_id).$path;
     }
 
     /**
@@ -176,7 +190,7 @@ class Photo extends \yii\db\ActiveRecord
      *
      * @return string Modified path to file
      */
-    public static function addPrefixToPhoto($path, $prefix = null)
+    private static function _addPrefixToPhoto($path, $prefix = null)
     {
         if ($prefix === null || $prefix == '') {
             return $path;
@@ -190,6 +204,18 @@ class Photo extends \yii\db\ActiveRecord
         return implode('/', $dir);
     }
 
+    /**
+     * Gets a path to particular user's photos
+     * @param  int    $user_id
+     * @return string
+     */
+    private static function _getPhotosPath(int $user_id = 0)
+    {
+        if (!$user_id) {
+            $user_id = Yii::$app->user->id;
+        }
+        return 'photo/'.$user_id.'/';
+    }
 
     /* Relations */
     public function getPhotoalbum()

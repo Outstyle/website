@@ -20,11 +20,14 @@ use common\models\Photo;
 /* @var $photos */
 /* @var $options */
 
-# Widget wrapper
-echo Html::beginTag('div', ['class' => $options['class']]);
-
 # Working with each image
 if (!empty($photos)) {
+
+    # Widget wrapper
+    if ($options['class']) {
+        echo Html::beginTag('div', ['class' => $options['class']]);
+    }
+
     foreach ($photos as $key => $photo) {
         echo Html::tag('div',
 
@@ -40,12 +43,12 @@ if (!empty($photos)) {
           ElementsHelper::photoLink(
             $photo['id'],
             Html::img(
-              Photo::getByPrefix('//i.t2.local/'.$photo['img'], '210x126_'), ['class' => 'o-image u-full-width user__photothumbnail']
+              Photo::getByPrefixAndServiceId($photo['img'], '210x126_', $service_id = 1, $photo['user']),
+              [
+                'class' => 'o-image u-full-width user__photothumbnail'
+              ]
             )
           ).
-
-          # Photo title and link
-          ElementsHelper::photoLink($photo['id'], $photo['name']).
 
           # Photo date and provider
           Html::tag('div',
@@ -55,7 +58,7 @@ if (!empty($photos)) {
             ]),
 
             [
-              'class' => 'user__photodate'
+              'class' => 'user__photodate u-pillar-box--small c-text--shadowed'
             ]
           ),
 
@@ -66,7 +69,9 @@ if (!empty($photos)) {
           ]
         );
     }
-}
 
-# Widget wrapper END
-echo Html::endTag('div');
+    # Widget wrapper END
+    if ($options['class']) {
+        echo Html::endTag('div');
+    }
+}

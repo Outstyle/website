@@ -7,6 +7,10 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
 
+/**
+ * Modal ID
+ * @var string
+ */
 $modal_id = 'userphoto';
 
 echo Html::beginTag('div', [
@@ -14,7 +18,6 @@ echo Html::beginTag('div', [
         'class' => 'modal',
         'role' => 'dialog',
         'data-modal-width' => 760,
-        'data-modal-height' => 500,
         'data-modal-top' => 45,
     ]
 );
@@ -25,7 +28,7 @@ echo Html::tag('div',
 
         # Modal header
         Html::tag('span',
-            Yii::t('app', 'Просмотр фото'),
+            Yii::t('app', 'View photo'),
             ['class' => 'modal__caption c-text--shadow']
         ).
 
@@ -63,4 +66,4 @@ echo Html::endTag('div');
 
 /* JS: @see js/outstyle.modal.js */
 ?>
-<script>jQuery(document).ready(function(){modalInit();});</script>
+<script>jQuery(document).ready(function(){modalInit('#<?=$modal_id;?>');});</script>

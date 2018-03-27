@@ -55,16 +55,29 @@ echo
     if ($form_type == 'edit') {
         echo $form->field($model, 'id')->hiddenInput(['maxlength' => 11])->label(false);
 
-        /* Edit photoalbum submit button */
         echo Html::tag('div',
+
+            /* Edit photoalbum submit button */
             Html::submitButton(
                 Yii::t('app', 'Save changes'),
                 [
                   'id' => $form_type.'photoalbum-submit',
-                  'class' => 'c-button u-small i-'.$form_type.'photoalbum',
+                  'class' => 'c-button c-button--default u-small i-'.$form_type.'photoalbum',
                   'title' => Yii::t('app', 'Save changes')
                 ]
+            ).
+
+            /* Album delete button */
+            Html::button(
+                Yii::t('app', 'Delete album'),
+                [
+                  'id' => $form_type.'photoalbum-delete',
+                  'class' => 'c-button c-button--error u-small i-'.$form_type.'photoalbum u-pull-right',
+                  'title' => Yii::t('app', 'Delete album'),
+                  'ic-action' => 'userShowPhotoalbumDeleteModal:'.$model->id,
+                ]
             ),
+
             ['class' => 'u-letter-box--large clearfix']
         );
     } else {

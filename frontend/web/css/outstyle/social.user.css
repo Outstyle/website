@@ -47,18 +47,29 @@
   margin-bottom: 0px;
   padding-bottom: 0px;
 }
-.user__videotitle,
-.user__phototitle {
+.user__videotitle {
   display: block;
   font-size: .8em;
   text-align:left;
 }
-.user__videodate,
-.user__photodate {
+.user__videodate {
   font-size: .7em;
   text-align:left;
   color: #bcbcbc;
 }
+.user__photodate {
+opacity: 0;
+  font-size: .7em;
+  text-align:left;
+  color: #fff;
+  margin-top: -1.5em;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -ms-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+
 .user__photothumbnail,
 .user__videothumbnail {
   background: #eee;
@@ -66,4 +77,7 @@
 .user__photo.o-grid__cell--width-100 {
   border-top:1px solid #c7c7c7;
   background: #f9f9f9;
+}
+.user__photo:hover .user__photodate {
+  opacity: 1;
 }
