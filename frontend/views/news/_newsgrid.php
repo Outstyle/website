@@ -49,6 +49,7 @@ echo Html::hiddenInput('page', $page, ['id' => 'page']);
 
     !!! IMPORTANT !!! DON'T FORGET to switch off active events to prevent event binding duplication! (make event .off().on())
 */
+
 ?>
 <script>
 jQuery(document).ready(function () {
