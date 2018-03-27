@@ -129,7 +129,7 @@ jQuery(document).ready(function () {
     jQuery('.event__title').preciseTextResize({
       parent: '.event__title-wrap',
       grid : [{
-        0 : {125 : {1:54,4:46,10:32,15:26,20:24,25:21,30:18,35:16}}
+        0 : {125 : {1:46,4:40,6:34,10:32,15:26,20:24,25:21,30:18,35:16}}
       }],
     });
 

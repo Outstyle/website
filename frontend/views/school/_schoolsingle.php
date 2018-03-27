@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
 use common\models\geolocation\Geolocation;
-
+use frontend\widgets\WidgetCommentsDisqus;
 use frontend\widgets\WidgetComments;
 
 /**
@@ -231,15 +231,16 @@ echo
 Html::tag('div',
 
   # Comments
-  WidgetComments::widget([
+  /*WidgetComments::widget([
     'elem_id' => $school[0]['id'] ?? ''
-  ]),
+  ]),*/
+  WidgetCommentsDisqus::widget(),
+
 
 [
   'class' => 'o-grid o-grid__cell--width-100 o-grid--wrap o-grid--no-gutter comments',
 ]
 );
-
 /* JS: @see js/outstyle.portal.school.js */
 ?>
 <script>

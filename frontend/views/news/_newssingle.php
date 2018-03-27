@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use common\components\helpers\ElementsHelper;
 use frontend\widgets\WidgetComments;
+use frontend\widgets\WidgetCommentsDisqus;
 
 echo
 Html::tag('div',
@@ -255,9 +256,11 @@ Html::tag('div',
 );
 
 # Comments
-echo WidgetComments::widget([
+/*echo WidgetComments::widget([
   'elem_id' => $modelNews[0]['id'] ?? ''
-]);
+]);*/
+
+echo  WidgetCommentsDisqus::widget();
 
 /* JS: @see js/outstyle.portal.news.js */
 ?>
