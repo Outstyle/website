@@ -168,7 +168,7 @@ h1.block__title {
   opacity: 1;
 }
 #outstyle_news .readmore,
-.block__item .readmore,
+.block__item .readmore
 {
   width: 26px;
   text-align:center;
@@ -282,6 +282,6 @@ h4.block__title{
   font-size:2em;
   font-family: 'OsnovaProLight', sans-serif;
 }
-.news_seotext{
+.news_seotext {
   background: #edeff0;
 }

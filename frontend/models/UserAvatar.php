@@ -48,6 +48,7 @@ class UserAvatar extends UserDescription
             return Yii::$app->params['imagesPathUrl'].'/images/54x54_avatar_deleted.png';
         }
 
-        return Yii::$app->params['avatarPathUrl'].$userId.'_'.$avatarSize.'.jpg';
+        //return Yii::$app->params['avatarPathUrl'].$userId.'_'.$avatarSize.'.jpg';
+        return Yii::$app->params['imagesPathUrl'].'/images/54x54_avatar_deleted.png';
     }
 }
