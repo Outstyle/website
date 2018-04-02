@@ -286,3 +286,42 @@ h4.block__title{
   background: #edeff0;
   padding: 1em 10px;
 }
+/*Modal from opera mini*/
+.modal__opera{
+  display: none;
+  width: 250px;
+  position: fixed;
+  left: 10%;
+  background: #fff;
+  max-width: 100%;
+  top:70px;
+}
+.modal__opera-header{
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+}
+.modal__opera-header span{
+  font-size: 1.5em;
+  margin: 2.75em;
+}
+
+.modal__opera-close.cl{
+  float: right;
+  margin: 0px;
+}
+.modal__opera-body{
+  padding: 15px;
+  font-size: 1.3em;
+  text-align: center;
+}
+.modal__opera-footer{
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid #e5e5e5;
+}
+.btn.modal__opera-close{
+  color: #333;
+  background-color: #fff;
+  border: solid 1px #ccc;
+  padding: 5px;
+}

@@ -168,10 +168,6 @@ $this->endBody();
     });
 
 
-
-
-
-
         /* --- Before Intercooler headers processing --- */
     jQuery(document).on("afterHeaders.ic", function(event, element, xhr) {
 
@@ -234,6 +230,18 @@ $this->endBody();
 
 });
 </script>
+<!-- Only for opera-mini vis. -->
+<div class="modal__opera">
+    <div class="modal__opera-content">
+        <div class="modal__opera-header">
+            <span>Внимание!</span><span class="modal__opera-close cl">&times;</span>
+        </div>
+        <div class="modal__opera-body">Рекомендуем воспользоваться другим браузером: Chrome или Safari. В Opera Mini сайт может отображаться некорректно</div>
+        <div class="modal__opera-footer">
+            <button type="button" class="btn btn-default modal__opera-close" >Закрыть</button>
+        </div>
+    </div>
+</div>
 <script>
 /**
 * For responsive design. The script will check on the browser opera mini.
@@ -275,10 +283,17 @@ if(browser.opera_mini){
     link.href = '/css/outstyle/portal.media.operamini.css';
     link.media = 'all';
     head.appendChild(link);
-    alert('Рекомендуем воспользоваться другим браузером: Chrome или Safari. В Opera Mini сайт может отображаться некорректно');
+    /**
+     * If opera mini, show modal
+     * */
+    jQuery('.modal__opera').show();
 }
 </script>
-
+<script>
+    jQuery('.modal__opera-close').click(function() {
+        jQuery('.modal__opera').hide();
+    });
+</script>
 <div id="scrollup"><i class="icon-up-open-big icon-huge"></i></div>
 <div id="outstyle_loader"><div class="loader"></div></div>
 <div id="ohsnap"></div>

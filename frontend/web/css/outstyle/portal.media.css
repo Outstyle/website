@@ -56,7 +56,7 @@
         font-size:22px;
     }
     #outstyle_events-single .datebox__title > div{
-        font-size: 25px;
+        font-size: 30px;
     }
     #outstyle_events-single .events-single iframe{
         max-width: 100%;
@@ -90,19 +90,22 @@
         width:376px;
         height: 375px;
     }
-    #outstyle_school .o-grid__cell.school__item{
-        width: 375px;
-        height: 375px;
-    }
+
     #outstyle_school.padding-mobile{
         padding-top: 0px;
     }
 
+    #outstyle_school .o-grid__cell.school__item{
+        width: 375px;
+        height: 375px;
+    }
+    #outstyle_school .o-grid__cell.school__item .school__title{
+        font-size: 32px;
+    }
     #map__canvas--single.o-grid__cell--500x500{
-        /*display: none;*/
         flex: 0 0 375px;
         max-width: 375px;
-        width: 50%;
+        width: 375px;
         height: 375px;
     }
 
@@ -118,8 +121,8 @@
         height: 375px;
     }
     .school_single img.school__image{
-        width:375px;
-        min-width: 375px;
+        width:100%;
+        min-width: 100%;
     }
     .school_single .c-diamond .c-diamond--small{
         left:40%;
@@ -135,6 +138,10 @@
     .article__image__wrap .w-fixed-250{
         width: 248px;
         max-width: 248px;
+    }
+    /*News*/
+    .news__loader{
+        margin: 60px 0 0 380px;
     }
     /*Single news*/
     #news-single-similar .similar__title{
@@ -419,17 +426,7 @@
     }
     .u-window-box--super{
         padding: 1em;
-    }/*
-    #outstyle_news-single .authorbox__author__wrap{
-        -ms-flex: 0 0 50%;
-        flex: 0 0 50%;
-        max-width: 50%;
     }
-    #outstyle_news-single .authorbox__date__wrap, #outstyle_news-single .authorbox__actionbox {
-        -ms-flex: 0 0 25%;
-        flex: 0 0 25%;
-        max-width: 25%;
-    }*/
     /*School details*/
     .school__details .o-grid__cell--width-40.school__parameters{
         flex: 0 0 100%;
@@ -499,7 +496,6 @@
         z-index: 7;
     }
 
-
 }
 @media (max-width: 540px){
     /*Wrap*/
@@ -568,6 +564,7 @@
     }
     #outstyle_news .o-grid__cell--250x250 .news__body{
         font-size:11px;
+        max-height: 50px;
     }
     #outstyle_news .o-grid__cell--250x250 .u-letter-box--small{
         padding-top: .2em;
@@ -584,6 +581,8 @@
     /*Article*/
     #articles-filter .checkbox__wrap{
         width: 50%;
+        padding-right: 0.5em;
+        padding-left: 0.5em;
     }
     .mobile.article__actions{
         margin:0 0 15px 0;
@@ -871,6 +870,11 @@
     .school_single .school__item .school__category{
         letter-spacing: 3px;
     }
+    #outstyle_school .school__item hr{
+        padding-top: .3em;
+        padding-bottom: .3em;
+        margin: 0.3em auto;
+    }
     .school_single .c-diamond .c-diamond--small {
         left: 5%;
         right: 5%;
@@ -1033,7 +1037,24 @@
     }
     #outstyle_school .school__body.block__body{
         font-size: 12px;
-        max-height: 85px;
+        max-height: 40px;
+    }
+    #outstyle_news .o-grid__cell--500x250.news__item .news__title span {
+        font-size: 13px;
+    }
+    #outstyle_news .o-grid__cell--500x250 .u-letter-box--small {
+        padding-top: .1em;
+        padding-bottom: .1em;
+        margin-top: .1em;
+        margin-bottom: .1em;
+    }
+    #outstyle_news .o-grid__cell--500x250 .news__body{
+        font-size: 10px;
+    }
+    #outstyle_school .school__item hr {
+        padding-top: .1em;
+        padding-bottom: .1em;
+        margin: 0.1em auto;
     }
     /*Single news/post*/
     .news-single__body iframe{
@@ -1105,6 +1126,10 @@
         display: block;
         width: 100%;
     }
+    #events-filter .checkbox__wrap{
+        padding-right: .5em;
+        padding-left: .5em;
+    }
 
     /*Events*/
     #events-filter .checkbox__wrap span{
@@ -1119,8 +1144,12 @@
     #outstyle_events  .block__category{
         font-size: 1em;
     }
-    #outstyle_events .c-diamond .c-diamond--small, #outstyle_events-single .c-diamond .c-diamond--small{
-        left:26%;
+    #outstyle_events .c-diamond .c-diamond--small{
+        left:20%;
+    }
+    #outstyle_events-single .c-diamond .c-diamond--small {
+        left:28%;
+
     }
     #outstyle_events-single .datebox__title > div{
         font-size: 18px;

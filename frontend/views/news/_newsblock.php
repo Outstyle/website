@@ -103,11 +103,11 @@ if (isset($modelNews)) {
     }
 
     if ($page) {
-      if ($outstyle_news_height) {
-        $outstyle_news_height = $outstyle_news_height-500;
+      if($outstyle_news_height) {
+        $outstyle_news_height = $outstyle_news_height-1300;
       }
       if ($page == 1) {
-        $outstyle_news_height=50;
+            $outstyle_news_height=10;
       }
         echo
         Html::tag('div',
@@ -115,4 +115,5 @@ if (isset($modelNews)) {
           ['style' => "top:{$outstyle_news_height}px;position:absolute;z-index:10000;"]
         );
     }
+
 }
