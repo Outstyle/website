@@ -104,7 +104,7 @@ if (isset($modelNews)) {
 
     if ($page) {
       if($outstyle_news_height) {
-        $outstyle_news_height = $outstyle_news_height-1300;
+        $outstyle_news_height = $outstyle_news_height-500;
       }
       if ($page == 1) {
             $outstyle_news_height=10;
