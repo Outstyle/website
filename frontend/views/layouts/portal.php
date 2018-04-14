@@ -30,12 +30,6 @@ Spaceless::begin();
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="//maps.googleapis.com/maps/api/js?key=<?=Yii::$app->params['googleMapsApiKey'];?>&amp;extension=.js"></script>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-9873762851395779",
-            enable_page_level_ads: true
-        });
-    </script>
 </head>
 <body class="portal user<?php echo (Yii::$app->user->id) ? '-registered' : '-guest'; ?>" ic-history-elt=''>
 <?php

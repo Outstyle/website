@@ -184,15 +184,22 @@ class Events extends ActiveRecord
 
         /* Default arguments for 'where' and $andWhere clauses */
         $where['status'] = self::STATUS_PUBLISHED;
+        /**
+        if want print not all events: the array ($andWhere ) must be not empty, but with sort parameters by date, as below */
         $andWhere = ['>', 'events_date', date('Y-m-d H:i:s', time())]; /* Only active events */
-
+        $andWhere = []; /* Only all events */
+        $eventsOrderBy = 'events_date desc';/* Only all events. Default order by id desc */
         /**
          * Getting the events: let's start by partially adding parameters in case we have pagination
          * Notice that we are adding query parameters one by one (chaining), checking additional conditions
          * Read more about QB syntax here: http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html
          * Also we are using 'with()' for eager loading from user description table.
          */
-        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);
+        /**
+         * if want to print not all events, uncomment next line. Parameter 'where' must not empty. Parameter 'orderBy' default: id desc;
+         */
+        /*$eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);*/ /* Only active events */
+        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy($eventsOrderBy);/* Only all events sort by events date*/
 
         /* If we have pagination */
         if ($page) {
