@@ -52,18 +52,13 @@
     #outstyle_events .c-diamond .c-diamond--small, #outstyle_events-single .c-diamond .c-diamond--small{
         left:42%;
     }
-    #outstyle_events .event__title span{
-        font-size:22px;
-    }
-    #outstyle_events-single .datebox__title > div{
-        font-size: 30px;
-    }
+
     #outstyle_events-single .events-single iframe{
         max-width: 100%;
         height: auto;
     }
     #outstyle_events-single .datebox__date .number{
-        font-size: 66px;
+        font-size: 58px;
     }
     #outstyle_events-single .map .c-diamond .c-diamond--small{
         left: 28%;
@@ -84,7 +79,9 @@
     #outstyle_events .in_mobile_event_desc{
         display: none;
     }
-
+    #outstyle_events .event__price{
+        font-size: 28px;
+    }
     /*School*/
     #school-filter-block--geolocation{
         width:376px;
@@ -138,6 +135,10 @@
     .article__image__wrap .w-fixed-250{
         width: 248px;
         max-width: 248px;
+    }
+    #outstyle_news-single .news-single__text p>img,  #outstyle_news-single .news-single__text img{
+        max-width: 100%;
+        height: auto !important;
     }
     /*News*/
     .news__loader{
@@ -464,16 +465,17 @@
     #outstyle_events .in_mobile_event_desc{
         display: block;
     }
+    #outstyle_events .in_mobile_event_desc  .datebox__address h2{
+        font-size: 19px;
+    }
     #outstyle_events .in_mobile_event_desc .datebox__city{
         padding:0 0.5em;
-        margin: 0.5em 0;
+        margin: 0.3em 0;
     }
     #outstyle_events .c-text__color--redshadow.event__price{
         color:#ed1f24;
     }
-    #outstyle_events .event__title span{
-        font-size:22px;
-    }
+
     #outstyle_events-single .datebox__date .number{
         font-size: 40px;
     }
@@ -546,8 +548,16 @@
     #outstyle_news .o-grid__cell--500x250.news__item .news__title span{
         font-size: 16px;
     }
+    #outstyle_news .o-grid__cell--500x250.news__item .news__body{
+        font-size:11px;
+        max-height: 25px;
+    }
     .news__category.block__category{
         font-size:1.0em;
+        padding: .5em .5em .1em;
+    }
+    #outstyle_news .news__footer{
+        padding: 0.3em 1em;
     }
     #outstyle_news .news__filter-button, .block__filter-button {
         width: 11px;
@@ -660,9 +670,6 @@
     }
     #outstyle_events .c-diamond .c-diamond--small, #outstyle_events-single .c-diamond .c-diamond--small{
         left:32%;
-    }
-    #outstyle_events .event__title span{
-        font-size:16px;
     }
     #outstyle_events .event__filter-button{
         position: absolute;
@@ -880,8 +887,8 @@
         right: 5%;
     }
     #outstyle_school .school__body.block__body{
-        font-size: 13px;
-        max-height: 106px;
+        font-size: 12px;
+        max-height: 100px;
     }
     /*Articles*/
     .c-diamond .c-diamond--small{
@@ -949,6 +956,18 @@
     }
     #outstyle_events-single .recommended-bottom-wrap .c-diamond .c-diamond--small {
         left: 15%;
+    }
+    #outstyle_events .event__title span{
+        font-size:15px;
+    }
+    #outstyle_events .event__filter-button{
+        margin: 5px 16px;
+    }
+    #outstyle_events .events__category span {
+        font-size: 0.8em;
+    }
+    .event__category{
+        margin-top: -122px;
     }
     .about-us{
         padding: 0.3em;
