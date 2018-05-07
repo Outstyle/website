@@ -14,6 +14,8 @@ use app\models\UserNickname;
 use app\models\UserAvatar;
 use common\components\helpers\StringHelper;
 use common\components\helpers\BlocksHelper;
+use himiklab\sitemap\behaviors\SitemapBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%news}}".
@@ -95,6 +97,28 @@ class News extends ActiveRecord
             'backendSubdomain' => 'admin.',
           ],
         ],
+            'sitemap' => [
+                'class' => SitemapBehavior::className(),
+                'scope' => function ($model) {
+                    $model->select(['url', 'created', 'article']);
+                    $model->andWhere(['status' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    if($model->article == 1){
+                        $model_url = Url::to('/article/'.$model->url, 'https');
+                    }
+                    else{
+                        $model_url = Url::to('/news/'.$model->url, 'https');
+                    }
+                    return [
+                        'loc' => $model_url,
+                        'lastmod' => strtotime($model->created),
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                },
+
+            ]
       ];
     }
 

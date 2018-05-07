@@ -17,10 +17,10 @@
 /webstat
 
 # Other root files, like certificates or robots
-.idea
-.htaccess
-googlea581296eba58e8a7.html
-746041EB520608163BF0FF751DC9AA79.txt
+/.idea
+/.htaccess
+/googlea581296eba58e8a7.html
+/746041EB520608163BF0FF751DC9AA79.txt
 
 # windows thumbnail cache
 Thumbs.db
@@ -30,15 +30,15 @@ Thumbs.db
 /update.php
 
 # composer itself is not needed
-composer.phar
-composer.lock
-composer.json
+/composer.phar
+/composer.lock
+/composer.json
 
 # Mac DS_Store Files
 .DS_Store
 
 # phpunit itself is not needed
-phpunit.phar
+/phpunit.phar
 
 # local phpunit config
 /phpunit.xml

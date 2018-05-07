@@ -15,6 +15,8 @@ use common\components\helpers\PriceHelper;
 use common\components\helpers\PhoneHelper;
 use common\components\helpers\BlocksHelper;
 use yii\helpers\Html;
+use himiklab\sitemap\behaviors\SitemapBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%school}}".
@@ -108,6 +110,21 @@ class School extends ActiveRecord
             'backendSubdomain' => 'admin.',
           ],
         ],
+            'sitemap' => [
+                'class' => SitemapBehavior::className(),
+                'scope' => function ($model) {
+                    $model->select(['id', 'created']);
+                    $model->andWhere(['status' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    return [
+                        'loc' => Url::to('/school/'.$model->id, 'https'),
+                        'lastmod' => strtotime($model->created),
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ]
       ];
     }
 
