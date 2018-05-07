@@ -9,9 +9,11 @@
 /backend/web/assets
 /backend/web/index.php
 /console
+/tests
 /frontend/config
 /backend/config
 /common/config
+/common/thirdparty/
 
 #misc
 /webstat
@@ -23,7 +25,7 @@
 /746041EB520608163BF0FF751DC9AA79.txt
 
 # windows thumbnail cache
-Thumbs.db
+/Thumbs.db
 
 # composer vendor dir
 /vendor
@@ -35,7 +37,7 @@ Thumbs.db
 /composer.json
 
 # Mac DS_Store Files
-.DS_Store
+/.DS_Store
 
 # phpunit itself is not needed
 /phpunit.phar
@@ -46,12 +48,3 @@ Thumbs.db
 # robots, sitemap...
 /robots.txt
 /sitemap.xml
-
-#tests
-/tests
-/codeception.yml
-
-#other
-/banner.php
-/installer
-/readme.txt
