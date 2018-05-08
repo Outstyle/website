@@ -13,8 +13,8 @@ class WidgetCommentsDisqus extends Widget{
             $Request = Yii::$app -> getRequest();
 
             $disqus_url = $Request -> hostInfo;
-            $parse_ar = parse_url($disqus_url);
-
+            //if for uncomments next line
+            // scheme $parse_ar = parse_url($disqus_url);
             if($this -> disqus_url === null)
             {
                 $disqus_url .= $Request -> url;
@@ -27,7 +27,7 @@ class WidgetCommentsDisqus extends Widget{
             return $this -> render('widgetCommentsDisqus',[
                 'disqus_shortname' => $this -> disqus_shortname,
                 'disqus_url' => $disqus_url,
-                'scheme' => $parse_ar['scheme']
+                'scheme' => 'https'
             ]);
         }
         return '';

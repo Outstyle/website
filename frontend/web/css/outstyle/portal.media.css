@@ -1132,7 +1132,7 @@
         text-align: center;
     }
     #outstyle_articles .news-single .hashtags {
-        display:block;
+        display:none;
         text-align: center;
     }
     #outstyle_articles .article__actions{
