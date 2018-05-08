@@ -257,6 +257,9 @@ img.school__image {
   padding: 1.5em 0em 1.5em 0em;
   border-bottom: 1px solid #ddd;
 }
+.article__box .hashtags{
+  display:none;
+}
 .article__excerpt {
   padding: 0 1em 0 1em;
 }
