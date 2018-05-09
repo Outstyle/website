@@ -12,22 +12,22 @@ class WidgetCommentsDisqus extends Widget{
         {
             $Request = Yii::$app -> getRequest();
 
-            $disqus_url = $Request -> hostInfo;
-            //if for uncomments next line
-            // scheme $parse_ar = parse_url($disqus_url);
+            $disqus_url = $Request->hostInfo;
+            //for auto scheme uncomments next line
+            //$parse_ar = parse_url($disqus_url);
             if($this -> disqus_url === null)
             {
-                $disqus_url .= $Request -> url;
+                $disqus_url .= $Request->url;
             }
             else
             {
-                $disqus_url .= $this -> disqus_url;
+                $disqus_url .= $this->disqus_url;
             }
 
             return $this -> render('widgetCommentsDisqus',[
-                'disqus_shortname' => $this -> disqus_shortname,
-                'disqus_url' => $disqus_url,
-                'scheme' => 'https'
+                'disqus_shortname'=>$this->disqus_shortname,
+                'disqus_url'=>$disqus_url,
+                'scheme'=>'https'
             ]);
         }
         return '';
