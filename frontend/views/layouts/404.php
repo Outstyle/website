@@ -8,9 +8,11 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
+use frontend\assets\ErrorAsset;
 
 use yii\widgets\Spaceless;
 
+ErrorAsset::register($this);
 $this->beginPage();
 Spaceless::begin();
 ?>
