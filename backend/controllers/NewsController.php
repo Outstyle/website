@@ -131,6 +131,7 @@ class NewsController extends Controller
         $categories = Category::getCategories(['id' => News::NEWS_CATEGORIES], '', true);
         $status = StatusPublication::getStatusList();
 
+
         /* Active form validation (AJAX) */
         if (Yii::$app->request->isAjax && $model->load($data)) {
             if (isset($data['ajax']) && ($data['ajax'] == 'form-create-news')) {
@@ -159,7 +160,7 @@ class NewsController extends Controller
             'model' => $model,
             'categories' => $categories,
             'status' => $status,
-            'errors' => $model->errors,
+            'errors' => $model->errors
         ]);
     }
 
@@ -258,7 +259,12 @@ class NewsController extends Controller
     protected function setData($data, $model)
     {
         $model->url = StringHelper::slugify($model->name);
-        $model->user = Yii::$app->user->id;
+        if($model->isNewRecord){
+            $model->user = Yii::$app->user->id;
+        }
+        else{
+            $model->user = $model->user;
+        }
         $model->article = (Yii::$app->controller->id == 'news') ? 0 : 1;
 
         return $model;
