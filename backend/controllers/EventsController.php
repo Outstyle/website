@@ -255,6 +255,8 @@ class EventsController extends Controller
 
         $model->user = Yii::$app->user->id;
         $model->description = $data[$controllerId]['description'];
+        $model->redactor_id = Yii::$app->user->id;
+
 
         /* TODO: ? What is the album? */
         $model->album = 0;

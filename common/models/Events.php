@@ -5,6 +5,8 @@ namespace common\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use yii\behaviors\TimestampBehavior;
+use DateTime;
 use backend\models\Category;
 use app\models\Comments;
 use app\models\Likes;
@@ -106,10 +108,20 @@ class Events extends ActiveRecord
     /**
      * imageUploaderBehavior - https://github.com/demisang/yii2-image-uploader
      * Needed for 'Events' image uploading and cropping in admin area.
+     * timestamp - https://yiiframework.com.ua/ru/doc/guide/2/concept-behaviors/
      */
     public function behaviors()
     {
         return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'date_redact',
+                ],
+                'value' => function() {
+                    return date('U');
+                },
+            ],
         'imageUploaderBehavior' => [
           'class' => 'demi\image\ImageUploaderBehavior',
           'imageConfig' => [
@@ -142,13 +154,21 @@ class Events extends ActiveRecord
             'sitemap' => [
                 'class' => SitemapBehavior::className(),
                 'scope' => function ($model) {
-                    $model->select(['id', 'created']);
+                    $model->select(['id', 'created', 'date_redact']);
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
+                    if($model->date_redact==0){
+                        $date = new DateTime("@$model->created");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+                    else{
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
                     return [
                         'loc' => Url::to('/events/'.$model->id, 'https'),
-                        'lastmod' => strtotime($model->created),
+                        'lastmod' => $time_last_mod,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];
@@ -295,7 +315,7 @@ class Events extends ActiveRecord
                     for ($s = 0; $s < $count; ++$s) {
                         $modelEvents[$i]['recommended'][$s]['id'] = $recommendedEvents[$s]->id;
                         $modelEvents[$i]['recommended'][$s]['title'] = $recommendedEvents[$s]->title;
-                        $modelEvents[$i]['recommended'][$s]['img'] = null; /* TODO: similar to news getSrc() */
+                        $modelEvents[$i]['recommended'][$s]['img'] = $recommendedEvents[$s]->getImageSrc('320x120_'); /* TODO: similar to news getSrc() */
                     }
                 }
             }
