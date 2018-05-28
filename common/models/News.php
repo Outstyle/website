@@ -6,6 +6,8 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use yii\behaviors\TimestampBehavior;
+use DateTime;
 use backend\models\Category;
 use app\models\Comments;
 use app\models\Likes;
@@ -16,6 +18,7 @@ use common\components\helpers\StringHelper;
 use common\components\helpers\BlocksHelper;
 use himiklab\sitemap\behaviors\SitemapBehavior;
 use yii\helpers\Url;
+
 
 /**
  * This is the model class for table "{{%news}}".
@@ -62,13 +65,23 @@ class News extends ActiveRecord
     /**
      * imageUploaderBehavior - https://github.com/demisang/yii2-image-uploader
      * Needed for 'News' image uploading and cropping in admin area.
+     * timestamp - https://yiiframework.com.ua/ru/doc/guide/2/concept-behaviors/
      */
     public function behaviors()
     {
         return [
-        'imageUploaderBehavior' => [
-          'class' => 'demi\image\ImageUploaderBehavior',
-          'imageConfig' => [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                      ActiveRecord::EVENT_BEFORE_UPDATE => 'date_redact',
+                ],
+                'value' => function() {
+                    return date('U');
+                },
+            ],
+            'imageUploaderBehavior' => [
+            'class' => 'demi\image\ImageUploaderBehavior',
+            'imageConfig' => [
             'imageAttribute' => 'img',
             'savePathAlias' => Yii::$app->params['imagesPathDir'].Yii::$app->controller->id,
             'rootPathAlias' => Yii::$app->params['imagesPathDir'],
@@ -100,7 +113,7 @@ class News extends ActiveRecord
             'sitemap' => [
                 'class' => SitemapBehavior::className(),
                 'scope' => function ($model) {
-                    $model->select(['url', 'created', 'article']);
+                    $model->select(['url', 'created', 'date_redact', 'article']);
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
@@ -110,15 +123,24 @@ class News extends ActiveRecord
                     else{
                         $model_url = Url::to('/news/'.$model->url, 'https');
                     }
+                    if($model->date_redact==0){
+                        $time_last_mod = strtotime($model->created);
+                    }
+                    else{
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+
                     return [
                         'loc' => $model_url,
-                        'lastmod' => strtotime($model->created),
+                        'lastmod' => $time_last_mod,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];
                 },
 
-            ]
+            ],
+
       ];
     }
 

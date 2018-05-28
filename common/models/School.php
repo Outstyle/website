@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use DateTime;
 use common\models\geolocation\Geolocation;
 use backend\models\Category;
 use app\models\Comments;
@@ -113,13 +114,20 @@ class School extends ActiveRecord
             'sitemap' => [
                 'class' => SitemapBehavior::className(),
                 'scope' => function ($model) {
-                    $model->select(['id', 'created']);
+                    $model->select(['id', 'created', 'date_redact']);
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
+                    if($model->date_redact==0){
+                        $time_last_mod = strtotime($model->created);
+                    }
+                    else{
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
                     return [
                         'loc' => Url::to('/school/'.$model->id, 'https'),
-                        'lastmod' => strtotime($model->created),
+                        'lastmod' => $time_last_mod,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];
