@@ -30,12 +30,15 @@ echo Html::beginTag('div', ['class' => 'news-form news-single']);
       ]
     );
 
-echo
+    echo
 
     $form->field($model, 'name')->textInput(['maxlength' => 255]),
-    $form->field($model, 'category')->textInput()->dropDownList($categories, ['prompt' => Yii::t('app', 'Choose category...')]),
+    $form->field($model, 'category')->textInput()->dropDownList($categories, ['prompt' => Yii::t('app', 'Choose category...')]);
 
-    $form->field($model, 'url')->textInput(['maxlength' => 255]),
+    if(!$model->isNewRecord){
+    echo $form->field($model, 'url')->textInput(['maxlength' => 255]);
+    }
+    echo
     $form->field($model, 'title')->textInput(['maxlength' => 255]),
     $form->field($model, 'description')->textInput(['maxlength' => 255]),
     $form->field($model, 'small')->textarea(['rows' => 8]),
