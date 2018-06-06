@@ -258,7 +258,13 @@ class NewsController extends Controller
      */
     protected function setData($data, $model)
     {
-        $model->url = StringHelper::slugify($model->name);
+        if(empty($model->url)){
+            $model->url = StringHelper::slugify($model->name);
+        }
+        else{
+            $model->url = StringHelper::slugify($model->url);
+        }
+
         if($model->isNewRecord){
             $model->user = Yii::$app->user->id;
         }
