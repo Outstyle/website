@@ -5,6 +5,8 @@ namespace frontend\widgets;
 use Yii;
 use yii\base\Widget;
 
+use app\models\UserAvatar;
+
 /**
  * Handles User -> Friends block, showing friends of user
  * Part of Outstyle network
@@ -18,18 +20,17 @@ use yii\base\Widget;
  */
 class UserFriendsBlock extends Widget
 {
-
     /**
      * User friends array
      * @var array
      */
     public $friends = [];
-
     /**
-     * Friends additional info, formed in this widget out of raw DB data
-     * @var string
+     * Widget options
+     * @var array
      */
-    public $friendAvatarPath;
+    public $options = [];
+
 
     /**
      * @inheritdoc
@@ -40,37 +41,39 @@ class UserFriendsBlock extends Widget
 
         $friends = [];
 
-        # Working with each friend data, setting additional info
-        if (isset($this->friends)) {
+        # Working with friends and setting all the data for using in view
+        if (isset($this->friends) && !empty($this->friends)) {
             foreach ($this->friends as $k => $friend) {
-                # Friend ID
-                $id = $this->friends[$k]['id'];
+                $friends[$k] = $friend;
 
-                # Friend avatar path
-                $friends[$id]['friendAvatarPath'] = \app\models\UserAvatar::getAvatarPath($id);
+                $friends[$k]['fullname'] = $friend['name'].' &quot;'.$friend['nickname'].'&quot; '.$friend['last_name'];
+                $friends[$k]['location'] = '';
+                $friends[$k]['birthday_date'] = $friend['birthday'] ?? '';
+                $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['id']);
 
-                # Friend name
-                $friends[$id]['name'] = \app\models\UserNickname::getNickname($id);
+                if (isset($friend['geolocationCountries']) && isset($friend['geolocationCities'])) {
+                    $friends[$k]['location'] = $friend['geolocationCountries']['name_ru'].', '.$friend['geolocationCities']['name'];
+                }
 
-                # Friend culture
-                # $friends[$id]['culture'] = \app\models\UserDescription::getUserCultureByUserId($id);
+                if (isset($friend['birthday'])) {
+                    $friends[$k]['birthday_date'] = Yii::$app->formatter->asDate($friend['birthday'], Yii::$app->params['dateMini']);
+                }
             }
             $this->friends = $friends;
         }
-    }
 
+        # Default view for a widget
+        if (!isset($this->options['view'])) {
+            $this->options['view'] = 'userFriendsBlock';
+        }
+    }
 
     /**
      * @inheritdoc
      */
     public function run()
     {
-        # If user has no friends
-        if (!$this->friends) {
-            return;
-        }
-
-        return $this->render('userFriendsBlock', [
+        return $this->render($this->options['view'], [
           'friends' => $this->friends,
         ]);
     }

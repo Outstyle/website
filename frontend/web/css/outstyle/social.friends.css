@@ -3,8 +3,127 @@
   position: relative;
 }
 .user__friends .friend {
-    display: block;
-    line-height: 1.3em;
-    font-size: 0.8em;
-    white-space: nowrap;
+  display: block;
+  line-height: 1.3em;
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+
+.friend__avatar {
+  display:block;
+  margin:.5em;
+}
+.friend__avatar--small{
+  width:60px;
+  height:60px;
+}
+
+
+/* --- FRIENDS SEARCH FORM & RESULTS --- */
+#friends-search-form {
+  font-size:0.8em;
+}
+#friends-search-form input[name=search] {
+  height: 23px;
+  margin: 4px 0;
+  background: #f3f3f3;
+}
+#friends-search-form .o-grid__cell--labeled {
+  margin-top:-0.8em;
+  margin-bottom: 0.6em;
+}
+
+.friends__search {
+  background: #e2e2e2;
+  padding: 0 1em;
+}
+
+.search__friends .friend__box {
+  border: 1px solid #f0f0f0;
+  border-top: 0;
+  border-right: 0;
+}
+.search__friends .friend__box .friend {
+  display:block;
+  float:left;
+}
+.search__friends .friend__info {
+  display:block;
+  float:left;
+  margin:.5em;
+  color:#bcbcbc;
+}
+.search__friends .friend__info .friend span {
+  font-size:1.2em;
+}
+.search__friends--notfound div {
+  text-align: center;
+  padding: 2em;
+}
+
+.friends__activebuttons {
+  background:#f7f7f7;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #efefef;
+  padding: 1em 0;
+}
+.friends__activebuttons .roundbutton {
+  background:#efefef;
+  border-radius: 50%;
+  display: block;
+  height:42px;
+  width:42px;
+  margin: 0 auto;
+}
+.friends__activebuttons .roundbutton i {
+  width: 26px;
+  height: 26px;
+  margin-top: 9px;
+  text-align: center;
+}
+.friends__activebuttons .roundbutton .zmdi-hc-stack {
+  width: 26px;
+  height: 26px;
+  font-size: 1.5em;
+}
+.friends__activebuttons .roundbutton .zmdi-hc-stack .zmdi-hc-sided {
+  margin-left: 24px;
+  margin-top: 13px;
+  font-size: 0.7em;
+  width: 11px;
+  opacity:0.7;
+}
+.friends__activebuttons .roundbutton:hover .zmdi-hc-stack .zmdi-hc-sided {
+  opacity:1;
+}
+.friends__activebuttons .roundbutton .zmdi-hc-stack .zmdi-hc-medium {
+  font-size: 1.12em;
+}
+.friends__activebuttons .roundbutton .zmdi-hc-stack i {
+  margin-top: 12px;
+}
+.friends__activebuttons a.roundbutton {
+    color: #b9b9b9;
+}
+.friends__activebuttons a.roundbutton:hover,
+.friends__activebuttons a.roundbutton--active {
+  color: #7d7d7d;
+  background:#ddd;
+}
+
+#friends__loader {
+  display:none;
+}
+#friends__loader .friends__loader {
+  margin: 5em auto;
+  width:80px;
+  display:block;
+}
+
+select[name=sort_by] {
+  margin-bottom: 1em;
+}
+
+.field-friends-city {
+  margin-bottom: 1.8em;
 }

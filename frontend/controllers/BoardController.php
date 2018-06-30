@@ -22,6 +22,7 @@ use app\models\Comments;
 use app\models\Newsfeed;
 use app\models\Attachments;
 use app\models\AuthAssignment;
+use app\models\Friend;
 use app\models\UserDescription;
 use app\models\UserPrivacy;
 use app\models\UserAvatar;
@@ -79,23 +80,25 @@ class BoardController extends ParentController
      */
     public function actionView($userId)
     {
-        $model = Board::getByUserId($userId);
+        $user = Board::getByUserId($userId);
+        $userFriends = Friend::getUserFriends(0, $userId);
 
-        if (!$model) {
+        if (!$user) {
             throw new HttpException(404, Yii::t('app', 'User not found!'));
         }
 
         /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
         /* TODO: https://github.com/niallkennedy/open-graph-protocol-examples/blob/master/profile.html */
         Yii::$app->opengraph->set([
-            'title' => $model->userDescription->name. ' '.$model->userDescription->last_name,
-            'description' => ArrayHelper::getValue(UserDescription::cultureList(true), $model->userDescription->culture),
-            'image' => Url::toRoute([UserAvatar::getAvatarPath($model->id)], true),
+            'title' => $user->userDescription->name. ' '.$user->userDescription->last_name,
+            'description' => ArrayHelper::getValue(UserDescription::cultureList(true), $user->userDescription->culture),
+            'image' => Url::toRoute([UserAvatar::getAvatarPath($user->id)], true),
             'type' => 'profile'
         ]);
 
         return $this->render('view', [
-            'user' => $model,
+            'user' => $user,
+            'userFriends' => $userFriends,
         ]);
     }
 

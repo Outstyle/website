@@ -15,8 +15,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
 
-/* @see @frontend/widgets/UserVideosBlock for vars */
-/* @var $friends */
+/**
+ * @var array   $friends    @see: @frontend/widgets/UserFriendsBlock.php
+ */
 
 echo Html::beginTag('div', ['class' => 'u-window-box--medium u-window-box--shadowed user__friends']);
 
@@ -29,16 +30,16 @@ echo Html::beginTag('div', ['class' => 'u-window-box--medium u-window-box--shado
   # Working with friends model (grid)
   echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter u-letter-box--medium']);
 
-    foreach ($friends as $id => $friend) {
+    foreach ($friends as $friend) {
         echo Html::tag('div',
 
           # Friend image
-          ElementsHelper::linkElement('friend', Html::img($friend['friendAvatarPath'], [
+          ElementsHelper::linkElement('friend', Html::img($friend['avatar'], [
             'class' => "o-image roundborder friend__avatar"
-          ]), Url::to(['/id'.$id], true), false, $friend['name']).
+          ]), Url::to(['/id'.$friend['id']], true), false, $friend['name']).
 
           # Friend name
-          ElementsHelper::linkElement('friend', $friend['name'], Url::to(['/id'.$id], true)),
+          ElementsHelper::linkElement('friend', $friend['name'], Url::to(['/id'.$friend['id']], true)),
 
           [
             'class' => 'o-grid__cell--width-33 u-window-box--small friend',
@@ -47,8 +48,7 @@ echo Html::beginTag('div', ['class' => 'u-window-box--medium u-window-box--shado
     }
 
   echo Html::endTag('div');
-
-
+  
 echo Html::endTag('div');
 
 # SEPARATOR

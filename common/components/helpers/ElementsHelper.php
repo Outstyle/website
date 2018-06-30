@@ -445,7 +445,7 @@ class ElementsHelper extends Html
             $divOneAttrs
           ),
           [
-            'class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-100',
+            'class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-100 o-grid__cell--labeled',
           ]
         );
     }

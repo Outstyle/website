@@ -3,6 +3,7 @@
 namespace common\models\geolocation;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use common\components\helpers\CURLHelper;
 
 /**
@@ -83,7 +84,9 @@ class GeolocationCities extends \yii\db\ActiveRecord
             $json = CURLHelper::getURL($url, $headerOptions);
 
             # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($json) {
+                $parsedjson = json_decode($json, true);
+            }
 
             if (isset($parsedjson['response']) && !empty($parsedjson['response']['items'][0]['title'])) {
                 /**
@@ -123,5 +126,28 @@ class GeolocationCities extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+    /**
+     * Get all active cities from DB
+     * @param  integer $country_id
+     * @return array
+     */
+    public static function getAllActiveCitiesArray($country_id = 0)
+    {
+        return self::find()->select('vk_city_id,name')->orderBy([
+          'name' => SORT_ASC
+        ])->asArray()->all();
+    }
+    /**
+     * Behaves same as 'getAllActiveCitiesArray', adding 'Choose city...' as a first menu to choose from dropdown.
+     *
+     * @return array
+     */
+    public static function getAllActiveCitiesDropdown()
+    {
+        $cities = ArrayHelper::map(self::getAllActiveCitiesArray(), 'vk_city_id', 'name');
+        if (is_array($cities)) {
+            return ['' => Yii::t('app', 'Choose city...')] + $cities;
+        }
     }
 }

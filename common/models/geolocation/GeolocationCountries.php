@@ -3,7 +3,7 @@
 namespace common\models\geolocation;
 
 use Yii;
-
+use yii\helpers\ArrayHelper;
 use common\components\helpers\BackupHelper;
 use common\components\helpers\CURLHelper;
 
@@ -73,7 +73,9 @@ class GeolocationCountries extends \yii\db\ActiveRecord
             $json = CURLHelper::getURL($url, $headerOptions);
 
             # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($json) {
+                $parsedjson = json_decode($json, true);
+            }
 
             if (isset($parsedjson['response'])) {
                 $parsedjson = $parsedjson['response']['items'];
@@ -92,7 +94,6 @@ class GeolocationCountries extends \yii\db\ActiveRecord
 
         return $parsedjson;
     }
-
     /**
      * Behaves same as 'getVkCountries', adding 'Choose country...' as a first menu to choose from dropdown
      * @param  integer $lang See 'getVkCountries' param
@@ -104,13 +105,12 @@ class GeolocationCountries extends \yii\db\ActiveRecord
         $placeholder = ['id' => 0, 'title' => Yii::t('app', 'Choose country...')];
 
         if ($countries) {
-          array_unshift($countries, $placeholder);
-          return $countries;
+            array_unshift($countries, $placeholder);
+            return $countries;
         }
 
         return $placeholder;
     }
-
     /**
      * Gets single country from VK social networks by it's ISO code
      * @param  string             $iso_code           ISO 3166-1 alpha-2 country name (i.e. UA, RU, CA)
@@ -136,7 +136,9 @@ class GeolocationCountries extends \yii\db\ActiveRecord
             $json = CURLHelper::getURL($url, $headerOptions);
 
             # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($json) {
+                $parsedjson = json_decode($json, true);
+            }
 
             if (isset($parsedjson['response']) && !empty($parsedjson['response']['items'][0]['title'])) {
 
@@ -154,5 +156,25 @@ class GeolocationCountries extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+    /**
+     * Get all active countries from DB
+     * @return array
+     */
+    public static function getAllActiveCountriesArray()
+    {
+        return self::find()->select('vk_country_id,name_ru')->asArray()->all();
+    }
+    /**
+     * Behaves same as 'getAllActiveCountriesArray', adding 'Choose country...' as a first menu to choose from dropdown.
+     *
+     * @return array
+     */
+    public static function getAllActiveCountriesDropdown()
+    {
+        $countries = ArrayHelper::map(self::getAllActiveCountriesArray(), 'vk_country_id', 'name_ru');
+        if (is_array($countries)) {
+            return ['' => Yii::t('app', 'Choose country...')] + $countries;
+        }
     }
 }

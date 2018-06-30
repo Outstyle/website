@@ -9,6 +9,60 @@ pre {
   white-space: normal;
 }
 
+
+/* SELECT DROPDOWN */
+/* body select.select_box */
+body select {
+    display: block;
+    padding: 3px 20px 3px 5px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
+    height: auto !important;
+    border: 1px solid #e3e3e3;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAHCAYAAAAxrNxjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjVGMUM5NUUyQjkzNTExRTVCNjRFQTU0OTIxNDgwQjREIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjVGMUM5NUUzQjkzNTExRTVCNjRFQTU0OTIxNDgwQjREIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NUYxQzk1RTBCOTM1MTFFNUI2NEVBNTQ5MjE0ODBCNEQiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NUYxQzk1RTFCOTM1MTFFNUI2NEVBNTQ5MjE0ODBCNEQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6586rwAAAAfUlEQVR42mJ0cvViZGBg+M+AHzAzAYmNQOyER1EIEO8AKewA4hVArItFUSAQTwLiYpDCY0BcCMRbgVgGSZE3EM8AYh8gvsQCFVwKxLJAvA2IbYDYEojnQRWdAylgQTIB5AQ5IN4OxMpQa0/DJJnQ3JQLxJ+BOBbqJDgACDAALh0TZXrbDssAAAAASUVORK5CYII=);
+    background-color: #fff;
+    background-position: right 5px center;
+    background-repeat: no-repeat;
+    color: #444444;
+    font-size: 0.9em;
+    line-height: 1.3em;
+    appearance: none;
+    /* this is must */ -webkit-appearance: none;
+    -moz-appearance: none;
+}
+/* body select.select_box option */
+body select option {
+    padding: 0 3px;
+}
+/* for IE and Edge */
+select::-ms-expand {
+    display: none;
+}
+select:disabled::-ms-expand {
+    background: #f60;
+}
+select.select--mini {
+  width: 85%;
+  padding: 3px 20px 2px 5px;
+  font-size: 0.8em;
+}
+select.select--darker {
+  background-color: #efefef;
+}
+
+
+/* Custom checkboxes */
+input[type="checkbox"] { position: absolute; opacity: 0; z-index: -1;}
+input[type="checkbox"]+span {}
+input[type="checkbox"]+span:before { font: 1.2em Material-Design-Iconic-Font; content: '\f279'; display: inline-block; width: 1em; padding: 1px 0 0 2px; margin-right: 0.3em; line-height: 1 }
+input[type="checkbox"]:checked+span:before { content: '\f26a'; }
+input[type="checkbox"]:focus+span:before { outline: 1px dotted #ccc; }
+input[type="checkbox"]:disabled+span { color: #999; }
+input[type="checkbox"]:not(:disabled)+span:hover:before { color:#428bca;}
+input[type="checkbox"]:not(:disabled)+span:hover{cursor: pointer;}
+
+
 /* --- UTILS & BLAZE REWRITES + HACKS --- */
 /* Utility Classes from Skeleton.css */
 ul li {
@@ -102,6 +156,15 @@ ul {
 .c-text__color--red {
   color:#c41314;
 }
+.c-text__color--green {
+  color:#00a651;
+}
+.c-text__color--lightgreen {
+  color:#0baf28;
+}
+.c-text__color--lightred {
+  color:#ed1f24;
+}
 .c-text__color--white {
   color:#fff;
 }
@@ -147,6 +210,9 @@ ul {
 .c-field.c-field--xtra:focus {
   border-color:#535c61;
 }
+.c-field--rounded {
+  border-radius: 25px;
+}
 .c-field:focus {
   box-shadow: none;
 }
@@ -154,6 +220,9 @@ ul {
   border: 1px solid #dadada;
   border-radius: 0px;
   font-size: 12px;
+}
+.c-field--sharpborder {
+  border-radius: 0px;
 }
 .c-field.c-field--ordinary:focus {
   border-color:#a2aeb7;
@@ -201,6 +270,12 @@ ul {
 /* BLAZE GRID */
 .o-grid--lightbg {
   background: #f9f9f9;
+}
+.o-grid__cell--lightbg {
+  background: #f9f9f9;
+}
+.o-grid__cell--lighterbg {
+  background: #fbfbfb;
 }
 /* --- MISC --- Custom Outstyle CSS workarounds here, please */
 .o-field{position:relative}.o-field .c-field--success~.c-icon{color:#4caf50}.o-field .c-field--error~.c-icon{color:#f44336}.o-field .c-field:disabled~.c-icon{color:#96a8b2}.o-field .c-icon{position:absolute;top:50%;transform:translateY(-50%);color:#96a8b2}.o-field--icon-right .c-field+.c-icon{right:.5em}.o-field--icon-right .c-field{padding-right:2em}.o-field--icon-left .c-icon:first-child{left:.5em}.o-field--icon-left .c-field{padding-left:2em}
@@ -265,6 +340,25 @@ ul {
 }
 .i-icon i.icon-megaphone {
   margin-right: 0;
+}
+
+/* Padding controls */
+.u-npt, .u-ptn {
+  padding-top:0px;
+}
+.u-npb, .u-pbn {
+  padding-bottom:0px;
+}
+.u-npl, .u-pln {
+  padding-left:0px;
+}
+.u-npr, .u-prn {
+  padding-right:0px;
+}
+
+/* Margin controls */
+.form-group--marginbottom {
+  margin-bottom: 1.8em;
 }
 
 /* --- Widgetbutton --- */

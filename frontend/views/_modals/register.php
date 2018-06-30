@@ -96,4 +96,4 @@ echo Html::endTag('div');
 
 // Reinit is needed for history.back stuff
 ?>
-<script>jQuery(document).ready(function(){modalInit();});</script>
+<script>jQuery(document).ready(function(){modalInit('#<?=$modal_id;?>', true);});</script>

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @link https://github.com/Outstyle/website
+ * @copyright Copyright (c) 2018 Outstyle Network
+ * @license Beerware
+ */
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -11,8 +15,16 @@ use frontend\widgets\UserVideosBlock;
 use frontend\widgets\UserPhotosBlock;
 use frontend\widgets\UserBoardPost;
 
-/* @var $this yii\web\View */
-/* @var $user @frontend/controllers/BoardController */
+/**
+ * Main user board view
+ *
+ * @var array     $this           yii\web\View
+ * @var array     $user           @frontend/controllers/BoardController
+ * @var array     $userFriends    @frontend/controllers/BoardController
+ *
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
+ */
 
 SEOHelper::setMetaInfo($this);
 
@@ -26,7 +38,7 @@ echo Html::beginTag('section', ['id' => 'leftBlock']);
 
     # FRIENDS widget | @frontend/widgets/UserFriendsBlock.php
     echo UserFriendsBlock::widget([
-      'friends' => $user->friend
+      'friends' => $userFriends
     ]);
 
     # VIDEOS widget | @frontend/widgets/UserVideosBlock.php

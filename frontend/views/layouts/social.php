@@ -96,7 +96,7 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
                 [
                   'options' => ['id' => 'menu__item-friends'],
                   'label' => '<i class="icons icons--friends"></i>'.Yii::t('app', 'Friends'),
-                  'url' => ['/'],
+                  'url' => Url::to(['/friends']),
                   'active' => $checkController('friends')
                 ],
                 [

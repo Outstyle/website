@@ -30,8 +30,19 @@ use developeruz\db_rbac\interfaces\UserRbacInterface;
 class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 {
 
+    /**
+     * User model entity statuses
+     * @var integer
+     */
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+
+    /**
+     * User social statuses (indicators)
+     * @var integer
+     */
+    const USER_SOCIAL_OFFLINE = 0;
+    const USER_SOCIAL_ONLINE = 1;
 
     /**
      * @inheritdoc
@@ -61,7 +72,6 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 
     public function rules()
     {
-
         return [
             ['lastvisit', 'default', 'value' => 0],
 
@@ -269,13 +279,13 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
         return $this->username;
     }
 
-    public static function usersSelect(){
-         $model = self::find()->orderBy('username')->all();
-         $r = [];
-         foreach($model AS $v){
-             $r[$v->id] = $v->username;
-         }
-         return $r;
+    public static function usersSelect()
+    {
+        $model = self::find()->orderBy('username')->all();
+        $r = [];
+        foreach ($model as $v) {
+            $r[$v->id] = $v->username;
+        }
+        return $r;
     }
-
 }

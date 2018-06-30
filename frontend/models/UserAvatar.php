@@ -11,7 +11,7 @@ class UserAvatar extends UserDescription
      * Available sizes of a user avatars
      * @var array
      */
-    public static $userAvatarSizes = [
+    private static $_userAvatarSizes = [
       'small',
       'medium',
       'big',
@@ -39,7 +39,7 @@ class UserAvatar extends UserDescription
     public static function getAvatarPath($userId, $avatarSize = 'small')
     {
         /* Checking allowed avatar sizes */
-        if (!in_array($avatarSize, self::$userAvatarSizes)) {
+        if (!in_array($avatarSize, self::$_userAvatarSizes)) {
             $avatarSize = 'small';
         }
 
