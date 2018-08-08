@@ -22,13 +22,19 @@ use common\components\helpers\SEOHelper;
 
 SEOHelper::setMetaInfo($this);
 
-/* --- LEFT BLOCK SECTION --- */
-echo Html::beginTag('section', ['id' => 'leftBlock']),
-    $this->render('search/_form'),
-Html::endTag('section');
+echo Html::beginTag('div', ['id' => 'ajax']);
+
+    /* --- LEFT BLOCK SECTION --- */
+    echo Html::beginTag('section', ['id' => 'leftBlock']),
+        $this->render('search/_form'),
+    Html::endTag('section');
 
 
-/* --- RIGHT BLOCK SECTION --- */
-echo Html::beginTag('section', ['id' => 'rightBlock']),
-    $this->render('view'),
-Html::endTag('section');
+    /* --- RIGHT BLOCK SECTION --- */
+    echo Html::beginTag('section', ['id' => 'rightBlock']),
+        $this->render('view', [
+          'friends' => $friends
+        ]),
+    Html::endTag('section');
+
+echo Html::endTag('div');

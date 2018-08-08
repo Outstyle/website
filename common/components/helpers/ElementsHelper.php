@@ -219,6 +219,7 @@ class ElementsHelper extends Html
     {
         /* INITIAL for ic-select-from-response: http://intercoolerjs.org/attributes/ic-select-from-response.html */
         $selected_element = '#'.self::DEFAULT_AJAX_ID;
+        $elem_class = $elem_name;
 
         /*
          * Setting title for the link, referring to element's name
@@ -231,7 +232,7 @@ class ElementsHelper extends Html
 
           case 'views':
             $elem_title = Yii::t('app', 'Views');
-            $elem_name .= ' innactive';
+            $elem_class .= ' innactive';
             break;
 
           case 'repost':
@@ -252,7 +253,14 @@ class ElementsHelper extends Html
 
           case 'title':
             $elem_title = strip_tags($elem_text);
-            $elem_name .= ' c-text--shadow block__'.$elem_name.' '.Yii::$app->controller->id.'__'.$elem_name;
+            $elem_name .= ' c-text--shadow block__'.$elem_name;
+            break;
+
+          case 'roundbutton':
+            $current_url = Url::to(['/'.Yii::$app->request->pathInfo], true);
+            if ($url == $current_url) {
+                $elem_class .= ' active';
+            }
             break;
 
           default:
@@ -260,7 +268,7 @@ class ElementsHelper extends Html
         }
 
         /* Adding controller to class */
-        $elem_name .= ' '.Yii::$app->controller->id.'__'.$elem_name;
+        $elem_class .= ' '.Yii::$app->controller->id.'__'.$elem_name;
 
         /*
          * Wrapping up our element in case if it has no tags
@@ -282,7 +290,7 @@ class ElementsHelper extends Html
             }
 
             $elem_text = Html::tag('i', '', ['class' => "{$icon}"]).$elem_text;
-            $elem_name .= ' i-icon';
+            $elem_class .= ' i-icon';
         }
 
         /**
@@ -305,7 +313,7 @@ class ElementsHelper extends Html
             $url = 'javascript:void(0)';
         }
 
-        $attr['class'] = $elem_name;
+        $attr['class'] = $elem_class;
         $attr['title'] = Html::encode(Yii::t('app', $elem_title));
 
         /*

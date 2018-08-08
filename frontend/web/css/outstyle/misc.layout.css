@@ -160,7 +160,7 @@ ul {
   color:#00a651;
 }
 .c-text__color--lightgreen {
-  color:#0baf28;
+  color:#3dc956;
 }
 .c-text__color--lightred {
   color:#ed1f24;
@@ -265,6 +265,12 @@ ul {
 }
 .c-button--close {
   padding: 0;
+}
+.c-button--xsmall {
+  font-size: 0.72em;
+  padding: 0.7em 0.8em;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
 /* BLAZE GRID */
@@ -611,4 +617,43 @@ filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><
   transform: rotate(3deg);
   right: 0px;
   left: auto;
+}
+
+
+/* --- BADGES --- */
+.c-badge--shaded {
+    position: absolute;
+    display: inline-block;
+    font-size: 0.7em;
+    color: #fff;
+    vertical-align: top;
+    padding: 3px 5px 0;
+    line-height: 1.2em;
+    height: 16px;
+    min-width: 16px;
+    margin-left: -5px;
+    margin-top: -2px;
+    text-align: center;
+    border-radius: 8px;
+    background-clip: padding-box;
+    box-shadow: 1px 1px 0 rgba(47, 54, 59, 0.4);
+}
+
+.c-badge--red {
+    background-color: #ed1c24;
+}
+
+.popout {
+    animation: popout 0.3s ease;
+    -webkit-animation: popout 0.3s ease;
+}
+@keyframes popout {
+    from{transform:scale(0)}
+    80%{transform:scale(1.2)}
+    to{transform:scale(1)}
+}
+@-webkit-keyframes popout {
+    from{-webkit-transform:scale(0)}
+    80%{-webkit-transform:scale(1.2)}
+    to{-webkit-transform:scale(1)}
 }

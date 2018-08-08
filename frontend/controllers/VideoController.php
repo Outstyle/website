@@ -21,9 +21,9 @@ use app\models\Attachments;
 use app\models\AuthAssignment;
 use app\models\UserDescription;
 
-use frontend\components\ParentController;
+use frontend\components\OutstyleSocialController;
 
-class VideoController extends \frontend\components\CsrfController
+class VideoController extends OutstyleSocialController
 {
     public $layout = 'social';
 

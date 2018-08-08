@@ -17,6 +17,8 @@ use yii\helpers\Json;
 use app\models\Photo;
 use app\models\Photoalbum;
 
+use frontend\components\OutstyleSocialController;
+
 /**
  * Photo controller: for working with user photos
  * Must be extended from CsrfController for token compare
@@ -24,7 +26,7 @@ use app\models\Photoalbum;
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
  */
-class PhotoController extends \frontend\components\CsrfController
+class PhotoController extends OutstyleSocialController
 {
     /**
      * Layout to be used for all the actions

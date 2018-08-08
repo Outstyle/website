@@ -15,6 +15,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
 use app\models\Photoalbum;
+use frontend\components\OutstyleSocialController;
 
 /**
  * FormsController controller: for working with generated HTML forms (mainly returned via AJAX)
@@ -23,7 +24,7 @@ use app\models\Photoalbum;
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
  */
-class FormsController extends \frontend\components\CsrfController
+class FormsController extends OutstyleSocialController
 {
     public $layout = false;
 

@@ -7,7 +7,7 @@
 namespace app\models;
 
 use Yii;
-use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 use app\models\UserDescription;
 
@@ -23,84 +23,82 @@ use app\models\UserDescription;
 class Friend extends \common\models\Friend
 {
     /**
-     * @var $defaultPageSize  How much friends per request to get
-     */
-    public static $defaultPageSize = 6;
-
-
-    /**
-     * Get user friends by userId and status
+     * Get user friends by status and userId
      *
-     * Expression examples:
-     *
-     * select with name concat
-     * ->select(['{{%user_description}}.id','culture', 'avatar', 'city',
-     * new \yii\db\Expression("CONCAT(`name`,' ', `nickname`, ' ',`last_name`) as name")])
-     *
-     * @param  integer $userId    User ID
      * @param  integer $status    Friendship status (@see: \common\models\Friend for status constants)
-     * @param  integer $page
+     * @param  integer $userId    User ID
      * @return array
      */
-    public static function getUserFriends($status = 0, $userId = 0, $page = 0)
+    public static function getUserFriends($status = self::STATUS_ACTIVE_FRIENDSHIP, $userId = 0)
     {
         if (!$userId) {
             $userId = Yii::$app->user->id;
         }
 
-        /* First, getting a list of friends from `friend` table
-           Friend can either be user1 or user2, depending on who initiated the friendship */
-        $friendsQuery = self::find()
-        ->where('(user1 = :user AND status = :status) OR (user2 = :user AND status = :status)',
-          [
-            ':user' => (int)$userId,
-            ':status' => (int)$status,
-          ]);
-
-        $friendsQuery = $friendsQuery->limit(self::$defaultPageSize);
-
-        /* If we have pagination */
-        if ($page) {
-            $pagination = new Pagination([
-              'defaultPageSize' => self::$defaultPageSize,
-              'totalCount' => $friendsQuery->count(),
-              'page' => (int)$page,
+        return self::find()
+          ->select('user1, user2')
+          ->where('({{%friend}}.`user1` = :user AND {{%friend}}.`status` = :status) OR
+           ({{%friend}}.`user2` = :user AND {{%friend}}.`status` = :status)',
+            [
+              ':user' => (int)$userId,
+              ':status' => (int)$status,
             ]);
+    }
 
-            $friendsQuery->offset($pagination->offset)->limit($pagination->limit);
+    /**
+     * Get user friends by online indicator (lastvisit)
+     *
+     * @param  integer $userId    User ID
+     * @return array
+     */
+    public static function getUserFriendsOnline($userId = 0)
+    {
+        if (!$userId) {
+            $userId = Yii::$app->user->id;
         }
 
-        /* Getting all the friends and traversing through array to get rid of current user id
-           This is also needed to form an array of actual IDs of friends to get their userinfo */
-        $friends = $friendsQuery->asArray()->all();
+        return self::getUserFriends(self::STATUS_ACTIVE_FRIENDSHIP, $userId)
+          ->join('INNER JOIN', '{{%user}} u',
+            '((u.`id` = {{%friend}}.`user1` AND {{%friend}}.`user2` = :user) OR
+              (u.`id` = {{%friend}}.`user2` AND {{%friend}}.`user1` = :user))
+              AND u.`lastvisit` > :lastvisit',
+            [
+              ':lastvisit' => (time() - self::$timeTillOffline)
+            ]);
+    }
 
-        foreach ($friends as $friend) {
+
+
+    /**
+     * Get friends description by an array of IDs
+     * @param  array  $friendsIdArray
+     * @return array
+     */
+    public static function getFriendsDescription($friendsIdArray = [])
+    {
+        return UserDescription::findUsers()->where(['id' => $friendsIdArray])->asArray()->all();
+    }
+
+    /**
+     * Filtering all the friends, removing active userID from users array
+     * @param  array  $userFriends    Array from getUserFriends
+     * @return array
+     */
+    public static function createFriendsArrayForUser($userFriends = [], $userId = 0)
+    {
+        if (!$userId) {
+            $userId = Yii::$app->user->id;
+        }
+
+        foreach ($userFriends as $friend) {
             if ($friend['user1'] != $userId) {
-                $friends['active'][] = $friend['user1'];
+                $friends[] = $friend['user1'];
             }
             if ($friend['user2'] != $userId) {
-                $friends['active'][] = $friend['user2'];
+                $friends[] = $friend['user2'];
             }
         }
 
-        /* Second query for user description and info
-           `UserDescription::findUsersByData` can be used instead, for additinal data or same cache */
-        $usersQuery = UserDescription::find()
-        ->where([
-          'id' => $friends['active']
-        ])
-        ->select('{{%user_description}}.id, name, last_name, nickname, culture, avatar, city')
-        ->with([
-          'user' => function ($query) {
-              $query->select('id, lastvisit');
-          },
-          'geolocationCities' => function ($query) {
-              $query->select('vk_city_id, name, area, region');
-          }
-        ])
-        ->asArray()
-        ->all();
-
-        return $usersQuery;
+        return $friends ?? '';
     }
 }

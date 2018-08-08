@@ -71,6 +71,7 @@ class UserDescription extends \yii\db\ActiveRecord
      */
     const SCENARIO_DEFAULT = 'default';
     const SCENARIO_SEARCH = 'search';
+    const SCENARIO_FILTER = 'filter';
 
 
     /**
@@ -78,10 +79,11 @@ class UserDescription extends \yii\db\ActiveRecord
      */
     public $user;
     public $search;
-    public $status;
-    public $age_start;
-    public $age_end;
+    public $age_min;
+    public $age_max;
     public $sort_by;
+    public $friendship_status;
+    public $page;
 
     /**
      * @inheritdoc
@@ -94,7 +96,7 @@ class UserDescription extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * TODO: Validation!
+     * TODO: Check validation on strings (chars limit, ~)
      */
     public function rules()
     {
@@ -148,29 +150,48 @@ class UserDescription extends \yii\db\ActiveRecord
           ['sex', 'in', 'range' => ['male', 'female']],
           ['rating', 'integer'],
           ['avatar', 'string', 'max' => 50],
-          ['avatar_small', 'integer'], /* Remove this */
+          ['avatar_small', 'integer'], /* TODO: Remove this */
 
           /* Additional validation rules */
           ['user', 'default', 'value' => Yii::$app->user->id],
           ['user', 'integer'],
           ['user', 'required',
-           'on' => self::SCENARIO_SEARCH,
+            'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ],
            'message' => Yii::t('app', 'User ID is required')],
 
-          ['age_start', 'default', 'value' => 0],
-          ['age_start', 'required', 'on' => self::SCENARIO_SEARCH],
-          ['age_start', 'integer'],
-          ['age_start', 'filter', 'filter' => function ($value) {
-              $age_start = $value ? date('Y-m-d', time()-(int)$value*31536000) : '';
-              return $age_start;
+          ['age_min', 'default', 'value' => 1],
+          ['age_min', 'required',
+            'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ],
+          ],
+          ['age_min', 'integer', 'message' => Yii::t('app', 'Age must be a numeric value')],
+          ['age_min', 'filter', 'filter' => function ($value) {
+              if ($value > 110) {
+                  $value = 110; /* In other case we will get int/float date() error */
+              }
+              $age_min = date('Y-m-d', time()-($value*31556926));
+              return $age_min;
           }],
 
-          ['age_end', 'default', 'value' => 0],
-          ['age_end', 'required', 'on' => self::SCENARIO_SEARCH],
-          ['age_end', 'integer'],
-          ['age_end', 'filter', 'filter' => function ($value) {
-              $age_end = $value ? date('Y-m-d', time()-(int)$value*31536000) : '';
-              return $age_end;
+          ['age_max', 'default', 'value' => 110],
+          ['age_max', 'required',
+            'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ],
+          ],
+          ['age_max', 'integer', 'message' => Yii::t('app', 'Age must be a numeric value')],
+          ['age_max', 'filter', 'filter' => function ($value) {
+              if ($value > 110) {
+                  $value = 110; /* In other case we will get int/float date() error */
+              }
+              $age_max = date('Y-m-d', time()-($value*31556926));
+              return $age_max;
           }],
 
           ['search', 'string',
@@ -178,21 +199,40 @@ class UserDescription extends \yii\db\ActiveRecord
            'min' => 3,
            'tooLong' => Yii::t('app', 'Search value must not be longer than 64 symbols'),
            'tooShort' => Yii::t('app', 'Search value must be longer than 3 symbols'),
-           'on' => self::SCENARIO_SEARCH],
+            'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ],
+          ],
 
           ['search', 'filter', 'filter' => function ($value) {
               return StringHelper::clearString($value);
           }],
 
-          ['status', 'default', 'value' => 0],
-          ['status', 'required', 'on' => self::SCENARIO_SEARCH],
-          ['status', 'in', 'range' => [0,1,2],
+          ['friendship_status', 'default', 'value' => Friend::STATUS_ACTIVE_FRIENDSHIP],
+          ['friendship_status', 'required',
+            'on' => [
+              self::SCENARIO_FILTER
+            ]
+          ],
+          ['friendship_status', 'in', 'range' => [
+            Friend::STATUS_ACTIVE_PENDING,
+            Friend::STATUS_ACTIVE_FRIENDSHIP,
+            Friend::STATUS_ACTIVE_ONESIDED
+          ],
            'message' => Yii::t('app', 'Status value is invalid')],
 
           ['sort_by', 'default', 'value' => 'id'],
-          ['sort_by', 'required', 'on' => self::SCENARIO_SEARCH],
+          ['sort_by', 'required',
+            'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ]
+          ],
           ['sort_by', 'in', 'range' => ['id','rating'],
            'message' => Yii::t('app', 'Sort value is invalid')],
+
+          ['page', 'integer'],
         ];
     }
 
@@ -281,7 +321,7 @@ class UserDescription extends \yii\db\ActiveRecord
         }
 
         return [
-          0 => Yii::t('app', '- none -'),
+          0 => Yii::t('app', 'Not selected...'),
           1 => Yii::t('app', 'b-boy/b-girl'),
           2 => Yii::t('app', 'graffiti writer'),
           3 => Yii::t('app', 'mc/rapper'),

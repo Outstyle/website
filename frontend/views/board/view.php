@@ -20,7 +20,7 @@ use frontend\widgets\UserBoardPost;
  *
  * @var array     $this           yii\web\View
  * @var array     $user           @frontend/controllers/BoardController
- * @var array     $userFriends    @frontend/controllers/BoardController
+ * @var array     $friends    @frontend/controllers/BoardController
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
@@ -38,7 +38,7 @@ echo Html::beginTag('section', ['id' => 'leftBlock']);
 
     # FRIENDS widget | @frontend/widgets/UserFriendsBlock.php
     echo UserFriendsBlock::widget([
-      'friends' => $userFriends
+      'friends' => $friends
     ]);
 
     # VIDEOS widget | @frontend/widgets/UserVideosBlock.php

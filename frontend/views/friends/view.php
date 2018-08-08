@@ -30,7 +30,7 @@ echo Html::tag('div',
 
 # FRIENDS widget | @frontend/widgets/UserFriendsBlock.php
 echo UserFriendsBlock::widget([
-  'friends' => $friends ?? '',
+  'friends' => $friends,
   'options' => [
     'view' => 'userFriendsSearch'
   ]

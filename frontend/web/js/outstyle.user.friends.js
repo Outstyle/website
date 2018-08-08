@@ -5,10 +5,10 @@ function userFriendsAvatarsInit() {
   });
 }
 
-jQuery("body").on("friendsSearchError", function(evt, data) {
+jQuery("body").on("friendsFindError friendsFilterError", function(evt, data) {
   ohSnapX();
   jQuery.each(data, function(key, value) {
-    ohSnap(value, {
+    ohSnap(decodeURIComponent(value).replace(/\+/g, " "), {
       'color': 'yellow'
     });
   });

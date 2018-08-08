@@ -49,6 +49,35 @@ class Friend extends \yii\db\ActiveRecord
     const STATUS_ACTIVE_ONESIDED = 2;
 
 
+    /**
+     * Behavior scenarios for friendship
+     * @var string
+     */
+    const SCENARIO_DEFAULT = 'default';
+    const SCENARIO_ACCEPT_FRIEND = 'accept';
+
+
+    /**
+     * @var $friendsPageSize  How much friends per request to get
+     */
+    public static $friendsPageSize = 50;
+    /**
+     * @var $friendsPendingPageSize  How much pending friends to show
+     */
+    public static $friendsPendingPageSize = 25;
+
+
+    /**
+     * @var $timeTillOffline  Time in ms for friend online indicator to held
+     */
+    public static $timeTillOffline = 900;
+
+
+    /**
+     * @inheritdoc
+     */
+    public $friendId;
+
 
     /**
      * @inheritdoc
@@ -60,12 +89,45 @@ class Friend extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     */
+    **/
     public function rules()
     {
         return [
-            [['user1', 'user2'], 'required'],
-            [['user1', 'user2', 'status'], 'integer']
+            [
+              ['user1', 'user2', 'status', 'friendId'],
+               'integer',
+               'message' => Yii::t('app', 'Must be a number')
+            ],
+            ['user1', 'default', 'value' => Yii::$app->user->id],
+            ['user1', 'required',
+             'on' => [
+                self::SCENARIO_DEFAULT,
+              ],
+            ],
+            ['user2', 'required',
+             'on' => [
+                self::SCENARIO_DEFAULT
+              ],
+            ],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE_FRIENDSHIP],
+            ['status', 'required',
+              'on' => [
+                self::SCENARIO_DEFAULT,
+              ]
+            ],
+            ['status', 'in', 'range' => [
+              self::STATUS_ACTIVE_PENDING,
+              self::STATUS_ACTIVE_FRIENDSHIP,
+              self::STATUS_ACTIVE_ONESIDED
+            ],
+            'message' => Yii::t('app', 'Status value is invalid')],
+
+            /* Additional validation rules */
+            ['friendId', 'required',
+             'on' => [
+                self::SCENARIO_ACCEPT_FRIEND,
+              ],
+            ],
         ];
     }
 

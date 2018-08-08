@@ -53,7 +53,6 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
           'class' => 'logo',
           'ic-get-from' => Url::to(['/id'.Yii::$app->user->id]),
           'ic-trigger-delay' => "200ms",
-          'ic-include' => '{"'.Yii::$app->request->csrfParam.'":"'.Yii::$app->request->csrfToken.'"}',
           'ic-select-from-response' => '#content',
           'ic-indicator' => '#outstyle_loader',
           'ic-target' => '#content'
@@ -123,7 +122,6 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
       [
           'class' => 'c-nav',
           'ic-target' => '#content',
-          'ic-include' => '{"'.Yii::$app->request->csrfParam.'":"'.Yii::$app->request->csrfToken.'"}',
           'ic-select-from-response' => '#ajax',
           'ic-push-url' => 'true',
       ]

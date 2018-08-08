@@ -16,16 +16,25 @@ use app\models\UserDescription;
 /**
  * Friends search form
  *
+ * Form has two states, based on routes:
+ * 'filter' - when it's just filtering existing friends of user
+ * 'find' - when it's actually a request for searching from all users pool
+ *
  * @var $this         yii\web\View
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
  */
 
+$form_ajax_action = 'filter';
+if (Yii::$app->request->pathInfo == 'friends/search') {
+    $form_ajax_action = 'find';
+}
+
 echo Html::beginTag('form', [
   'id' => 'friends-search-form',
   'class' => 'o-grid o-grid--wrap',
-  'ic-post-to' => Url::toRoute(['api/friends/find']),
+  'ic-post-to' => Url::toRoute(['api/friends/'.$form_ajax_action]),
   'ic-trigger-from' => '.form-trigger',
   'ic-indicator' => '#friends__loader',
   'ic-target' => '#rightBlock',
@@ -59,6 +68,16 @@ echo Html::beginTag('form', [
     'class' => 'o-grid__cell o-grid__cell--width-10 friends__activebuttons'
   ]);
 
+      /* All friends */
+      echo Html::tag('div',
+        ElementsHelper::linkElement('roundbutton',
+          Html::tag('i', '', ['class' => 'zmdi zmdi-accounts-alt zmdi-hc-2x c-icon']),
+        Url::to(['/friends'], true), '', Yii::t('app', 'All friends')),
+      [
+        'id' => 'friends__roundbutton-all',
+        'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
+      ]);
+
       /* Friends online */
       echo Html::tag('div',
         ElementsHelper::linkElement('roundbutton',
@@ -70,17 +89,9 @@ echo Html::beginTag('form', [
             'class' => 'zmdi-hc-stack'
           ]),
 
-        Url::to(['/id0'], true)),
+        Url::to(['/friends/online'], true), '', Yii::t('app', 'Friends online')),
       [
-        'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
-      ]);
-
-      /* All friends */
-      echo Html::tag('div',
-        ElementsHelper::linkElement('roundbutton',
-          Html::tag('i', '', ['class' => 'zmdi zmdi-accounts-alt zmdi-hc-2x c-icon']),
-        Url::to(['/id0'], true), '', '123'),
-      [
+        'id' => 'friends__roundbutton-online',
         'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
       ]);
 
@@ -88,8 +99,9 @@ echo Html::beginTag('form', [
       echo Html::tag('div',
         ElementsHelper::linkElement('roundbutton',
           Html::tag('i', '', ['class' => 'zmdi zmdi-accounts-add zmdi-hc-2x c-icon']),
-        Url::to(['/id0'], true)),
+        Url::to(['/friends/search'], true), '', Yii::t('app', 'Search friends')),
       [
+        'id' => 'friends__roundbutton-search',
         'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
       ]);
 
@@ -98,14 +110,15 @@ echo Html::beginTag('form', [
         ElementsHelper::linkElement('roundbutton',
 
           Html::tag('span',
-            Html::tag('i', '', ['class' => 'zmdi zmdi-storage zmdi-hc-lg']).
+            Html::tag('i', '', ['class' => 'zmdi zmdi-receipt zmdi-hc-lg']).
             Html::tag('i', '', ['class' => 'zmdi zmdi-star zmdi-hc-stack-1x zmdi-hc-sided zmdi-hc-medium c-text__color--lightred']),
           [
             'class' => 'zmdi-hc-stack'
           ]),
 
-        Url::to(['/id0'], true)),
+        Url::to(['/friends/feed'], true)),
       [
+        'id' => 'friends__roundbutton-feed',
         'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
       ]);
 
@@ -118,7 +131,7 @@ echo Html::beginTag('form', [
   echo Html::tag('div',
     Html::tag('div',
 
-      /* Sorting */
+      /* Sorting dropdown */
       Html::dropDownList('sort_by',
         null,
         [
@@ -137,10 +150,11 @@ echo Html::beginTag('form', [
     'class' => 'o-grid__cell o-grid__cell--width-100 o-grid__cell--lighterbg'
   ]);
 
-  echo ElementsHelper::separatorDiamond(Yii::t('app', 'Country and city'), 'small');
 
+  echo ElementsHelper::separatorDiamond(Yii::t('app', 'Country and city'), 'small');
   echo Html::tag('div', $this->render('@common/views/geolocation/_filterblock'),
   ['class' => 'o-grid__cell o-grid__cell--width-100']);
+
 
   echo ElementsHelper::separatorDiamond(Yii::t('app', 'Age'), 'small');
 
@@ -148,9 +162,11 @@ echo Html::beginTag('form', [
     Html::tag('div',
 
       /* Age min */
-      Html::input('text', 'age_min', '', [
+      Html::input('number', 'age_min', '', [
         'class' => 'c-field c-field--sharpborder form-trigger',
-        'maxlength' => 3,
+        'maxlength' => 2,
+        'min' => 0,
+        'placeholder' => Yii::t('app', 'from...'),
         'ic-trigger-on' => 'focusout changed',
       ]),
 
@@ -171,9 +187,11 @@ echo Html::beginTag('form', [
     Html::tag('div',
 
       /* Age max */
-      Html::input('text', 'age_max', '', [
+      Html::input('number', 'age_max', '', [
         'class' => 'c-field c-field--sharpborder form-trigger',
         'maxlength' => 3,
+        'min' => 0,
+        'placeholder' => Yii::t('app', 'to...'),
         'ic-trigger-on' => 'focusout changed',
       ]),
 
@@ -207,11 +225,51 @@ echo Html::beginTag('form', [
       'class' => 'form-group form-group--marginbottom u-l'
     ]),
   [
-    'class' => 'o-grid__cell o-grid__cell--width-100'
+    'class' => 'o-grid__cell o-grid__cell--width-50'
   ]);
+
+  /* Additional fields for friends/search route */
+  if (Yii::$app->request->pathInfo == 'friends/search') {
+      echo Html::tag('div',
+        Html::tag('div',
+
+          Html::tag('label',
+            Html::input('checkbox', 'has_photo', 'male', [
+              'class' => 'form-trigger',
+              'ic-trigger-on' => 'click',
+            ]).
+            '<span>'.Yii::t('app', 'Has photo').'</span><br>').
+
+          Html::tag('label',
+            Html::input('checkbox', 'is_online', 'female', [
+              'class' => 'form-trigger',
+              'ic-trigger-on' => 'click',
+            ]).
+            '<span>'.Yii::t('app', 'Online now').'</span>'),
+
+        [
+          'class' => 'form-group form-group--marginbottom u-l'
+        ]),
+      [
+        'class' => 'o-grid__cell o-grid__cell--width-50'
+      ]);
+  }
 
   echo ElementsHelper::separatorDiamond(Yii::t('app', 'Who is in culture'), 'small');
 
+  echo Html::tag('div',
+
+      Html::dropDownList('culture',
+        null,
+        UserDescription::cultureList(),
+      [
+        'class' => 'form-trigger form-group--marginbottom',
+        'ic-trigger-on' => 'change',
+      ]),
+
+  [
+    'class' => 'o-grid__cell o-grid__cell--width-100'
+  ]);
 
 echo Html::endTag('form');
 

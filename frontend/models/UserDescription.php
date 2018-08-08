@@ -21,117 +21,96 @@ class UserDescription extends \common\models\user\UserDescription
      */
     public static function getUserCultureByUserId($userId = 0, $forCSS = true)
     {
-        $culture = 0;
         $user = self::findOne($userId);
 
         if (isset($user->culture)) {
             $culture = $user->culture;
         }
 
-        return ArrayHelper::getValue(self::cultureList($forCSS), $culture);
+        return ArrayHelper::getValue(self::cultureList($forCSS), $culture ?? 0);
+    }
+
+    /**
+     * Find users start point
+     * @return query
+     */
+    public static function findUsers()
+    {
+        return self::find()
+          ->select('{{%user_description}}.id, name, last_name, nickname, birthday, country, city, culture, sex, avatar')
+          ->with([
+            'user' => function ($query) {
+                $query->select('id, lastvisit');
+            },
+            'geolocationCities' => function ($query) {
+                $query->select('vk_city_id, name, area, region');
+            },
+            'geolocationCountries' => function ($query) {
+                $query->select('vk_country_id, iso_code, name_ru');
+            }
+          ]);
     }
 
     /**
      * Search users, using an array of data
-     * @param  array  $data         $_GET or $_POST array with data to be validated
-     * @param  string $dataPrefix   data's prefix name for load() method
-     * @param  int    $page
+     * @param  array  $data         $_GET or $_POST array with validated data
      * @return array                An array of users
      */
-    public static function findUsersByData($data, $dataPrefix = '', $page = 0)
+    public static function findUsersByData($data = [])
     {
-        $model = new self(['scenario' => self::SCENARIO_SEARCH]);
-        $model->load($data, $dataPrefix);
+        $query = self::findUsers();
 
-        if ($model->validate()) {
-            $query = self::find()
-              ->select('{{%user_description}}.id, name, last_name, nickname, birthday, country, city, culture, sex, avatar')
-              ->with([
-                'user' => function ($query) {
-                    $query->select('id, lastvisit');
-                },
-                'geolocationCities' => function ($query) {
-                    $query->select('vk_city_id, name, area, region');
-                },
-                'geolocationCountries' => function ($query) {
-                    $query->select('vk_country_id, iso_code, name_ru');
-                }
-              ])
-              ->join('INNER JOIN', '{{%friend}} f',
-                  '(
-                    ({{%user_description}}.`id` = f.`user1` AND f.`user2` = :user) OR
-                    ({{%user_description}}.`id` = f.`user2` AND f.`user1` = :user)
-                  )
-                  AND
-                  IF (
-                    :age_start != "" OR
-                    :age_end != "",
-                    (
-                      {{%user_description}}.`birthday` < :age_start AND
-                      {{%user_description}}.`birthday` > :age_end
-                    ),
-                    TRUE
-                  )
-                  AND
-                  IF (
-                    :sex = "male" OR
-                    :sex = "female",
-                    (
-                      {{%user_description}}.`sex`= :sex
-                    ),
-                    TRUE
-                  )
-                  AND f.`status` = :status
-                  ',
-                  [
-                    ':user' => (int)$model->user,
-                    ':age_start' => (int)$model->age_start,
-                    ':age_end' => (int)$model->age_end,
-                    ':sex' => $model->sex,
-                    ':status' => $model->status
-                  ]);
-
-            /* Additional search params */
-            if ($model->country) {
-                $query->where([
-                  'country' => $model->country
-                ]);
-            }
-
-            if ($model->city) {
-                $query->where([
-                  'city' => $model->city
-                ]);
-            }
-
-            if ($model->culture) {
-                $query->where([
-                  'culture' => $model->culture
-                ]);
-            }
-
-            if ($model->search) {
-                $query->andWhere([
-                  'like',
-                  'CONCAT(`name`, `last_name`, `nickname`)',
-                  $model->search
-                ]);
-            }
-
-            $pagination = new Pagination([
-                'defaultPageSize' => 50,
-                'totalCount' => $query->count(),
-                'page' => $page,
+        /* Additional search params */
+        if ($data['age_min']) {
+            $query->andWhere([
+              '<',
+              'birthday',
+              $data['age_min']
             ]);
-
-            return $query->orderBy([$model->sort_by => SORT_DESC])
-                ->offset($pagination->offset)
-                ->limit($pagination->limit)
-                ->asArray()
-                ->all();
-        } else {
-            $e['errors'] = $model->errors;
-            return $e;
         }
+
+        if ($data['age_max']) {
+            $query->andWhere([
+              '>',
+              'birthday',
+              $data['age_max']
+            ]);
+        }
+
+        if ($data['sex']) {
+            $query->andWhere([
+              'sex' => $data['sex']
+            ]);
+        }
+
+        if ($data['country']) {
+            $query->andWhere([
+              'country' => $data['country']
+            ]);
+        }
+
+        if ($data['city']) {
+            $query->andWhere([
+              'city' => $data['city']
+            ]);
+        }
+
+        if ($data['culture']) {
+            $query->andWhere([
+              'culture' => $data['culture']
+            ]);
+        }
+
+        if ($data['search']) {
+            $query->andWhere([
+              'like',
+              'CONCAT(`name`, `last_name`, `nickname`)',
+              $data['search']
+            ]);
+        }
+
+        return $query->orderBy([
+          $data['sort_by'] => SORT_DESC
+        ]);
     }
 }

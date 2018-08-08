@@ -12,6 +12,7 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
+/* TODO: remove unused */
 use app\models\City;
 use app\models\SchoolCategory;
 use app\models\Board;
@@ -27,29 +28,10 @@ use app\models\UserDescription;
 use app\models\UserPrivacy;
 use app\models\UserAvatar;
 
-use frontend\components\ParentController;
+use frontend\components\OutstyleSocialController;
 
-class BoardController extends ParentController
+class BoardController extends OutstyleSocialController
 {
-    public $layout = 'social';
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($event)
-    {
-
-        /*
-         * Check if it's an Intercooler request, and if so - using ajaxed layout
-         * We also need to disable CSRF validation here to prevent token regeneration
-         * Count this as a 'barebone' callback, without scripts, js and etc. - only content
-         */
-        if (Yii::$app->request->get('ic-request') == 'true') {
-            $this->layout = 'ajax/social';
-        }
-
-        return parent::beforeAction($event);
-    }
 
     /**
      * @inheritdoc
@@ -81,7 +63,6 @@ class BoardController extends ParentController
     public function actionView($userId)
     {
         $user = Board::getByUserId($userId);
-        $userFriends = Friend::getUserFriends(0, $userId);
 
         if (!$user) {
             throw new HttpException(404, Yii::t('app', 'User not found!'));
@@ -98,7 +79,9 @@ class BoardController extends ParentController
 
         return $this->render('view', [
             'user' => $user,
-            'userFriends' => $userFriends,
+            'friends' => [
+              'active' => array_slice($this->userGlobalData['friends']['active'], 0, 6)
+            ]
         ]);
     }
 

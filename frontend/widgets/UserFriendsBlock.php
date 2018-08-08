@@ -21,10 +21,11 @@ use app\models\UserAvatar;
 class UserFriendsBlock extends Widget
 {
     /**
-     * User friends array
+     * All friends array
      * @var array
      */
     public $friends = [];
+
     /**
      * Widget options
      * @var array
@@ -41,22 +42,26 @@ class UserFriendsBlock extends Widget
 
         $friends = [];
 
-        # Working with friends and setting all the data for using in view
+        # Working with active friends and setting all the data for using in view
         if (isset($this->friends) && !empty($this->friends)) {
-            foreach ($this->friends as $k => $friend) {
-                $friends[$k] = $friend;
+            foreach ($this->friends as $friendship_status => $friend_info) {
+                foreach ($friend_info as $k => $friend) {
+                    $friends[$k] = $friend;
 
-                $friends[$k]['fullname'] = $friend['name'].' &quot;'.$friend['nickname'].'&quot; '.$friend['last_name'];
-                $friends[$k]['location'] = '';
-                $friends[$k]['birthday_date'] = $friend['birthday'] ?? '';
-                $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['id']);
+                    $friends[$k]['fullname'] = $friend['name'].' &quot;'.$friend['nickname'].'&quot; '.$friend['last_name'];
+                    $friends[$k]['location'] = '';
+                    $friends[$k]['birthday_date'] = $friend['birthday'] ?? '';
+                    $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['id']);
 
-                if (isset($friend['geolocationCountries']) && isset($friend['geolocationCities'])) {
-                    $friends[$k]['location'] = $friend['geolocationCountries']['name_ru'].', '.$friend['geolocationCities']['name'];
-                }
+                    if (isset($friend['geolocationCountries']) && isset($friend['geolocationCities'])) {
+                        $friends[$k]['location'] = $friend['geolocationCountries']['name_ru'].', '.$friend['geolocationCities']['name'];
+                    }
 
-                if (isset($friend['birthday'])) {
-                    $friends[$k]['birthday_date'] = Yii::$app->formatter->asDate($friend['birthday'], Yii::$app->params['dateMini']);
+                    if (isset($friend['birthday'])) {
+                        $friends[$k]['birthday_date'] = Yii::$app->formatter->asDate($friend['birthday'], Yii::$app->params['dateMini']);
+                    }
+
+                    $friends[$k]['friendship_status'] = $friendship_status;
                 }
             }
             $this->friends = $friends;
@@ -74,7 +79,9 @@ class UserFriendsBlock extends Widget
     public function run()
     {
         return $this->render($this->options['view'], [
-          'friends' => $this->friends,
+          'friends' => [
+            'active' => $this->friends
+          ],
         ]);
     }
 }
