@@ -350,7 +350,11 @@ margin-right: 0;
 .news__alertbox {
   color:#FFF;
 }
-
+.iframe-wrap{
+  margin: 0 auto;
+  text-align: center;
+  width: 60%;
+}
 /* --- NEWS FILTER BOX & TOOLTIP BOX --- */
 .tooltip-box {
   position:absolute;
