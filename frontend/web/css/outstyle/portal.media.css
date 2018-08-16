@@ -987,6 +987,9 @@
     .about-us{
         padding: 0.3em;
     }
+    iframe.instagram-media{
+        min-width: 280px !important;
+    }
 
 }
 @media (max-width: 280px) {

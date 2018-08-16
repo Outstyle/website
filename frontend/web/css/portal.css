@@ -355,6 +355,19 @@ margin-right: 0;
   text-align: center;
   width: 60%;
 }
+.iframe-wrap .twitter-tweet{
+  width: 100% !important;
+  max-width: 530px !important;
+}
+.iframe-wrap .EmbeddedTweet{
+  max-width: 530px !important;
+  width: 100% !important;
+}
+
+.iframe-wrap iframe{
+  width: 100%;
+  max-width: 100%;
+}
 /* --- NEWS FILTER BOX & TOOLTIP BOX --- */
 .tooltip-box {
   position:absolute;
