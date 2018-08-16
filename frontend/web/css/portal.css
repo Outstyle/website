@@ -350,7 +350,24 @@ margin-right: 0;
 .news__alertbox {
   color:#FFF;
 }
+.iframe-wrap{
+  margin: 0 auto;
+  text-align: center;
+  width: 60%;
+}
+.iframe-wrap .twitter-tweet{
+  width: 100% !important;
+  max-width: 530px !important;
+}
+.iframe-wrap .EmbeddedTweet{
+  max-width: 530px !important;
+  width: 100% !important;
+}
 
+.iframe-wrap iframe{
+  width: 100%;
+  max-width: 100%;
+}
 /* --- NEWS FILTER BOX & TOOLTIP BOX --- */
 .tooltip-box {
   position:absolute;
