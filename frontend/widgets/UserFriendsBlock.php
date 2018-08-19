@@ -5,7 +5,7 @@ namespace frontend\widgets;
 use Yii;
 use yii\base\Widget;
 
-use app\models\UserAvatar;
+use frontend\models\UserAvatar;
 
 /**
  * Handles User -> Friends block, showing friends of user

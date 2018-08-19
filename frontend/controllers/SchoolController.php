@@ -15,7 +15,7 @@ use backend\models\Category;
 use common\components\helpers\StringHelper;
 
 /* TODO */
-use app\models\Photo;
+use frontend\models\Photo;
 use frontend\components\ParentController;
 
 class SchoolController extends ParentController

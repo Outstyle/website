@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 
@@ -19,13 +19,30 @@ use Yii;
  */
 class Board extends \yii\db\ActiveRecord
 {
+    /**
+     * Since you can view your own board and view other user boards, we need to separate this states
+     * @var string
+     */
+    const BOARD_STATE_OWNER = 'owner';
+    const BOARD_STATE_OTHER = 'other';
+
+
+    /**
+     * Posts per user board
+     * @var int
+     */
     public static $boardPageSize = 15;
+
+    /**
+     * Posts order
+     * @var string
+     */
     public static $boardOrderBy = 'id desc';
+
 
     /**
      * @inheritdoc
      */
-
     public static function tableName()
     {
         return '{{%board}}';

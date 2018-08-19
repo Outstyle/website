@@ -11,11 +11,11 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
-use app\models\Dialog;
-use app\models\Friend;
-use app\models\Message;
-use app\models\DialogMembers;
-use app\models\UserDescription;
+use frontend\models\Dialog;
+use frontend\models\Friend;
+use frontend\models\Message;
+use frontend\models\DialogMembers;
+use frontend\models\UserDescription;
 
 use frontend\components\ParentController;
 

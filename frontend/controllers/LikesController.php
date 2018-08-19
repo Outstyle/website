@@ -6,7 +6,7 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\web\Response;
-use app\models\Likes;
+use frontend\models\Likes;
 
 class LikesController extends Controller
 {

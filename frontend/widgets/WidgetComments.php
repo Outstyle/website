@@ -4,7 +4,7 @@ namespace frontend\widgets;
 
 use Yii;
 use yii\base\Widget;
-use app\models\Comments;
+use frontend\models\Comments;
 
 /**
  * Handles comment form

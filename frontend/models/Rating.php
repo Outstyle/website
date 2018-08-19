@@ -1,9 +1,9 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
-use app\models\RatingLog;
+use frontend\models\RatingLog;
 use UserDescription;
 
 /**

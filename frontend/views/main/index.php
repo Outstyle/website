@@ -4,11 +4,11 @@
     use frontend\widgets\WidgetProfileUserMenu;
     use yii\widgets\ActiveForm;
     use frontend\models\UserAvatar;
-    use app\models\UserDescription;
-    use app\models\User;
-    use app\models\Photo; 
-    use app\models\Country;
-    use app\models\City;
+    use frontend\models\UserDescription;
+    use frontend\models\User;
+    use frontend\models\Photo; 
+    use frontend\models\Country;
+    use frontend\models\City;
     /* @var $this yii\web\View */
     $this->title = Yii::t('app', 'Главная').' - '.Yii::$app->name;
     $this->registerMetaTag(['name' => 'description', 'content' => $this->title]);

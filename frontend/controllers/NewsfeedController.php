@@ -12,19 +12,19 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
-use app\models\News;
-use app\models\Likes;
-use app\models\Photo;
-use app\models\Board;
-use app\models\Video;
-use app\models\Friend;
-use app\models\Comments;
-use app\models\Newsfeed;
-use app\models\Photoalbum;
-use app\models\Attachments;
-use app\models\NewsCategory;
-use app\models\AuthAssignment;
-use app\models\UserDescription;
+use frontend\models\News;
+use frontend\models\Likes;
+use frontend\models\Photo;
+use frontend\models\Board;
+use frontend\models\Video;
+use frontend\models\Friend;
+use frontend\models\Comments;
+use frontend\models\Newsfeed;
+use frontend\models\Photoalbum;
+use frontend\models\Attachments;
+use frontend\models\NewsCategory;
+use frontend\models\AuthAssignment;
+use frontend\models\UserDescription;
 
 use frontend\components\ParentController;
 

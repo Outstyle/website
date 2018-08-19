@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\PrivacyHelper;
 
-use app\models\UserDescription;
+use frontend\models\UserDescription;
 
 /**
  * Friends search form
@@ -65,7 +65,7 @@ echo Html::beginTag('form', [
 
   echo Html::tag('div', '',
   [
-    'class' => 'o-grid__cell o-grid__cell--width-10 friends__activebuttons'
+    'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
   ]);
 
       /* All friends */
@@ -105,26 +105,10 @@ echo Html::beginTag('form', [
         'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
       ]);
 
-      /* Friends feed */
-      echo Html::tag('div',
-        ElementsHelper::linkElement('roundbutton',
-
-          Html::tag('span',
-            Html::tag('i', '', ['class' => 'zmdi zmdi-receipt zmdi-hc-lg']).
-            Html::tag('i', '', ['class' => 'zmdi zmdi-star zmdi-hc-stack-1x zmdi-hc-sided zmdi-hc-medium c-text__color--lightred']),
-          [
-            'class' => 'zmdi-hc-stack'
-          ]),
-
-        Url::to(['/friends/feed'], true)),
-      [
-        'id' => 'friends__roundbutton-feed',
-        'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
-      ]);
 
   echo Html::tag('div', '',
   [
-    'class' => 'o-grid__cell o-grid__cell--width-10 friends__activebuttons'
+    'class' => 'o-grid__cell o-grid__cell--width-20 friends__activebuttons'
   ]);
 
 

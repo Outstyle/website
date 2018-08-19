@@ -9,8 +9,8 @@ use yii\base\UserException;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 
-use app\models\Comments;
-use app\models\Attachments;
+use frontend\models\Comments;
+use frontend\models\Attachments;
 
 class CommentsController extends Controller
 {

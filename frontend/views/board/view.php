@@ -20,7 +20,7 @@ use frontend\widgets\UserBoardPost;
  *
  * @var array     $this           yii\web\View
  * @var array     $user           @frontend/controllers/BoardController
- * @var array     $friends    @frontend/controllers/BoardController
+ * @var array     $friends        @frontend/controllers/BoardController
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0

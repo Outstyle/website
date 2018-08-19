@@ -5,10 +5,10 @@
     use frontend\widgets\WidgetProfileUserMenu;
     use yii\widgets\ActiveForm;
     use frontend\models\UserAvatar;
-    use app\models\UserDescription;
-    use app\models\User;
-    use app\models\Photo;
-    use app\models\EventsCategory;
+    use frontend\models\UserDescription;
+    use frontend\models\User;
+    use frontend\models\Photo;
+    use frontend\models\EventsCategory;
 
     /* @var $this yii\web\View */
     $this->title = Yii::t('app', 'Редактирование события');

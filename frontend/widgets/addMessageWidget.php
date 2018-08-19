@@ -2,7 +2,7 @@
 
 namespace frontend\widgets;
 
-use app\models\MessageAnswer;
+use frontend\models\MessageAnswer;
 
 
 class addMessageWidget extends \yii\bootstrap\Widget {

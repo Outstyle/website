@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2018 Outstyle Network
  * @license Beerware
  */
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 
@@ -20,26 +20,34 @@ use Yii;
  */
 class User extends \common\models\User
 {
-    /**
-     * Time length for status indicator will stay online
-     * @var int     ms
-     */
-    public static $timeTillOffline = 900;
-
 
     /**
-     * Check user online status
-     * @param  int $timestamp   Valid timestamp of user's lastvisit
-     * @return int              Online status value
+     * Deletes user and all his related info by uID
+     * @param int $userId     User ID to remove from DB
+     * @return bool true
      */
-    public static function checkUserStatusByTimestamp($timestamp)
+    public function deleteUserByUserId($userId = 0)
     {
-        if (time()-$timestamp < self::$timeTillOffline) {
-            return self::USER_SOCIAL_ONLINE;
-        }
+        $user = $this->find()
+          ->where(['id' => $userId])
+          ->one()
+          ->delete();
 
-        return self::USER_SOCIAL_OFFLINE;
+        $userDescription = new \frontend\models\UserDescription();
+        $userDescription->find()
+          ->where(['id' => $userId])
+          ->one()
+          ->delete();
+
+        $userPrivacy = new \frontend\models\UserPrivacy();
+        $userPrivacy->find()
+          ->where(['id' => $userId])
+          ->one()
+          ->delete();
+
+        return true;
     }
+
 
     /* Relations - Frontend */
     public function getNews()

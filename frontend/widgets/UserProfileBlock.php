@@ -4,8 +4,8 @@ namespace frontend\widgets;
 
 use Yii;
 use yii\base\Widget;
-use app\models\UserDescription;
-use app\models\UserPrivacy;
+use frontend\models\UserDescription;
+use frontend\models\UserPrivacy;
 use yii\helpers\ArrayHelper;
 use common\components\helpers\StringHelper;
 
@@ -97,7 +97,7 @@ class UserProfileBlock extends Widget
 
         # User avatar
         if (isset($this->user->userDescription->avatar)) {
-            $this->userAvatarPath = \app\models\UserAvatar::getAvatarPath($this->user->id);
+            $this->userAvatarPath = \frontend\models\UserAvatar::getAvatarPath($this->user->id);
         }
 
         # User birthday + Privacy check

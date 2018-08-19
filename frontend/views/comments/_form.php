@@ -8,7 +8,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-use app\models\UserAvatar;
+use frontend\models\UserAvatar;
 use common\components\helpers\html\CommentsHelper;
 use common\components\helpers\html\AttachmentsHelper;
 

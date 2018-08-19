@@ -6,7 +6,7 @@
  */
 use yii\helpers\Html;
 use common\components\classes\Multiplayer;
-use app\models\VideoServices;
+use frontend\models\VideoServices;
 
 /**
  * Video container

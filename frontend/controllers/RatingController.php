@@ -10,7 +10,7 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
-use app\models\Rating;
+use frontend\models\Rating;
 
 use frontend\components\ParentController;
 

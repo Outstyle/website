@@ -5,12 +5,12 @@
     use frontend\widgets\WidgetProfileUserMenu;
     use yii\widgets\ActiveForm;
     use frontend\models\UserAvatar;
-    use app\models\UserDescription;
-    use app\models\User;
-    use app\models\Photo;
-    use app\models\Country;
-    use app\models\City;
-    use app\models\SchoolCategory;
+    use frontend\models\UserDescription;
+    use frontend\models\User;
+    use frontend\models\Photo;
+    use frontend\models\Country;
+    use frontend\models\City;
+    use frontend\models\SchoolCategory;
 
     /* @var $this yii\web\View */
     $this->title = Yii::t('app', 'Редактирование школы');

@@ -7,8 +7,8 @@ use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 
-use app\models\Friend;
-use app\models\UserDescription;
+use frontend\models\Friend;
+use frontend\models\UserDescription;
 
 use frontend\components\handlers\ErrorHandler;
 use frontend\components\OutstyleSocialController;
@@ -45,12 +45,12 @@ class FriendsController extends OutstyleSocialController
     public function actionIndex()
     {
         if (Yii::$app->request->pathInfo == 'friends') {
-            $friends['active'] = $this->userGlobalData['friends']['active'];
-            $friends['pending'] = $this->userGlobalData['friends']['pending'];
+            $friends['active'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['active'];
+            $friends['pending'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['pending'];
         }
 
         if (Yii::$app->request->pathInfo == 'friends/online') {
-            $friends['active'] = $this->userGlobalData['friends']['online'];
+            $friends['active'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['online'];
         }
 
         if (Yii::$app->request->pathInfo == 'friends/search') {
@@ -162,7 +162,7 @@ class FriendsController extends OutstyleSocialController
     public function actionAccept()
     {
         if (Yii::$app->request->isAjax) {
-            $model = new Friend(['scenario' => Friend::SCENARIO_ACCEPT_FRIEND]);
+            $model = new Friend(['scenario' => Friend::SCENARIO_DEAL_WITH_FRIEND]);
             $model->load(Yii::$app->request->post(), '');
 
             if ($model->validate()) {

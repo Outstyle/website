@@ -1,10 +1,10 @@
 <?php
 use yii\helpers\Html; 
 use yii\helpers\Url;
-use app\models\FriendRequests;
+use frontend\models\FriendRequests;
 use frontend\models\UserAvatar;
-use app\models\UserDescription;
-use app\models\Country;
+use frontend\models\UserDescription;
+use frontend\models\Country;
 
 /* @var $this yii\web\View */
 $this->title = Yii::t('app', 'Новости');

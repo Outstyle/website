@@ -13,20 +13,18 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
 /* TODO: remove unused */
-use app\models\City;
-use app\models\SchoolCategory;
-use app\models\Board;
+use frontend\models\Board;
 use common\models\Photo;
-use app\models\Video;
-use app\models\Likes;
-use app\models\Comments;
-use app\models\Newsfeed;
-use app\models\Attachments;
-use app\models\AuthAssignment;
-use app\models\Friend;
-use app\models\UserDescription;
-use app\models\UserPrivacy;
-use app\models\UserAvatar;
+use frontend\models\Video;
+use frontend\models\Likes;
+use frontend\models\Comments;
+use frontend\models\Newsfeed;
+use frontend\models\Attachments;
+use frontend\models\AuthAssignment;
+use frontend\models\Friend;
+use frontend\models\UserDescription;
+use frontend\models\UserPrivacy;
+use frontend\models\UserAvatar;
 
 use frontend\components\OutstyleSocialController;
 
@@ -80,7 +78,7 @@ class BoardController extends OutstyleSocialController
         return $this->render('view', [
             'user' => $user,
             'friends' => [
-              'active' => array_slice($this->userGlobalData['friends']['active'], 0, 6)
+              'active' => array_slice($this->userGlobalData[$this->boardOwnerRelation]['friends']['active'], 0, 6)
             ]
         ]);
     }

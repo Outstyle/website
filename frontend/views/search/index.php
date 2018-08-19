@@ -3,11 +3,11 @@
 use yii\helpers\Html; 
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use app\models\FriendRequests;
-use app\models\UserDescription;
-use app\models\Country;
-use app\models\User;
-use app\models\Photo;
+use frontend\models\FriendRequests;
+use frontend\models\UserDescription;
+use frontend\models\Country;
+use frontend\models\User;
+use frontend\models\Photo;
 use frontend\widgets\WidgetProfileUserMenu;
 use frontend\models\UserAvatar;
 

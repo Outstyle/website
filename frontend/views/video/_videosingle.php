@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\components\helpers\ElementsHelper;
 use frontend\widgets\WidgetComments;
-use app\models\VideoServices;
+use frontend\models\VideoServices;
 
 /* $video   array   @views/video/view */
 

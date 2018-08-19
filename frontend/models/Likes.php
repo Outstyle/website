@@ -2,7 +2,7 @@
 
 /* TODO: check methods usage around other models */
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 use common\components\helpers\ElementsHelper;

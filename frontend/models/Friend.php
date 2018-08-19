@@ -4,12 +4,12 @@
  * @copyright Copyright (c) 2018 Outstyle Network
  * @license Beerware
  */
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
 
-use app\models\UserDescription;
+use frontend\models\UserDescription;
 
 /**
 * This is the model class for table "{{%friend}}".

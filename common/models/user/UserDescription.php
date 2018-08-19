@@ -102,7 +102,7 @@ class UserDescription extends \yii\db\ActiveRecord
     {
         return [
 
-          ['id', 'default', 'value' => Yii::$app->user->id],
+          ['id', 'default', 'value' => Yii::$app->user->id ?? 0],
           ['id', 'integer'],
           ['id', 'required', 'on' => self::SCENARIO_DEFAULT, 'message' => Yii::t('app', 'ID is required')],
           ['name', 'required', 'on' => self::SCENARIO_DEFAULT],
@@ -153,7 +153,7 @@ class UserDescription extends \yii\db\ActiveRecord
           ['avatar_small', 'integer'], /* TODO: Remove this */
 
           /* Additional validation rules */
-          ['user', 'default', 'value' => Yii::$app->user->id],
+          ['user', 'default', 'value' => Yii::$app->user->id ?? 0],
           ['user', 'integer'],
           ['user', 'required',
             'on' => [
@@ -175,7 +175,7 @@ class UserDescription extends \yii\db\ActiveRecord
                   $value = 110; /* In other case we will get int/float date() error */
               }
               $age_min = date('Y-m-d', time()-($value*31556926));
-              return $age_min;
+              return (int)$age_min;
           }],
 
           ['age_max', 'default', 'value' => 110],
@@ -191,7 +191,7 @@ class UserDescription extends \yii\db\ActiveRecord
                   $value = 110; /* In other case we will get int/float date() error */
               }
               $age_max = date('Y-m-d', time()-($value*31556926));
-              return $age_max;
+              return (int)$age_max;
           }],
 
           ['search', 'string',

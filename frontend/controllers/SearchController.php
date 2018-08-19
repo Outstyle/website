@@ -13,9 +13,9 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
-use app\models\Friend;
-use app\models\FriendRequests;
-use app\models\UserDescription;
+use frontend\models\Friend;
+use frontend\models\FriendRequests;
+use frontend\models\UserDescription;
 
 use frontend\components\ParentController;
 

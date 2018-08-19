@@ -1,28 +1,21 @@
 <?php
 
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 
 /**
  * This is the model class for table "{{%user_privacy}}".
  *
- * @property string $id
- * @property integer $username
- * @property integer $email
- * @property integer $name
- * @property integer $status
+ * @property integer $id
  * @property integer $birthday
+ * @property integer $city
  * @property integer $phone
  * @property integer $site
  * @property integer $skype
- * @property integer $city
- * @property integer $country
- * @property integer $sex
- * @property integer $family
- * @property integer $language
- * @property integer $culture
- * @property integer $about
+ * @property integer $board_comment
+ * @property integer $private_messages
+ * @property integer $invite_group
  */
 class UserPrivacy extends \yii\db\ActiveRecord
 {
@@ -41,6 +34,7 @@ class UserPrivacy extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'required'],
+            [['id', 'birthday', 'city', 'phone', 'site', 'skype', 'board_comment','private_messages', 'invite_group'], 'default', 'value' => 0],
             [['id', 'birthday', 'city', 'phone', 'site', 'skype', 'board_comment','private_messages', 'invite_group'], 'integer']
         ];
     }
@@ -63,7 +57,8 @@ class UserPrivacy extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function setNames(){
+    public static function setNames()
+    {
         return [
             0 => Yii::t('app', 'Все пользователи'),
             1 => Yii::t('app', 'Только друзья'),
@@ -73,18 +68,18 @@ class UserPrivacy extends \yii\db\ActiveRecord
     }
 
 
-    public static function getNames($id = null){
+    public static function getNames($id = null)
+    {
         $r = self::setNames();
-        if($id !== null){
+        if ($id !== null) {
             return (isset($r[$id]) && $id > 0)?$r[$id]:null;
         }
         return $r;
-
     }
 
     public static function getReaction($field, $model, $id, $friendsGeneral)
     {
-        if(isset($model->{$field})){
+        if (isset($model->{$field})) {
             switch ($model->{$field}) {
                 case 0:
                     return true;
@@ -93,15 +88,15 @@ class UserPrivacy extends \yii\db\ActiveRecord
                     return false;
                     break;
                 case 1:
-                    if($id){
+                    if ($id) {
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
                 case 2:
                     if (count($friendsGeneral) || $id) {
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
                     break;
@@ -109,18 +104,19 @@ class UserPrivacy extends \yii\db\ActiveRecord
                     return false;
                     break;
             }
-        }else{
+        } else {
             return true;
         }
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static function getPrivacy($privacy, $idOwner){
-            if ($idOwner === Yii::$app->user->id) {
-              return true;
-            }
-            switch ($privacy) {
+    public static function getPrivacy($privacy, $idOwner)
+    {
+        if ($idOwner === Yii::$app->user->id) {
+            return true;
+        }
+        switch ($privacy) {
                 case 0:
                     return true;
                     break;
@@ -128,18 +124,18 @@ class UserPrivacy extends \yii\db\ActiveRecord
                     return false;
                     break;
                 case 1://если друг
-                    if(self::checkOnFriend($idOwner)){
+                    if (self::checkOnFriend($idOwner)) {
                         return true;
                         break;
-                    }else{
+                    } else {
                         return false;
                         break;
                     }
                 case 2:// если друг друга
-                    if(self::checkOnFriendMyFriend($idOwner)){
+                    if (self::checkOnFriendMyFriend($idOwner)) {
                         return true;
                         break;
-                    }else{
+                    } else {
                         return false;
                         break;
                     }
@@ -149,21 +145,23 @@ class UserPrivacy extends \yii\db\ActiveRecord
             }
     }
 
-    public static function checkOnFriend($id){
+    public static function checkOnFriend($id)
+    {
         $model = Friend::find()
                         ->where(
                             "(user1 = :id AND user2 = :user AND status = :status)
                                 OR (user1 = :user AND user2 = :id AND status = :status)",
                             [':id' => $id, ':user' => Yii::$app->user->id, ':status' => 1])
                         ->one();
-        if(!$model){
+        if (!$model) {
             return 0;
-        }else{
+        } else {
             return 1;
         }
     }
 
-    public static function checkOnFriendMyFriend($id){
+    public static function checkOnFriendMyFriend($id)
+    {
         $model = Friend::find()
                         ->where(
                             "(user1 = :id AND status = :status)
@@ -172,8 +170,7 @@ class UserPrivacy extends \yii\db\ActiveRecord
                         ->all();
 
         foreach ($model as $key => $value) {
-
-            if($model[$key]['user1'] == Yii::$app->user->id || $model[$key]['user2'] == Yii::$app->user->id ){
+            if ($model[$key]['user1'] == Yii::$app->user->id || $model[$key]['user2'] == Yii::$app->user->id) {
                 return 1;
             }
 
@@ -185,7 +182,7 @@ class UserPrivacy extends \yii\db\ActiveRecord
                                 OR (user1 = :user AND user2 = :id AND status = :status)",
                             [':id' => $idFriend, ':user' => Yii::$app->user->id, ':status' => 1])
                         ->one();
-            if($checkfrFr){
+            if ($checkfrFr) {
                 return 1;
             }
         }

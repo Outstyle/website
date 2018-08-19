@@ -6,11 +6,11 @@
     use frontend\widgets\WidgetProfileUserMenu;
     use yii\widgets\ActiveForm;
     use frontend\models\UserAvatar;
-    use app\models\UserDescription;
-    use app\models\User;
-    use app\models\Photo;
-    use app\models\Blacklist;
-    use app\models\UserPrivacy;
+    use frontend\models\UserDescription;
+    use frontend\models\User;
+    use frontend\models\Photo;
+    use frontend\models\Blacklist;
+    use frontend\models\UserPrivacy;
 
     /* @var $this yii\web\View */
     $this->title = Yii::t('app', 'Настройки');

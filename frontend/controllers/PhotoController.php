@@ -14,14 +14,13 @@ use yii\web\HttpException;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 
-use app\models\Photo;
-use app\models\Photoalbum;
+use frontend\models\Photo;
+use frontend\models\Photoalbum;
 
 use frontend\components\OutstyleSocialController;
 
 /**
  * Photo controller: for working with user photos
- * Must be extended from CsrfController for token compare
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0

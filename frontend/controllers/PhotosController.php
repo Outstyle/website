@@ -13,17 +13,17 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use frontend\components\ParentController;
 
-use app\models\Board;
-use app\models\Likes;
-use app\models\Photo;
-use app\models\Newsfeed;
-use app\models\Comments;
-use app\models\Photoalbum;
-use app\models\UserPrivacy;
-use app\models\Attachments;
-use app\models\AuthAssignment;
+use frontend\models\Board;
+use frontend\models\Likes;
+use frontend\models\Photo;
+use frontend\models\Newsfeed;
+use frontend\models\Comments;
+use frontend\models\Photoalbum;
+use frontend\models\UserPrivacy;
+use frontend\models\Attachments;
+use frontend\models\AuthAssignment;
 
-use app\models\UserDescription;
+use frontend\models\UserDescription;
 
 class PhotosController extends ParentController {
     public $layout='main-new';

@@ -14,7 +14,7 @@ use yii\web\HttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 
-use app\models\Photoalbum;
+use frontend\models\Photoalbum;
 use frontend\components\OutstyleSocialController;
 
 /**

@@ -11,8 +11,9 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use yii\helpers\Json;
 
-use app\models\User;
-use app\models\Friend;
+use frontend\models\User;
+use frontend\models\Friend;
+use frontend\models\Board;
 
 use common\components\helpers\ElementsHelper;
 
@@ -40,6 +41,18 @@ class OutstyleSocialController extends Controller
      */
     protected $userGlobalData = [];
 
+    /**
+     * Current user ID, including other viewable board of other user (not a board owner)
+     * @var int
+     */
+    protected $boardOwnerUserId = 0;
+
+    /**
+     * Current board state for user: whos board is this?
+     * @var string    Default: owner
+     */
+    protected $boardOwnerRelation = Board::BOARD_STATE_OWNER;
+
 
     /**
      * @inheritdoc
@@ -48,12 +61,14 @@ class OutstyleSocialController extends Controller
     {
         parent::init();
 
-        /* TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh */
+        /* TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh, move to User model */
         if (Yii::$app->user->id) {
             $userOnline = User::findOne(Yii::$app->user->id);
             $userOnline->lastvisit = time();
             $userOnline->save();
         }
+
+        $this->boardOwnerUserId = Yii::$app->getRequest()->getQueryParam('userId');
     }
 
     /**
@@ -99,7 +114,13 @@ class OutstyleSocialController extends Controller
         }
 
         /* Callable methods on each controller action triggered */
-        $this->setUserFriends();
+        $this->setUserFriends($userId = Yii::$app->user->id, $relation = Board::BOARD_STATE_OWNER);
+
+        /* Viewing another user's board? */
+        if ($this->boardOwnerUserId != Yii::$app->user->id) {
+            $this->boardOwnerRelation = Board::BOARD_STATE_OTHER;
+            $this->setUserFriends($userId = $this->boardOwnerUserId, $relation = $this->boardOwnerRelation);
+        }
 
 
         /* Final action to bypass vars to JS */
@@ -111,39 +132,43 @@ class OutstyleSocialController extends Controller
     /**
      * Setting up user friends array for global usage
      * You can also use 'Yii::$app->request->pathInfo == 'friends/online' check i.e. to isolate certain actions
+     * @param integer $userId
+     * @param integer $relation   How this userdata is related to the user itself? `owner` - self data, `other` - other user data
+     *
+     * The `$relation` variable is needed, when you working with boards and viewing own board or another user board
      */
-    protected function setUserFriends()
+    protected function setUserFriends($userId = 0, $relation = Board::BOARD_STATE_OWNER)
     {
-        $friends = Friend::getUserFriends(Friend::STATUS_ACTIVE_FRIENDSHIP)
+        $friends = Friend::getUserFriends(Friend::STATUS_ACTIVE_FRIENDSHIP, $userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
           ->all();
         $friends = Friend::createFriendsArrayForUser($friends);
         $friends = Friend::getFriendsDescription($friends);
 
-        $friendsPending = Friend::getUserFriends(Friend::STATUS_ACTIVE_PENDING)
+        $friendsPending = Friend::getUserFriends(Friend::STATUS_ACTIVE_PENDING, $userId)
           ->limit(Friend::$friendsPendingPageSize)
           ->asArray()
           ->all();
-        $friendsPending = Friend::createFriendsArrayForUser($friendsPending);
-        $friendsPending = Friend::getFriendsDescription($friendsPending);
+        $friendsPending = Friend::createFriendsArrayForUser($friendsPending, $userId);
+        $friendsPending = Friend::getFriendsDescription($friendsPending, $userId);
 
-        $friendsOnline = Friend::getUserFriendsOnline()
+        $friendsOnline = Friend::getUserFriendsOnline($userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
           ->all();
-        $friendsOnline = Friend::createFriendsArrayForUser($friendsOnline);
-        $friendsOnline = Friend::getFriendsDescription($friendsOnline);
+        $friendsOnline = Friend::createFriendsArrayForUser($friendsOnline, $userId);
+        $friendsOnline = Friend::getFriendsDescription($friendsOnline, $userId);
 
         /* Setting global var for child controllers */
-        $this->userGlobalData['friends']['active'] = $friends;
-        $this->userGlobalData['friends']['pending'] = $friendsPending;
-        $this->userGlobalData['friends']['online'] = $friendsOnline;
+        $this->userGlobalData[$relation]['friends']['active'] = $friends;
+        $this->userGlobalData[$relation]['friends']['pending'] = $friendsPending;
+        $this->userGlobalData[$relation]['friends']['online'] = $friendsOnline;
 
         /* Passing parameters to any child view */
-        $this->view->params['friends']['active'] = count($friends);
-        $this->view->params['friends']['pending'] = count($friendsPending);
-        $this->view->params['friends']['online'] = count($friendsOnline);
+        $this->view->params[$relation]['friends']['active'] = count($friends);
+        $this->view->params[$relation]['friends']['pending'] = count($friendsPending);
+        $this->view->params[$relation]['friends']['online'] = count($friendsOnline);
     }
 
     /**

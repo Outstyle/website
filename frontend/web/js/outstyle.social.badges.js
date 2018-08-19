@@ -15,8 +15,8 @@ function appendBadgeToElement(elementId, type, text) {
 }
 
 function setupAllBadges() {
-  appendBadgeToElement('#menu__item-friends a', 'red', outstyle_globals.friends.pending);
-  appendBadgeToElement('#friends__roundbutton-all a', 'red', outstyle_globals.friends.pending);
+  appendBadgeToElement('#menu__item-friends a', 'red', outstyle_globals.owner.friends.pending);
+  appendBadgeToElement('#friends__roundbutton-all a', 'red', outstyle_globals.owner.friends.pending);
 }
 
 

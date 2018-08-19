@@ -12,8 +12,8 @@ use yii\widgets\ActiveForm;
 use common\models\AuthMisstep;
 use common\models\LoginForm;
 
-use app\models\ConfirmEmail;
-use app\models\UserDescription;
+use frontend\models\ConfirmEmail;
+use frontend\models\UserDescription;
 
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;

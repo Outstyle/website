@@ -7,7 +7,7 @@ use yii\widgets\Spaceless;
 use common\components\helpers\StringHelper;
 use common\components\helpers\ElementsHelper;
 
-use app\models\Photo;
+use frontend\models\Photo;
 
 /**
  * User photoalbums list

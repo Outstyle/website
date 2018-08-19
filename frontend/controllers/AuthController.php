@@ -2,7 +2,7 @@
 namespace frontend\controllers;
 
 use Yii;
-//use app\models\User;
+//use frontend\models\User;
 //use yii\web\User;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -11,7 +11,7 @@ use yii\helpers\Url;
 use common\models\LoginForm;
 use common\models\User;
  
-use app\models\ConfirmEmail;
+use frontend\models\ConfirmEmail;
 
 class AuthController extends Controller {
 

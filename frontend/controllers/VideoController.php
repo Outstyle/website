@@ -11,15 +11,15 @@ use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
-use app\models\Video;
-use app\models\Board;
-use app\models\Likes;
-use app\models\Comments;
-use app\models\Newsfeed;
-use app\models\UserPrivacy;
-use app\models\Attachments;
-use app\models\AuthAssignment;
-use app\models\UserDescription;
+use frontend\models\Video;
+use frontend\models\Board;
+use frontend\models\Likes;
+use frontend\models\Comments;
+use frontend\models\Newsfeed;
+use frontend\models\UserPrivacy;
+use frontend\models\Attachments;
+use frontend\models\AuthAssignment;
+use frontend\models\UserDescription;
 
 use frontend\components\OutstyleSocialController;
 

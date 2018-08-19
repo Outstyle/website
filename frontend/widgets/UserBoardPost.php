@@ -57,9 +57,9 @@ class UserBoardPost extends Widget
                 # Post author
                 $posts[$id]['userId'] = $userId;
                 if (!isset($cachedUserInfo[$userId])) {
-                    $posts[$id]['userAvatar'] = $cachedUserInfo[$userId]['userAvatar'] = \app\models\UserAvatar::getAvatarPath($userId);
-                    $posts[$id]['userNickname'] = $cachedUserInfo[$userId]['userNickname'] = \app\models\UserNickname::getNickname($userId);
-                    $posts[$id]['userCulture'] = $cachedUserInfo[$userId]['userCulture'] = \app\models\UserDescription::getUserCultureByUserId($userId);
+                    $posts[$id]['userAvatar'] = $cachedUserInfo[$userId]['userAvatar'] = \frontend\models\UserAvatar::getAvatarPath($userId);
+                    $posts[$id]['userNickname'] = $cachedUserInfo[$userId]['userNickname'] = \frontend\models\UserNickname::getNickname($userId);
+                    $posts[$id]['userCulture'] = $cachedUserInfo[$userId]['userCulture'] = \frontend\models\UserDescription::getUserCultureByUserId($userId);
                 } else {
                     $posts[$id]['userAvatar'] = $cachedUserInfo[$userId]['userAvatar'];
                     $posts[$id]['userNickname'] = $cachedUserInfo[$userId]['userNickname'];
@@ -68,8 +68,8 @@ class UserBoardPost extends Widget
 
                 # Post likes
                 # TODO: can be cacheable?
-                $posts[$id]['likesCount'] = \app\models\Likes::findLikesCount(Yii::$app->controller->id, $id);
-                $posts[$id]['myLike'] = \app\models\Likes::findMyLike(Yii::$app->controller->id, $id);
+                $posts[$id]['likesCount'] = \frontend\models\Likes::findLikesCount(Yii::$app->controller->id, $id);
+                $posts[$id]['myLike'] = \frontend\models\Likes::findMyLike(Yii::$app->controller->id, $id);
             }
             $this->posts = $posts;
         }

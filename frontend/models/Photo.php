@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2018 Outstyle Network
  * @license Beerware
  */
-namespace app\models;
+namespace frontend\models;
 
 use Yii;
 

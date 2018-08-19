@@ -9,10 +9,10 @@ use yii\filters\AccessControl;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 
-use app\models\User;
-use app\models\UserSearch;
-use app\models\UserPrivacy;
-use app\models\UserDescription;
+use frontend\models\User;
+use frontend\models\UserSearch;
+use frontend\models\UserPrivacy;
+use frontend\models\UserDescription;
 
 use frontend\components\ParentController;
 

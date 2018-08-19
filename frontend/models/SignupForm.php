@@ -26,7 +26,6 @@ class SignupForm extends Model
             'password' => Yii::t('app', 'Password'),
             'repeatPassword' => Yii::t('app', 'Repeat password'),
             'email' => Yii::t('app', 'Email'),
-
         ];
     }
 
@@ -39,19 +38,22 @@ class SignupForm extends Model
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
             ['username', 'string', 'min' => 2, 'max' => 64],
-            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9_\-]*$/i', 'message' => Yii::t('app', 'You can only use alpanumeric symbols along with - and _')],
+            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9_\-]*$/i',
+             'message' => Yii::t('app', 'You can only use alpanumeric symbols along with - and _')],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => Yii::t('app', 'This email address is already taken')],
+            ['email', 'unique', 'targetClass' => '\common\models\User',
+             'message' => Yii::t('app', 'This email address is already taken')],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
             ['repeatPassword', 'required'],
             ['repeatPassword', 'string', 'min' => 6],
-            ['repeatPassword', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false, 'message'=>Yii::t('app', 'Password mismatch')],
+            ['repeatPassword', 'compare', 'compareAttribute'=>'password', 'skipOnEmpty' => false,
+             'message'=>Yii::t('app', 'Password mismatch')],
         ];
     }
 
@@ -63,7 +65,6 @@ class SignupForm extends Model
     public function signup()
     {
         if ($this->validate()) {
-
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
@@ -72,7 +73,7 @@ class SignupForm extends Model
 
             // If signup process is successfull, returning user id.
             if ($user->save()) {
-                return $user;
+                return $user->id;
             }
         }
 

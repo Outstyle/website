@@ -10,7 +10,7 @@
 /*
     For registered users we show his avatar'n'stuff
 */
-use app\models\UserDescription;
+use frontend\models\UserDescription;
 
 $modelDescription = new UserDescription();
 if (!Yii::$app->user->isGuest) {

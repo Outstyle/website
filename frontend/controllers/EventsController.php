@@ -15,12 +15,12 @@ use yii\web\NotFoundHttpException;
 
 use common\CImageHandler;
 
-use app\models\Photo;
-use app\models\Photoalbum;
-use app\models\UserDescription;
-use app\models\Likes;
-use app\models\Comments;
-use app\models\AuthAssignment;
+use frontend\models\Photo;
+use frontend\models\Photoalbum;
+use frontend\models\UserDescription;
+use frontend\models\Likes;
+use frontend\models\Comments;
+use frontend\models\AuthAssignment;
 
 use backend\models\Category;
 

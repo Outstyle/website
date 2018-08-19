@@ -8,9 +8,9 @@ use yii\web\HttpException;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
 
-use app\models\Video;
-use app\models\Photo;
-use app\models\Attachments;
+use frontend\models\Video;
+use frontend\models\Photo;
+use frontend\models\Attachments;
 use common\components\helpers\html\AttachmentsHelper;
 
 class AttachmentsController extends Controller

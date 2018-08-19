@@ -37,12 +37,6 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
-    /**
-     * User social statuses (indicators)
-     * @var integer
-     */
-    const USER_SOCIAL_OFFLINE = 0;
-    const USER_SOCIAL_ONLINE = 1;
 
     /**
      * @inheritdoc
@@ -88,7 +82,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
             [['password_reset_token'], 'safe'],
             [['password_hash'], 'string', 'length' => [6, 255]],
 
-            [['username'], 'string', 'length' => [2, 30]],
+            [['username'], 'string', 'length' => [2, 64]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['email', 'unique', 'message' => Yii::t('app', 'Этот адрес электронной почты уже занят.')],
