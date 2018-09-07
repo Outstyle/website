@@ -108,7 +108,12 @@ $this->beginBody();
         }
 
     echo Html::endTag('div');
-    echo Subscribe::widget();
+    $clientSecret = Yii::$app->params['SubscribeConfig']['path'] ?? '';
+    if (class_exists('andrij200390\subscribe\Subscribe')){
+        echo Subscribe::widget([
+            'clientSecret' => $clientSecret
+        ]);
+    }
     $this->endBody();
 
 /**
