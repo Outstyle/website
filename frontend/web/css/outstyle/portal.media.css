@@ -169,7 +169,9 @@
         flex: 0 0 40%;
         max-width: 40%;
     }
-
+    #scrollup {
+        bottom: 70px;
+    }
 
 }
 @media (max-width: 778px){
@@ -731,6 +733,9 @@
     }
     #outstyle_events-single .recommended-bottom-wrap .c-diamond .c-diamond--small {
         left: 25%;
+    }
+    #scrollup {
+        bottom: 80px;
     }
 
 }
