@@ -9,6 +9,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
 use yii\widgets\Spaceless;
+use andrij200390\subscribe\Subscribe;
 
 use frontend\assets\PortalAsset;
 
@@ -107,8 +108,13 @@ $this->beginBody();
         }
 
     echo Html::endTag('div');
-
-$this->endBody();
+    $clientSecret = Yii::$app->params['SubscribeConfig']['path'] ?? '';
+    if (class_exists('andrij200390\subscribe\Subscribe')){
+        echo Subscribe::widget([
+            'clientSecret' => $clientSecret
+        ]);
+    }
+    $this->endBody();
 
 /**
  * Other additional stuff for handling data - i.e. containers for modal content or 'back to top' button, that is present on every page
