@@ -15,6 +15,9 @@ use common\models\geolocation\GeolocationCities;
 use common\models\geolocation\GeolocationCountries;
 use common\models\Friend;
 
+use frontend\models\UserAvatar;
+use frontend\models\UserStatus;
+
 /**
  * This is the model class for table "{{%user_description}}".
  * This model serves as a common one, both for backend and frontend.
@@ -83,6 +86,7 @@ class UserDescription extends \yii\db\ActiveRecord
     public $age_max;
     public $sort_by;
     public $friendship_status;
+    public $is_online;
     public $page;
 
     /**
@@ -139,18 +143,23 @@ class UserDescription extends \yii\db\ActiveRecord
           ['worth_people', 'string', 'max' => 255],
           ['inspiration', 'string', 'max' => 255],
           ['language', 'integer', 'max' => 255],
-          ['sex', 'filter', 'filter' => function ($value) {
-              if (is_array($value)) {
-                  if (ArrayHelper::isSubset(['male' , 'female'], $value)) {
-                      return;
-                  }
-                  return array_pop($value);
-              }
-          }],
+          ['sex', 'filter',
+            'filter' => function ($value) {
+                if (is_array($value)) {
+                    if (ArrayHelper::isSubset(['male' , 'female'], $value)) {
+                        return;
+                    }
+                    return array_pop($value);
+                }
+            },
+            'on' => [
+                self::SCENARIO_SEARCH,
+                self::SCENARIO_FILTER
+            ],
+          ],
           ['sex', 'in', 'range' => ['male', 'female']],
           ['rating', 'integer'],
-          ['avatar', 'string', 'max' => 50],
-          ['avatar_small', 'integer'], /* TODO: Remove this */
+          ['avatar', 'integer'],
 
           /* Additional validation rules */
           ['user', 'default', 'value' => Yii::$app->user->id ?? 0],
@@ -170,13 +179,19 @@ class UserDescription extends \yii\db\ActiveRecord
             ],
           ],
           ['age_min', 'integer', 'message' => Yii::t('app', 'Age must be a numeric value')],
-          ['age_min', 'filter', 'filter' => function ($value) {
-              if ($value > 110) {
-                  $value = 110; /* In other case we will get int/float date() error */
-              }
-              $age_min = date('Y-m-d', time()-($value*31556926));
-              return (int)$age_min;
-          }],
+          ['age_min', 'filter',
+           'filter' => function ($value) {
+               if ($value > 110) {
+                   $value = 110; /* In other case we will get int/float date() error */
+               }
+               $age_min = date('Y-m-d', time()-($value*31556926));
+               return $age_min;
+           },
+           'on' => [
+              self::SCENARIO_SEARCH,
+              self::SCENARIO_FILTER
+            ],
+          ],
 
           ['age_max', 'default', 'value' => 110],
           ['age_max', 'required',
@@ -186,13 +201,19 @@ class UserDescription extends \yii\db\ActiveRecord
             ],
           ],
           ['age_max', 'integer', 'message' => Yii::t('app', 'Age must be a numeric value')],
-          ['age_max', 'filter', 'filter' => function ($value) {
+          ['age_max', 'filter',
+          'filter' => function ($value) {
               if ($value > 110) {
                   $value = 110; /* In other case we will get int/float date() error */
               }
               $age_max = date('Y-m-d', time()-($value*31556926));
-              return (int)$age_max;
-          }],
+              return $age_max;
+          },
+          'on' => [
+             self::SCENARIO_SEARCH,
+             self::SCENARIO_FILTER
+            ],
+          ],
 
           ['search', 'string',
            'max' => 64,
@@ -209,16 +230,16 @@ class UserDescription extends \yii\db\ActiveRecord
               return StringHelper::clearString($value);
           }],
 
-          ['friendship_status', 'default', 'value' => Friend::STATUS_ACTIVE_FRIENDSHIP],
+          ['friendship_status', 'default', 'value' => Friend::FRIENDSHIP_STATUS_ACTIVE],
           ['friendship_status', 'required',
             'on' => [
               self::SCENARIO_FILTER
             ]
           ],
           ['friendship_status', 'in', 'range' => [
-            Friend::STATUS_ACTIVE_PENDING,
-            Friend::STATUS_ACTIVE_FRIENDSHIP,
-            Friend::STATUS_ACTIVE_ONESIDED
+            Friend::FRIENDSHIP_STATUS_PENDING,
+            Friend::FRIENDSHIP_STATUS_ACTIVE,
+            Friend::FRIENDSHIP_STATUS_ONESIDED
           ],
            'message' => Yii::t('app', 'Status value is invalid')],
 
@@ -233,6 +254,14 @@ class UserDescription extends \yii\db\ActiveRecord
            'message' => Yii::t('app', 'Sort value is invalid')],
 
           ['page', 'integer'],
+
+          ['is_online', 'default', 'value' => UserStatus::USER_SOCIAL_OFFLINE],
+          ['is_online', 'in', 'range' => [
+            UserStatus::USER_SOCIAL_OFFLINE,
+            UserStatus::USER_SOCIAL_ONLINE
+          ],
+           'message' => Yii::t('app', 'Online status is out of range')],
+
         ];
     }
 
@@ -341,5 +370,9 @@ class UserDescription extends \yii\db\ActiveRecord
     public function getGeolocationCountries()
     {
         return $this->hasOne(GeolocationCountries::className(), ['vk_country_id' => 'country']);
+    }
+    public function getUserAvatar()
+    {
+        return $this->hasOne(UserAvatar::className(), ['id' => 'avatar']);
     }
 }

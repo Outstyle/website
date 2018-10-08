@@ -20,87 +20,116 @@ use common\components\helpers\ElementsHelper;
  * @var array   $friends    @see: @frontend/widgets/UserFriendsBlock.php
  */
 
-/* If no users are found at all */
-if (!$friends['active']) {
-    echo Html::tag('div',
-      Html::tag('div',
-        '<i class="zmdi zmdi-alert-triangle c-blue"></i> '.
-        Yii::t('app', 'No users found matching your criteria...')),
-      ['class' => 'search__friends search__friends--notfound']);
-    return;
-}
-
 /* Working with friends model (grid), if atleast one user is found */
-echo Html::beginTag('div', ['class' => 'search__friends']);
-  echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter']);
+echo Html::beginTag('div', ['id' => 'friendsList']);
+  echo Html::beginTag('div', ['class' => 'search__friends']);
+    echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter']);
 
-      foreach ($friends['active'] as $friend) {
-          echo Html::beginTag('div', [
-            'class' => 'o-grid__cell--width-100 u-window-box--small friend__box friend__'.$friend['friendship_status']
-          ]);
-          echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter']);
+        /* Counter is needed for loadmore triggers */
+        $friendsTotal = count($friends['active']);
+        $friendsCounter = 0;
 
-          echo Html::tag('div',
-            /* Friend image */
-            ElementsHelper::linkElement('friend',
-              Html::img($friend['avatar'], ['class' => 'o-image roundborder friend__avatar friend__avatar--small']),
-            Url::to(['/id'.$friend['id']], true), false, $friend['fullname']).
+        foreach ($friends['active'] as $friend) {
 
-            /* Friend info block */
-            Html::tag('div',
-              ElementsHelper::linkElement('friend', $friend['fullname'], Url::to(['/id'.$friend['id']], true)).
-              '<br>'.$friend['location'].
-              '<br>'.$friend['birthday_date'],
-              ['class' => 'friend__info']),
-            ['class' => 'o-grid__cell--width-50']
-          );
+            /* Load more trigger */
+            $friendsCounter++;
+            if ($friendsCounter === $friendsTotal) {
+                echo Html::tag('div', '', [
+                'id' => 'friends_loadmore',
+                'ic-action' => 'loadMoreFriends',
+                'ic-trigger-on' => 'scrolled-into-view'
+              ]);
+            }
 
-          if ($friend['friendship_status'] == 'pending') {
-              /* Friend actions block */
-              echo
+            /* Friend single row */
+            echo Html::beginTag('div', [
+              'id' => 'friendbox-'.$friend['id'],
+              'class' => 'o-grid__cell--width-100 u-window-box--small friend__box friend__'.$friend['friendship_status']
+            ]);
+            echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter']);
+
+            echo Html::tag('div',
+              /* Friend image */
+              ElementsHelper::linkElement('friend',
+                Html::img($friend['avatar'], ['class' => 'o-image roundborder friend__avatar friend__avatar--small']),
+              Url::to(['/id'.$friend['id']], true), false, $friend['fullname']).
+
+              /* Friend info block */
               Html::tag('div',
+                ElementsHelper::linkElement('friend', $friend['fullname'], Url::to(['/id'.$friend['id']], true)).
+                '<br>'.$friend['location'].
+                '<br>'.$friend['birthday_date'],
+                ['class' => 'friend__info']),
+              ['class' => 'o-grid__cell--width-70']
+            );
+
+            if ($friend['friendship_status'] === 'pending') {
+                /* Friend actions block */
+                echo
                 Html::tag('div',
+                  Html::tag('div',
 
-                /* Friendship disapprove */
-                Html::button(
-                  Yii::t('app', 'Hide'),
-                  [
-                    'id' =>'friend__action-keep',
-                    'class' => 'c-button c-button--xsmall i-keepfriend u-pull-right',
-                    'title' => Yii::t('app', 'Keep as subscriber'),
-                    'ic-include' => '{"id":'.$friend['id'].'}',
-                    'ic-post-to' => Url::toRoute(['api/friends/accept']),
-                    'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
-                    'ic-on-beforeSend2' => 'friendBeforeKeepFriend()',
-                    'ic-on-complete2' => 'friendAfterKeepFriend()',
-                    'ic-push-url' => 'false'
-                  ]
-                ).
+                  /* Friendship disapprove */
+                  Html::button(
+                    Yii::t('app', 'Hide'),
+                    [
+                      'id' =>'friend__action-keep',
+                      'class' => 'c-button c-button--xsmall i-keepfriend u-pull-right',
+                      'title' => Yii::t('app', 'Keep as subscriber'),
+                      'ic-include' => '{"id":'.$friend['id'].'}',
+                      'ic-post-to' => Url::toRoute(['api/friends/accept']),
+                      'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
+                      'ic-on-beforeSend2' => 'friendBeforeKeepFriend()',
+                      'ic-on-complete2' => 'friendAfterKeepFriend()',
+                      'ic-push-url' => 'false'
+                    ]
+                  ).
 
-                /* Friendship accept */
-                Html::button(
-                  Yii::t('app', 'Add to friends'),
-                  [
-                    'id' =>'friend__action-add',
-                    'class' => 'c-button c-button--success c-button--xsmall i-addfriend u-pull-right',
-                    'title' => Yii::t('app', 'Add to friends'),
-                    'ic-include' => '{"friendId":'.$friend['id'].'}',
-                    'ic-post-to' => Url::toRoute(['api/friends/accept']),
-                    'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
-                    'ic-on-beforeSend2' => 'friendBeforeAddFriend()',
-                    'ic-on-complete2' => 'friendAfterAddFriend()',
-                    'ic-push-url' => 'false',
-                    'ic-target' => 'false'
-                  ]
-                ),
+                  /* Friendship accept */
+                  Html::button(
+                    Yii::t('app', 'To friends'),
+                    [
+                      'id' =>'friend__action-accept',
+                      'class' => 'c-button c-button--success c-button--xsmall i-acceptfriend u-pull-right',
+                      'title' => Yii::t('app', 'To friends'),
+                      'ic-include' => '{"friendId":'.$friend['id'].'}',
+                      'ic-post-to' => Url::toRoute(['api/friends/accept']),
+                      'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
+                      'ic-on-beforeSend2' => 'friendBeforeAddFriend()',
+                      'ic-on-complete2' => 'friendAfterAddFriend()',
+                      'ic-push-url' => 'false'
+                    ]
+                  ),
 
-                ['class' => 'friend__actions']),
-              ['class' => 'o-grid__cell--width-50 o-grid__cell--center']);
-          }
+                  ['class' => 'friend__actions']),
+                ['class' => 'o-grid__cell--width-30 o-grid__cell--center']);
+            }
 
-          echo Html::endTag('div');
-          echo Html::endTag('div');
-      }
+            /* For friends actual search mode only */
+            if (Yii::$app->request->pathInfo === 'friends/search' ||
+                Yii::$app->request->pathInfo === 'api/friends/find') {
+                echo Html::tag('div',
+                  Html::tag('div',
 
+                    /* Friend search options button ... */
+                    Html::button(
+                      Html::tag('i', '', [
+                        'class' => "zmdi zmdi-more zmdi-hc-lg",
+                      ]),
+                    [
+                      'class' => 'zmdi-icon--hoverable i-postbutton i-postbutton--right friend__options',
+                      'title' => Yii::t('app', 'Options'),
+                      'ic-action' => 'friendShowOptionsTooltip:'.$friend['id']
+                    ]),
+
+                  ['class' => 'u-window-box--small']),
+                ['class' => 'o-grid__cell--width-30']);
+            }
+
+            echo Html::endTag('div');
+            echo Html::endTag('div');
+        }
+
+    echo Html::endTag('div');
   echo Html::endTag('div');
 echo Html::endTag('div');

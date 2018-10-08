@@ -28,12 +28,6 @@ use frontend\components\OutstyleSocialController;
 class PhotoController extends OutstyleSocialController
 {
     /**
-     * Layout to be used for all the actions
-     * @var string|false
-     */
-    public $layout = 'social';
-
-    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -44,11 +38,21 @@ class PhotoController extends OutstyleSocialController
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['?'], /* Allow guests for API actions */
+                        'actions' => [
+                          'upload',
+                          'get'
+                        ],
                     ],
                     [
-                        'allow' => false,
-                        'roles' => ['*'],
+                        'allow' => true,
+                        'roles' => ['@'], /* Allow registered */
+                        'actions' => [
+                          'index',
+                          'view',
+                          'get',
+                          'upload'
+                        ],
                     ],
                 ],
             ],
@@ -139,6 +143,7 @@ class PhotoController extends OutstyleSocialController
 
     /**
      * [API] Photos uploading
+     * TODO: Check if it's possible to upload photo for another user by faking $_POST data?
      * @return null|JSON
      */
     public function actionUpload()

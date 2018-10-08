@@ -6,6 +6,8 @@ use Yii;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
+use frontend\models\UserStatus;
+
 /**
  * This is the model class for table "{{%user_description}}".
  *
@@ -32,6 +34,7 @@ class UserDescription extends \common\models\user\UserDescription
 
     /**
      * Find users start point
+     * @param  array  $data         $_GET or $_POST array with validated data
      * @return query
      */
     public static function findUsers()
@@ -47,6 +50,9 @@ class UserDescription extends \common\models\user\UserDescription
             },
             'geolocationCountries' => function ($query) {
                 $query->select('vk_country_id, iso_code, name_ru');
+            },
+            'userAvatar' => function ($query) {
+                $query->select('id, img, service_id');
             }
           ]);
     }
@@ -106,6 +112,12 @@ class UserDescription extends \common\models\user\UserDescription
               'like',
               'CONCAT(`name`, `last_name`, `nickname`)',
               $data['search']
+            ]);
+        }
+
+        if ($data['is_online']) {
+            $query->joinWith(['user u'])->where('u.`lastvisit` > :lastvisit', [
+              ':lastvisit' => (time() - UserStatus::$timeTillOffline)
             ]);
         }
 

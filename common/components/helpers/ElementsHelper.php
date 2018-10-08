@@ -524,39 +524,11 @@ class ElementsHelper extends Html
     }
 
     /**
-     * Post settings button
-     * @param   string $style Icon name
-     * @see:    http://zavoloklom.github.io/material-design-iconic-font/icons.html for icon name
-     * @return  html
-     */
-    public static function postSettingsButton($style = 'more')
-    {
-        $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-postbutton i-postbutton--right i-{$style}"));
-
-        return
-        Html::button(
-          Html::tag('i', '', [
-            'class' => "zmdi zmdi-{$style} zmdi-hc-lg",
-          ]),
-        [
-          'class' => $class,
-          'title' => Yii::t('app', ucfirst($style)),
-          'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-          'ic-target' => '#outstyle_comments .comments_body',
-          'ic-get-from' => Url::toRoute(['comments/add']),
-          'ic-prepend-from' => Url::toRoute(['comments/add']),
-          'ic-push-url' => 'false',
-          'ic-select-from-response' => '#new_comment'
-        ]);
-    }
-
-    /**
      * Filter box tooltip
      * For $method see: http://intercoolerjs.org/reference.html (post-to, get-from, append-to, prepend-from).
      *
      * @param array $categories Array of categories from model
-     * @paran  string $name       input checkbox group name
-     *
+     * @param string $name       input checkbox group name
      * @param string $url       Url (full or relative) or wrapped into Url::toRoute()
      * @param string $target_el element selector to {$method} data to
      * @param string $include   what data to include (can be jquery selectors or valid JSON obj)

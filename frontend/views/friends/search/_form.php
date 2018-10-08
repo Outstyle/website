@@ -34,13 +34,16 @@ if (Yii::$app->request->pathInfo == 'friends/search') {
 echo Html::beginTag('form', [
   'id' => 'friends-search-form',
   'class' => 'o-grid o-grid--wrap',
-  'ic-post-to' => Url::toRoute(['api/friends/'.$form_ajax_action]),
-  'ic-trigger-from' => '.form-trigger',
+  'ic-append-from' => Url::toRoute(['api/friends/'.$form_ajax_action]),
+  'ic-verb' => 'POST',
+  'ic-include' => '#page',
+  'ic-select-from-response' => '#friendsList',
+  'ic-trigger-from' => '.friends-form-trigger',
   'ic-indicator' => '#friends__loader',
-  'ic-target' => '#rightBlock',
+  'ic-target' => '#rightBlock #friendsList',
   'ic-trigger-delay' => '200ms',
   'ic-on-beforeSend' => 'friendsBeforeSearchActions()',
-  'ic-on-complete' => 'friendsAfterSearchActions()'
+  'ic-on-success' => 'friendsAfterSearchActions()'
 ]);
 
   echo Html::tag('div',
@@ -49,9 +52,8 @@ echo Html::beginTag('form', [
     Html::tag('div',
       Html::input('text', 'search', '', [
         'id' => 'friends-search',
-        'class' => 'c-field c-field--rounded form-trigger',
-        'maxlength' => 64,
-        'ic-trigger-on' => 'focusout changed',
+        'class' => 'c-field c-field--rounded friends-form-trigger',
+        'maxlength' => 64
       ]).
       Html::tag('i', '', ['class' => 'zmdi zmdi-search zmdi-hc-lg c-icon']),
     [
@@ -123,7 +125,7 @@ echo Html::beginTag('form', [
           'rating' => Yii::t('app', 'Sort by rating')
         ],
       [
-        'class' => 'form-trigger select--mini select--darker',
+        'class' => 'friends-form-trigger select--mini select--darker',
         'ic-trigger-on' => 'change',
       ]),
 
@@ -147,7 +149,7 @@ echo Html::beginTag('form', [
 
       /* Age min */
       Html::input('number', 'age_min', '', [
-        'class' => 'c-field c-field--sharpborder form-trigger',
+        'class' => 'c-field c-field--sharpborder friends-form-trigger',
         'maxlength' => 2,
         'min' => 0,
         'placeholder' => Yii::t('app', 'from...'),
@@ -172,7 +174,7 @@ echo Html::beginTag('form', [
 
       /* Age max */
       Html::input('number', 'age_max', '', [
-        'class' => 'c-field c-field--sharpborder form-trigger',
+        'class' => 'c-field c-field--sharpborder friends-form-trigger',
         'maxlength' => 3,
         'min' => 0,
         'placeholder' => Yii::t('app', 'to...'),
@@ -193,14 +195,14 @@ echo Html::beginTag('form', [
 
       Html::tag('label',
         Html::input('checkbox', 'sex[]', 'male', [
-          'class' => 'form-trigger',
+          'class' => 'friends-form-trigger',
           'ic-trigger-on' => 'click',
         ]).
         '<span>'.Yii::t('app', 'Male').'</span><br>').
 
       Html::tag('label',
         Html::input('checkbox', 'sex[]', 'female', [
-          'class' => 'form-trigger',
+          'class' => 'friends-form-trigger',
           'ic-trigger-on' => 'click',
         ]).
         '<span>'.Yii::t('app', 'Female').'</span>'),
@@ -212,21 +214,22 @@ echo Html::beginTag('form', [
     'class' => 'o-grid__cell o-grid__cell--width-50'
   ]);
 
+
   /* Additional fields for friends/search route */
   if (Yii::$app->request->pathInfo == 'friends/search') {
       echo Html::tag('div',
         Html::tag('div',
 
           Html::tag('label',
-            Html::input('checkbox', 'has_photo', 'male', [
-              'class' => 'form-trigger',
+            Html::input('checkbox', 'has_photo', true, [
+              'class' => 'friends-form-trigger',
               'ic-trigger-on' => 'click',
             ]).
             '<span>'.Yii::t('app', 'Has photo').'</span><br>').
 
           Html::tag('label',
-            Html::input('checkbox', 'is_online', 'female', [
-              'class' => 'form-trigger',
+            Html::input('checkbox', 'is_online', true, [
+              'class' => 'friends-form-trigger',
               'ic-trigger-on' => 'click',
             ]).
             '<span>'.Yii::t('app', 'Online now').'</span>'),
@@ -239,6 +242,28 @@ echo Html::beginTag('form', [
       ]);
   }
 
+
+  /* Additional fields for friends/online route */
+  if (Yii::$app->request->pathInfo == 'friends/online') {
+      echo Html::tag('div',
+        Html::tag('div',
+
+          Html::tag('label',
+            Html::input('checkbox', 'is_online', true, [
+              'class' => 'friends-form-trigger',
+              'checked' => 'checked'
+            ]).
+            '<span>'.Yii::t('app', 'Online now').'</span>'),
+
+        [
+          'class' => 'form-group form-group--marginbottom u-l u-i'
+        ]),
+      [
+        'class' => 'o-grid__cell o-grid__cell--width-50'
+      ]);
+  }
+
+
   echo ElementsHelper::separatorDiamond(Yii::t('app', 'Who is in culture'), 'small');
 
   echo Html::tag('div',
@@ -247,7 +272,7 @@ echo Html::beginTag('form', [
         null,
         UserDescription::cultureList(),
       [
-        'class' => 'form-trigger form-group--marginbottom',
+        'class' => 'friends-form-trigger form-group--marginbottom',
         'ic-trigger-on' => 'change',
       ]),
 

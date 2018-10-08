@@ -14,32 +14,48 @@ use Yii;
  */
 class CURLHelper
 {
-    public static function getURL($url, $headerOptions = []) {
+    public static function getURL($url, $headerOptions = [])
+    {
 
-      // Choose a random proxy
-      $proxies = Yii::$app->params['CURLHelper']['proxies'] ?? '';
-      $useProxies = Yii::$app->params['CURLHelper']['useProxies'] ?? '';
+        // Choose a random proxy
+        $proxies = Yii::$app->params['CURLHelper']['proxies'] ?? '';
+        $useProxies = Yii::$app->params['CURLHelper']['useProxies'] ?? '';
 
-      $ch = curl_init();  // Initialize a cURL handle
+        $ch = curl_init();  // Initialize a cURL handle
 
-      if (isset($proxies) && $useProxies === true) {
-          $proxy = $proxies[array_rand($proxies)];
-          curl_setopt($ch, CURLOPT_PROXY, $proxy);
-      }
+        if (isset($proxies) && $useProxies === true) {
+            $proxy = $proxies[array_rand($proxies)];
+            curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        }
 
-      // Set any other cURL options that are required
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headerOptions);
-      curl_setopt($ch, CURLOPT_HEADER, FALSE);
-      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Yii::$app->params['CURLHelper']['timeout'] ?? 5);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-      curl_setopt($ch, CURLOPT_COOKIESESSION, TRUE);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-      curl_setopt($ch, CURLOPT_URL, $url);
+        // Set any other cURL options that are required
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerOptions);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Yii::$app->params['CURLHelper']['timeout'] ?? 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
 
-      $results = curl_exec($ch) !== false ? curl_exec($ch) : '';
-      curl_close($ch);
+        $results = curl_exec($ch);
+        curl_close($ch);
 
-      return $results;
+        return $results;
+    }
+
+    public static function postToURL($url, $postData = [])
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        $results = curl_exec($ch);
+        curl_close($ch);
+
+        return $results;
     }
 }

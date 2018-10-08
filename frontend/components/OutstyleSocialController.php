@@ -53,6 +53,12 @@ class OutstyleSocialController extends Controller
      */
     protected $boardOwnerRelation = Board::BOARD_STATE_OWNER;
 
+    /**
+     * Current user ID - always an owner itself
+     * @var int
+     */
+    protected $userId = 0;
+
 
     /**
      * @inheritdoc
@@ -68,7 +74,7 @@ class OutstyleSocialController extends Controller
             $userOnline->save();
         }
 
-        $this->boardOwnerUserId = Yii::$app->getRequest()->getQueryParam('userId');
+        $this->boardOwnerUserId = Yii::$app->getRequest()->getQueryParam('userId') ?? Yii::$app->user->id ?? 0;
     }
 
     /**
@@ -77,6 +83,7 @@ class OutstyleSocialController extends Controller
     public function beforeAction($event)
     {
         $this->layout = 'social';
+        $this->userId = Yii::$app->user->id ?? 0;
 
         /**
         * Check if it's an Intercooler request, and if so - using ajaxed layout
@@ -85,6 +92,7 @@ class OutstyleSocialController extends Controller
         if (Yii::$app->request->get('ic-request') == true || Yii::$app->request->post('ic-request') == true) {
             $this->layout = 'ajax/social';
         }
+
 
         /**
         * Working with _csrf tokens
@@ -99,25 +107,38 @@ class OutstyleSocialController extends Controller
         **/
         $csrf_token = Yii::$app->request->headers->get('x-csrf-token');
         $user_token = ElementsHelper::getCSRFToken();
+        $allowed_token = in_array(Yii::$app->request->post('token'), Yii::$app->params['AllowedTokens']);
 
-        if ($event->controller->id == Yii::$app->controller->id && in_array($event->id, $this->_allowedEntryPoints)) {
-            if (!$csrf_token) {
-                $csrf_token = Yii::$app->request->csrfToken;
+        /**
+         * If it's an allowed source or we have static token, sent with $_POST, ignoring _csrf check
+         */
+
+        if ($allowed_token) {
+            $this->enableCsrfValidation = false;
+            $this->layout = false;
+            $this->userId = (int)Yii::$app->request->post('user') ?? Yii::$app->user->id ?? 0;
+        } else {
+            if ($event->controller->id == Yii::$app->controller->id && in_array($event->id, $this->_allowedEntryPoints)) {
+                if (!$csrf_token) {
+                    $csrf_token = Yii::$app->request->csrfToken;
+                }
             }
-        }
 
-        if (!$user_token) {
-            throw new HttpException(400, Yii::t('err', 'Token empty!'));
-        }
-        if ($user_token != $csrf_token) {
-            throw new HttpException(400, Yii::t('err', 'Token is invalid!'));
+            if (!$user_token) {
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                throw new HttpException(401, Yii::t('err', 'Token empty!'));
+            }
+            if ($user_token != $csrf_token) {
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                throw new HttpException(401, Yii::t('err', 'Token is invalid!'));
+            }
         }
 
         /* Callable methods on each controller action triggered */
         $this->setUserFriends($userId = Yii::$app->user->id, $relation = Board::BOARD_STATE_OWNER);
 
         /* Viewing another user's board? */
-        if ($this->boardOwnerUserId != Yii::$app->user->id) {
+        if ($this->boardOwnerUserId !== Yii::$app->user->id) {
             $this->boardOwnerRelation = Board::BOARD_STATE_OTHER;
             $this->setUserFriends($userId = $this->boardOwnerUserId, $relation = $this->boardOwnerRelation);
         }
@@ -139,25 +160,25 @@ class OutstyleSocialController extends Controller
      */
     protected function setUserFriends($userId = 0, $relation = Board::BOARD_STATE_OWNER)
     {
-        $friends = Friend::getUserFriends(Friend::STATUS_ACTIVE_FRIENDSHIP, $userId)
+        $friends = Friend::getUserFriends([Friend::FRIENDSHIP_STATUS_ACTIVE, Friend::FRIENDSHIP_STATUS_ONESIDED], $userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
           ->all();
-        $friends = Friend::createFriendsArrayForUser($friends);
+        $friends = $activeFriends = Friend::createFriendsArrayForUser($friends);
         $friends = Friend::getFriendsDescription($friends);
 
-        $friendsPending = Friend::getUserFriends(Friend::STATUS_ACTIVE_PENDING, $userId)
+        $friendsPending = Friend::getUserFriends(Friend::FRIENDSHIP_STATUS_PENDING, $userId)
           ->limit(Friend::$friendsPendingPageSize)
           ->asArray()
           ->all();
-        $friendsPending = Friend::createFriendsArrayForUser($friendsPending, $userId);
+        $friendsPending = $pendingFriends = Friend::createFriendsArrayForUser($friendsPending, $userId);
         $friendsPending = Friend::getFriendsDescription($friendsPending, $userId);
 
         $friendsOnline = Friend::getUserFriendsOnline($userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
           ->all();
-        $friendsOnline = Friend::createFriendsArrayForUser($friendsOnline, $userId);
+        $friendsOnline = $activeOnlineFriends = Friend::createFriendsArrayForUser($friendsOnline, $userId);
         $friendsOnline = Friend::getFriendsDescription($friendsOnline, $userId);
 
         /* Setting global var for child controllers */
@@ -166,9 +187,13 @@ class OutstyleSocialController extends Controller
         $this->userGlobalData[$relation]['friends']['online'] = $friendsOnline;
 
         /* Passing parameters to any child view */
-        $this->view->params[$relation]['friends']['active'] = count($friends);
-        $this->view->params[$relation]['friends']['pending'] = count($friendsPending);
-        $this->view->params[$relation]['friends']['online'] = count($friendsOnline);
+        $this->view->params[$relation]['friends']['active'] = $activeFriends;
+        $this->view->params[$relation]['friends']['online'] = $activeOnlineFriends;
+        $this->view->params[$relation]['friends']['pending'] = $pendingFriends;
+
+        $this->view->params[$relation]['friends']['count']['active'] = count($friends);
+        $this->view->params[$relation]['friends']['count']['pending'] = count($friendsPending);
+        $this->view->params[$relation]['friends']['count']['online'] = count($friendsOnline);
     }
 
     /**

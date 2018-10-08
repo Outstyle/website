@@ -51,7 +51,16 @@ foreach ($posts as $id => $post) {
         ).
 
         # POST OPTIONS
-        ElementsHelper::postSettingsButton().
+        Html::button(
+          Html::tag('i', '', [
+            'class' => "zmdi zmdi-more zmdi-hc-lg",
+          ]),
+        [
+          'class' => 'zmdi-icon--hoverable i-postbutton i-postbutton--right friend__options',
+          'title' => Yii::t('app', 'Options'),
+          'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
+          'ic-action' => ''
+        ]).
 
         Html::tag('div', '', ['class' => 'clearfix']),
 

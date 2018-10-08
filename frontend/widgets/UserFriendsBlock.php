@@ -42,7 +42,7 @@ class UserFriendsBlock extends Widget
 
         $friends = [];
 
-        # Working with active friends and setting all the data for using in view
+        /* Working with active friends and setting all the data for using in view */
         if (isset($this->friends) && !empty($this->friends)) {
             foreach ($this->friends as $friendship_status => $friend_info) {
                 foreach ($friend_info as $k => $friend) {
@@ -51,7 +51,7 @@ class UserFriendsBlock extends Widget
                     $friends[$k]['fullname'] = $friend['name'].' &quot;'.$friend['nickname'].'&quot; '.$friend['last_name'];
                     $friends[$k]['location'] = '';
                     $friends[$k]['birthday_date'] = $friend['birthday'] ?? '';
-                    $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['id']);
+                    $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['userAvatar']['img'], '150x150_', $friend['userAvatar']['service_id']);
 
                     if (isset($friend['geolocationCountries']) && isset($friend['geolocationCities'])) {
                         $friends[$k]['location'] = $friend['geolocationCountries']['name_ru'].', '.$friend['geolocationCities']['name'];
@@ -67,9 +67,14 @@ class UserFriendsBlock extends Widget
             $this->friends = $friends;
         }
 
-        # Default view for a widget
+        /* Default view for a widget */
         if (!isset($this->options['view'])) {
             $this->options['view'] = 'userFriendsBlock';
+        }
+
+        /* If no friends found at all - setting another view */
+        if (!$this->friends) {
+            $this->options['view'] = 'userFriendsNotFound';
         }
     }
 

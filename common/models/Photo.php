@@ -38,6 +38,13 @@ class Photo extends \yii\db\ActiveRecord
     const ALLOWED_FILE_TYPES = 'jpg,jpeg,gif,png';
 
     /**
+     * Photo types
+     * @var integer
+     */
+    const PHOTO_TYPE_DEFAULT = 0;
+    const PHOTO_TYPE_AVATAR = 1;
+
+    /**
      * {@inheritdoc}
      */
     public function behaviors()
@@ -94,37 +101,60 @@ class Photo extends \yii\db\ActiveRecord
     {
         return [
             [
-              ['user'],
-              'default', 'value' => Yii::$app->user->id
+              'user',
+              'default', 'value' => Yii::$app->user->id ?? 0
             ],
             [
-              ['user'],
+              'user',
               'required'
             ],
             [
-              ['name'],
+              'user',
+              'integer'
+            ],
+            [
+              'name',
               'filter', 'filter' => function ($name) {
                   return StringHelper::clearString($name);
               }
             ],
             [
-              ['name'],
+              'name',
               'string', 'max' => 255
             ],
             [
-              ['user', 'album'],
+              'album',
+              'default', 'value' => 0
+            ],
+            [
+              'album',
               'integer'
             ],
             [
-              ['service_id'],
+              'service_id',
               'default', 'value' => 1
             ],
             [
-              ['created'],
+              'type',
+              'default', 'value' => self::PHOTO_TYPE_DEFAULT
+            ],
+            [
+              'type',
+              'integer'
+            ],
+            [
+              'type',
+              'in', 'range' => [
+                  self::PHOTO_TYPE_DEFAULT,
+                  self::PHOTO_TYPE_AVATAR
+                ]
+              ],
+            [
+              'created',
               'default', 'value' => date("Y-m-d H:i:s")
             ],
             [
-              ['img'],
+              'img',
               'image', 'skipOnEmpty' => false,
               'extensions' => self::ALLOWED_FILE_TYPES,
               'maxFiles' => 1
@@ -166,10 +196,21 @@ class Photo extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets photos by type
+     * TODO: implement if needed
+     */
+    public static function getByType()
+    {
+        throw new NotSupportedException('"getByType" is not implemented.');
+    }
+
+    /**
      * Gets an image path with size prefix
+     * TODO: Make this method have less params, split
      * @param  string $path           Original relative path to image
      * @param  string $photo_prefix   Prefix to use (i.e. '150x150_')
-     * @param  int    $service_id     Service ID to get photo from (@see: self::$_services)
+     * @param  int    $service_id     Service ID to get photo from
+     * @param  int    $type
      * @param  int    $user_id
      * @return string                 Absolute URL path to image
      */
@@ -177,10 +218,22 @@ class Photo extends \yii\db\ActiveRecord
       string $path,
       string $photo_prefix,
       int $service_id = 0,
+      int $type = 0,
       int $user_id = 0
     ) {
+        if (!$path) {
+            return;
+        }
+
         $path = self::_addPrefixToPhoto($path, $photo_prefix);
-        return Yii::$app->params['photoServices'][$service_id].self::_getPhotosPath($user_id).$path;
+        if ($type === self::PHOTO_TYPE_DEFAULT) {
+            $path = Yii::$app->params['photoServices'][$service_id].self::_getPhotosPath($user_id).$path;
+        }
+        if ($type === self::PHOTO_TYPE_AVATAR) {
+            $path = Yii::$app->params['photoServices'][$service_id].Yii::$app->params['avatarPathUrl'].$path;
+        }
+
+        return $path;
     }
 
     /**
@@ -212,9 +265,9 @@ class Photo extends \yii\db\ActiveRecord
     private static function _getPhotosPath(int $user_id = 0)
     {
         if (!$user_id) {
-            $user_id = Yii::$app->user->id;
+            $user_id = Yii::$app->user->id ?? 0;
         }
-        return 'photo/'.$user_id.'/';
+        return Yii::$app->params['photosPathUrl'].$user_id.'/';
     }
 
     /* Relations */

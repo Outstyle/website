@@ -10,9 +10,11 @@ use common\components\helpers\ElementsHelper;
 
 /**
  * TooltipsHelper provides a set of static methods for working with everything that is related to 'tooltip' entity.
+ * Each container is about to be inited once in each controller
+ * Each container must include child elements as a tooltip with contents
  *
+ * @link http://iamceege.github.io/tooltipster/
  * @author [SC]Smash3r <scsmash3r@gmail.com>
- *
  * @since 1.0
  */
 class TooltipsHelper extends ElementsHelper
@@ -27,7 +29,6 @@ class TooltipsHelper extends ElementsHelper
     {
         return Html::tag('div',
 
-            # for: #photo__editbutton
             Html::tag('span',
 
                 Html::a(Yii::t('app', 'Add photo'),
@@ -52,6 +53,38 @@ class TooltipsHelper extends ElementsHelper
                 ),
 
               ['id' => 'photos_edit_tooltip_content']
+            ),
+
+          ['class' => 'tooltip_templates']
+        );
+    }
+
+    /**
+     * Tooltip template for friends section
+     * @see: http://iamceege.github.io/tooltipster/
+     *
+     * @return HTML
+     */
+    public static function tooltipContainerForFriends()
+    {
+        return Html::tag('div',
+
+            Html::tag('span',
+
+                Html::a(Yii::t('app', 'Add to friends'),
+                  'javascript:void(0)',
+                  [
+                    'href' => 'javascript:void(0)',
+                    'class' => 'friend_action_add',
+                    'ic-post-to' => Url::toRoute(['api/friends/add']),
+                    'ic-include' => '#friendId',
+                    'ic-push-url' => 'false',
+                    'ic-on-beforeSend' => 'friendBeforeAddNewFriend()',
+                    'ic-on-complete' => 'friendAfterAddNewFriend()',
+                  ]
+                ),
+
+              ['class' => 'friend_options_tooltip_content']
             ),
 
           ['class' => 'tooltip_templates']

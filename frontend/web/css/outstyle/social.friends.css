@@ -46,6 +46,9 @@
   padding: 0 1em;
 }
 
+.search__friends {
+  display:none;
+}
 .search__friends .friend__box {
   border: 1px solid #f0f0f0;
   border-top: 0;
@@ -63,9 +66,9 @@
   font-size: 0.9em;
 }
 .search__friends .friend__info .friend span {
-  font-size:1.2em;
+  font-size:1.1em;
 }
-.search__friends--notfound div {
+.search__friends--notfound .message--alert div {
   text-align: center;
   padding: 2em;
 }
@@ -75,8 +78,11 @@
 .search__friends .friend__pending a.friend {
   color: #a8bbcb;
 }
-.search__friends .friend__pending a.friend:hover{
+.search__friends .friend__pending a.friend:hover {
   color: #a8bbcb;
+}
+.search__friends .friend__added {
+  background: #f5f5df;
 }
 
 .friends__activebuttons {

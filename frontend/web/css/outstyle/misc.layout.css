@@ -98,6 +98,9 @@ ul {
 .u-c {
   text-align:center;
 }
+.u-i {
+  display:none;
+}
 .u-r, .ta-r {
   text-align:right;
 }

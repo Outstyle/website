@@ -45,19 +45,16 @@ class FriendsController extends OutstyleSocialController
     public function actionIndex()
     {
         if (Yii::$app->request->pathInfo == 'friends') {
-            $friends['active'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['active'];
+            $friends['active'] = [];
             $friends['pending'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['pending'];
         }
 
         if (Yii::$app->request->pathInfo == 'friends/online') {
-            $friends['active'] = $this->userGlobalData[$this->boardOwnerRelation]['friends']['online'];
+            $friends['active'] = [];
         }
 
         if (Yii::$app->request->pathInfo == 'friends/search') {
-            $friends['active'] = UserDescription::findUsers()
-              ->limit(Friend::$friendsPageSize)
-              ->asArray()
-              ->all();
+            $friends['active'] = [];
         }
 
         return $this->render('index', [
@@ -85,14 +82,42 @@ class FriendsController extends OutstyleSocialController
               'city',
               'culture',
               'search',
-              'sort_by'
+              'sort_by',
+              'page',
+              'is_online'
             ]);
-            $friends = UserDescription::findUsersByData($data)->asArray()->all();
+
+            $response['triggeredBy'] = Yii::$app->request->post('ic-trigger-name');
+            $response['search'] = Yii::$app->request->post('search');
+            $response['page'] = 0;
+
+            if (!$response['triggeredBy'] && !$response['search']) {
+                $response['triggeredBy'] = 'loadmore';
+                $response['page'] = (int)$data['page'];
+            }
+
+            $friends = UserDescription::findUsersByData($data);
+
+            $pagination = new Pagination([
+                'defaultPageSize' => Friend::$friendsPageSize,
+                'totalCount' => $friends->count(),
+                'page' => $response['page'],
+            ]);
+            $response['page']++;
+
+            $friends = $friends
+              ->offset($pagination->offset)
+              ->limit($pagination->limit)
+              ->asArray()
+              ->all();
+
+            $headers = Yii::$app->response->headers;
+            $headers->add('X-IC-Trigger', '{"friendsFindSuccess":['.Json::encode($response).']}');
 
             return $this->renderPartial('view', [
               'friends' => [
                 'active' => $friends
-              ],
+              ]
             ]);
         } else {
             ErrorHandler::triggerHeaderError($model->errors);
@@ -121,28 +146,41 @@ class FriendsController extends OutstyleSocialController
               'search',
               'sort_by',
               'friendship_status',
-              'page'
+              'page',
+              'is_online'
             ]);
 
-            $friends = Friend::getUserFriends($data['friendship_status'])
+            $response['triggeredBy'] = Yii::$app->request->post('ic-trigger-name');
+            $response['page'] = 0;
+
+            if (!$response['triggeredBy']) {
+                $response['triggeredBy'] = 'loadmore';
+                $response['page'] = (int)$data['page'];
+            }
+
+            $friends = Friend::getUserFriends([$data['friendship_status'], Friend::FRIENDSHIP_STATUS_ONESIDED])
               ->limit(Friend::$friendsPageSize)
               ->asArray()
               ->all();
             $friends = Friend::createFriendsArrayForUser($friends);
             $friends = UserDescription::findUsersByData($data)
-              ->andWhere(['id' => $friends]);
+              ->andWhere(['{{%user_description}}.id' => $friends]);
 
             $pagination = new Pagination([
                 'defaultPageSize' => Friend::$friendsPageSize,
                 'totalCount' => $friends->count(),
-                'page' => $data['page'],
+                'page' => $response['page'],
             ]);
+            $response['page']++;
 
             $friends = $friends
               ->offset($pagination->offset)
               ->limit($pagination->limit)
               ->asArray()
               ->all();
+
+            $headers = Yii::$app->response->headers;
+            $headers->add('X-IC-Trigger', '{"friendsFilterSuccess":['.Json::encode($response).']}');
 
             return $this->renderPartial('view', [
               'friends' => [
@@ -154,7 +192,6 @@ class FriendsController extends OutstyleSocialController
         }
     }
 
-
     /**
      * [API] Accept friend request
      * @return int    Friendship status (@see: @common\models\Friend for status constants)
@@ -162,22 +199,79 @@ class FriendsController extends OutstyleSocialController
     public function actionAccept()
     {
         if (Yii::$app->request->isAjax) {
-            $model = new Friend(['scenario' => Friend::SCENARIO_DEAL_WITH_FRIEND]);
+            $model = new Friend(['scenario' => Friend::SCENARIO_ACCEPT_FRIEND]);
             $model->load(Yii::$app->request->post(), '');
 
             if ($model->validate()) {
                 $data = $model->getAttributes([
                   'friendId'
                 ]);
+
+                /**
+                 * Check if we already have friendship between this two users
+                 * Here, current user is not an initiator of a friendship - he only accepts a proposal
+                 */
                 $model = Friend::find()
-                  ->where("user1 = :user AND user2 = :friend AND status = :status", [
-                    ':user' => Yii::$app->user->id,
-                    ':friend' => $data['friendId'],
-                    ':status' => 0])
+                  ->where("user1 = :user AND user2 = :friend", [
+                    ':user' => $data['friendId'],
+                    ':friend' => Yii::$app->user->id
+                  ])
                   ->one();
-                dd($model);
-                $model->status = 1;
-                $model->save();
+
+                /* If no friendship is found, it is new request */
+                if ($model) {
+                    $model->status = Friend::FRIENDSHIP_STATUS_ACTIVE;
+                    if ($model->save()) {
+                        $headers = Yii::$app->response->headers;
+                        $headers->add('X-IC-Trigger', '{"newFriendshipApproved":['.Json::encode((int)$data['friendId']).']}');
+                    }
+                }
+            } else {
+                ErrorHandler::triggerHeaderError($model->errors);
+            }
+        }
+    }
+
+    /**
+     * [API] Add to friends action
+     * @return int    Friendship status (@see: @common\models\Friend for status constants)
+     */
+    public function actionAdd()
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = new Friend(['scenario' => Friend::SCENARIO_ADD_FRIEND]);
+            $model->load(Yii::$app->request->post(), '');
+
+            if ($model->validate()) {
+                $data = $model->getAttributes([
+                  'friendId'
+                ]);
+
+                /* Check if we already have friendship between this two users */
+                $model = Friend::find()
+                  ->where("(user1 = :user AND user2 = :friend) OR
+                           (user2 = :user AND user1 = :friend)", [
+                    ':user' => Yii::$app->user->id,
+                    ':friend' => $data['friendId']
+                  ])
+                  ->one();
+
+                /* If no friendship is found, it is new request */
+                if (!$model) {
+                    $model = new Friend();
+                    $model->user1 = Yii::$app->user->id;
+                    $model->user2 = $data['friendId'];
+                    $model->status = Friend::FRIENDSHIP_STATUS_PENDING;
+
+                    if ($model->save()) {
+                        $headers = Yii::$app->response->headers;
+                        $headers->add('X-IC-Trigger', '{"newFriendAddedSuccess":['.Json::encode((int)$data['friendId']).']}');
+                    }
+                } else {
+                    $response[$data['friendId']] = Yii::t('app', 'Friend is already added, wait for confirmation!');
+                    $headers = Yii::$app->response->headers;
+                    $headers->add('X-IC-Trigger', '{"newFriendAlreadyAdded":['.Json::encode($response).']}');
+                }
             } else {
                 ErrorHandler::triggerHeaderError($model->errors);
             }

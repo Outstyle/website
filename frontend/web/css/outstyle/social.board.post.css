@@ -75,8 +75,10 @@
 }
 
 .i-postbutton {
-  padding: 1em;
   opacity: 0.8;
+  font-size: 1.2em;
+  color: #c5c5c5;
+  padding:1em;
 }
 .i-postbutton:hover,
 .i-postbutton:active,
@@ -86,6 +88,4 @@
 }
 .i-postbutton--right {
   float: right;
-  padding-right: 0;
-  padding-top: 0;
 }

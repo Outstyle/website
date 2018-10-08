@@ -33,20 +33,20 @@ class Friend extends \yii\db\ActiveRecord
 {
 
     /**
-     * STATUS: initiator of friendship is waiting for friend to accept his friendship (default status)
+     * Initiator of friendship is waiting for friend to accept his friendship (default status)
      * @var integer
      */
-    const STATUS_ACTIVE_PENDING = 0;
+    const FRIENDSHIP_STATUS_PENDING = 0;
     /**
-     * STATUS: friendship is confirmed by both users
+     * Friendship is confirmed by both users
      * @var integer
      */
-    const STATUS_ACTIVE_FRIENDSHIP = 1;
+    const FRIENDSHIP_STATUS_ACTIVE = 1;
     /**
-     * STATUS: initiator of friendship is having a friend, but friend has not confirmed (or rejected) friendship
+     * Initiator of friendship is having a friend, but friend has not confirmed (or rejected) friendship
      * @var integer
      */
-    const STATUS_ACTIVE_ONESIDED = 2;
+    const FRIENDSHIP_STATUS_ONESIDED = 2;
 
 
     /**
@@ -55,6 +55,7 @@ class Friend extends \yii\db\ActiveRecord
      */
     const SCENARIO_DEFAULT = 'default';
     const SCENARIO_ACCEPT_FRIEND = 'accept';
+    const SCENARIO_ADD_FRIEND = 'add';
 
 
     /**
@@ -109,16 +110,16 @@ class Friend extends \yii\db\ActiveRecord
                 self::SCENARIO_DEFAULT
               ],
             ],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE_FRIENDSHIP],
+            ['status', 'default', 'value' => self::FRIENDSHIP_STATUS_ACTIVE],
             ['status', 'required',
               'on' => [
                 self::SCENARIO_DEFAULT,
               ]
             ],
             ['status', 'in', 'range' => [
-              self::STATUS_ACTIVE_PENDING,
-              self::STATUS_ACTIVE_FRIENDSHIP,
-              self::STATUS_ACTIVE_ONESIDED
+              self::FRIENDSHIP_STATUS_PENDING,
+              self::FRIENDSHIP_STATUS_ACTIVE,
+              self::FRIENDSHIP_STATUS_ONESIDED
             ],
             'message' => Yii::t('app', 'Status value is invalid')],
 
@@ -126,6 +127,7 @@ class Friend extends \yii\db\ActiveRecord
             ['friendId', 'required',
              'on' => [
                 self::SCENARIO_ACCEPT_FRIEND,
+                self::SCENARIO_ADD_FRIEND,
               ],
             ],
         ];

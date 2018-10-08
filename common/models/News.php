@@ -7,11 +7,11 @@ use yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
 use backend\models\Category;
-use app\models\Comments;
-use app\models\Likes;
-use app\models\UserDescription;
-use app\models\UserNickname;
-use app\models\UserAvatar;
+use frontend\models\Comments;
+use frontend\models\Likes;
+use frontend\models\UserDescription;
+use frontend\models\UserNickname;
+use frontend\models\UserAvatar;
 use common\components\helpers\StringHelper;
 use common\components\helpers\BlocksHelper;
 

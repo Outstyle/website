@@ -43,7 +43,13 @@ if (!empty($photos)) {
           ElementsHelper::photoLink(
             $photo['id'],
             Html::img(
-              Photo::getByPrefixAndServiceId($photo['img'], '210x126_', $service_id = 1, $photo['user']),
+              Photo::getByPrefixAndServiceId(
+                $photo['img'],
+                $photoSize = '210x126_',
+                $photo['service_id'],
+                Photo::PHOTO_TYPE_DEFAULT,
+                $photo['user']
+              ),
               [
                 'class' => 'o-image u-full-width user__photothumbnail'
               ]

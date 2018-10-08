@@ -30,20 +30,34 @@ class User extends \common\models\User
     {
         $user = $this->find()
           ->where(['id' => $userId])
-          ->one()
-          ->delete();
+          ->one();
+        if ($user) {
+            $user->delete();
+        }
 
         $userDescription = new \frontend\models\UserDescription();
         $userDescription->find()
           ->where(['id' => $userId])
-          ->one()
-          ->delete();
+          ->one();
+        if ($userDescription) {
+            $userDescription->delete();
+        }
 
         $userPrivacy = new \frontend\models\UserPrivacy();
         $userPrivacy->find()
           ->where(['id' => $userId])
-          ->one()
-          ->delete();
+          ->one();
+        if ($userPrivacy) {
+            $userPrivacy->delete();
+        }
+
+        $userPhotos = new \frontend\models\Photo();
+        $userPhotos->find()
+          ->where(['user' => $userId])
+          ->one();
+        if ($userPhotos) {
+            $userPhotos->delete();
+        }
 
         return true;
     }

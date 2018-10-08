@@ -132,11 +132,11 @@ class Comments extends \yii\db\ActiveRecord
 
     public function getLikes()
     {
-        return $this->hasMany(\app\models\Likes::className(), ['elem_id' => 'id']);
+        return $this->hasMany(\frontend\models\Likes::className(), ['elem_id' => 'id']);
     }
 
     public function getAttachments()
     {
-        return $this->hasMany(\app\models\Attachments::className(), ['elem_id' => 'id']);
+        return $this->hasMany(\frontend\models\Attachments::className(), ['elem_id' => 'id']);
     }
 }
