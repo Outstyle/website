@@ -1,0 +1,67 @@
+.chat-thread {
+    list-style: none;
+    padding-top: 2em;
+}
+
+.chat-thread li {
+    position: relative;
+    clear: both;
+    display: inline-block;
+    padding: 16px 40px 16px 20px;
+    margin: 0 0 35px 0;
+    font-size: 1em;
+    border-radius: 10px;
+    background-color: rgba(222, 222, 222, 0.2);
+    color: #595959;
+}
+
+/* Chat - Avatar */
+.chat-thread li>img {
+    position: absolute;
+    top: 0;
+    left: -55px;
+    margin: 0;
+}
+
+.chat-thread-message__sender {
+    display: block;
+    font-size: 0.8em;
+    font-family: 'OsnovaProMedium';
+    font-weight: normal;
+    float: left;
+    color: #57656e;
+}
+
+.chat-thread-message__time {
+    display: block;
+    font-size: 0.8em;
+    float: right;
+    color: #bdbdbd;
+    position: absolute;
+    bottom: -1.5em;
+    right: 0;
+}
+
+/* Chat - Speech Bubble Arrow */
+.chat-thread li:after {
+    position: absolute;
+    top: 15px;
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 15px solid rgba(222, 222, 222, 0.2);
+}
+
+.chat-thread li {
+    animation: show-chat-even 0.15s 1 ease-in;
+    -moz-animation: show-chat-even 0.15s 1 ease-in;
+    -webkit-animation: show-chat-even 0.15s 1 ease-in;
+    float: left;
+    margin-left: 90px;
+    margin-right: 1em;
+}
+
+.chat-thread li:after {
+    border-left: 15px solid transparent;
+    left: -15px;
+}

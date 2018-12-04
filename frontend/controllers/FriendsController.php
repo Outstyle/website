@@ -234,7 +234,43 @@ class FriendsController extends OutstyleSocialController
 
     /**
      * [API] Add to friends action
-     * @return int    Friendship status (@see: @common\models\Friend for status constants)
+     * @return null
+     */
+    public function actionRefuse()
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = new Friend(['scenario' => Friend::SCENARIO_ACCEPT_FRIEND]);
+            $model->load(Yii::$app->request->post(), '');
+
+            if ($model->validate()) {
+                $data = $model->getAttributes([
+                  'friendId'
+                ]);
+
+                $model = Friend::find()
+                  ->where("user1 = :user AND user2 = :friend", [
+                    ':user' => $data['friendId'],
+                    ':friend' => Yii::$app->user->id
+                  ])
+                  ->one();
+
+                /* If no friendship is found, it is new request */
+                if ($model) {
+                    $model->status = Friend::FRIENDSHIP_STATUS_ONESIDED;
+                    if ($model->save()) {
+                        $headers = Yii::$app->response->headers;
+                        $headers->add('X-IC-Trigger', '{"newFriendshipOnesided":['.Json::encode((int)$data['friendId']).']}');
+                    }
+                }
+            } else {
+                ErrorHandler::triggerHeaderError($model->errors);
+            }
+        }
+    }
+
+    /**
+     * [API] Add to friends action
+     * @return null
      */
     public function actionAdd()
     {

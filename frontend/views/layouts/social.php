@@ -3,6 +3,9 @@
  * Main SOCIAL layout
  * Questions? Feel free to ask: <scsmash3r@gmail.com> / skype: smash3rs / Telegram: @scsmash3r
  * Github: https://github.com/scsmash3r
+ *
+ * NOTE: Alt jQuery 3.1.1 lib for local dev: /js/misc/jquery.min.js
+ * NOTE: Google APIs JQ: //ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js
  */
 
 use yii\helpers\Html;
@@ -28,7 +31,7 @@ Spaceless::begin();
 <?php $this->head(); ?>
 <?php echo Html::csrfMetaTags(); ?>
 <link rel="shortcut icon" type="image/png" href="<?=Url::toRoute('/css/favicon.png');?>">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/misc/jquery.min.js"></script>
 </head>
 <?php
 
@@ -89,7 +92,7 @@ echo Html::beginTag('div', ['class' => 'wrap-fix']);
                 [
                   'options' => ['id' => 'menu__item-messages'],
                   'label' => '<i class="icons icons--messages"></i>'.Yii::t('app', 'Messages'),
-                  'url' => ['/id'.Yii::$app->user->id],
+                  'url' => ['/messages'],
                   'active' => $checkController('messages')
                 ],
                 [

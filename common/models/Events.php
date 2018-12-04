@@ -253,8 +253,8 @@ class Events extends ActiveRecord
                 $modelEvents[$i]['img_big'] = $events[$i]->getImageSrc('960x360_');
 
                 /* Getting recommended events */
-                /* TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
-                /* TODO: make it as a separate method */
+                /* x TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
+                /* x TODO: make it as a separate method */
 
                 $where['category'] = $events[$i]->category;
                 $andWhere = ['!=', 'id', $events[$i]->id];

@@ -1,66 +1,96 @@
 <?php
+/**
+ * @link https://github.com/Outstyle/website
+ * @copyright Copyright (c) 2018 Outstyle Network
+ * @license Beerware
+ */
 
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "z_dialog_members".
+ * This is the model class for table "{{%dialog_members}}".
+ * This model serves as a frontend one and should always extend common `DialogMembers` model.
  *
- * @property integer $id
- * @property string $user
- * @property string $dialog
+ * Only custom methods are stored here.
+ *
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
  */
-class DialogMembers extends \yii\db\ActiveRecord
+class DialogMembers extends \common\models\DialogMembers
 {
     /**
-     * @inheritdoc
+     * Retrieves all members by dialogue ID
+     * @param  int      $dialogId
+     * @return array
      */
-    public static function tableName()
+    public static function getDialogMembersById(int $dialogId = 0) : array
     {
-        return '{{%dialog_members}}';
+        return self::find()
+            ->where('dialog = :dialog', [':dialog' => $dialogId])
+            ->with(['userDescription' => function ($query) {
+                $query->select('id, name, last_name, nickname, avatar')->with('userAvatar');
+            }])
+            ->limit(self::$dialogMembersLimit)
+            ->asArray()
+            ->all();
     }
 
     /**
-     * @inheritdoc
+     * Adds new user into dialogue
+     * @param int    $dialogId    Dialogue ID
+     * @param int    $userId      User ID
      */
-    public function rules()
+    public static function addMemberToDialog(int $dialogId = 0, int $userId = 0) : bool
     {
-        return [
-            [['user', 'dialog'], 'required'],
-            [['user', 'dialog'], 'integer']
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'user' => 'User',
-            'dialog' => 'Dialog',
-        ];
-    }
-
-    public function getMessage()
-    {
-        return $this->hasMany(Message::className(), ['dialog' => 'dialog']);
-    }
-
-    public static function getUsers($id){
-        return self::find()->where('dialog = :dialog AND user != :user',[':dialog' => $id, ':user' => Yii::$app->user->id])->asArray()->all();
-    }
-
-    public static function addMemberDialog($dialog, $user){
         $model = new DialogMembers();
-        $model->user = $user;
-        $model->dialog = $dialog;
-        if($model->validate()){
+        $model->user = $userId;
+        $model->dialog = $dialogId;
+        if ($model->validate()) {
             $model->save();
             return true;
         }
         return false;
+    }
+
+    /**
+     * Check if user belongsto certain dialog
+     * @param int    $userId      User ID
+     * @param int    $dialogId    Dialogue ID
+     */
+    public static function isDialogMember(int $userId = 0, int $dialogId = 0) : bool
+    {
+        $dialogMember = self::find()
+            ->where('dialog = :dialog AND user = :user', [
+                ':dialog' => $dialogId,
+                ':user' => $userId])
+            ->one();
+
+        if ($dialogMember) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Organize dialog members data in array to be ready for use in views
+     * @param  array          $dialogMembers    self::getDialogMembersById()
+     * @return array
+     */
+    public static function setupData(array $dialogMembers = []) : array
+    {
+        foreach ($dialogMembers as $id => $member) {
+            $dialogMembers[$id]['userDescription']['userAvatar']['path'] =
+            (isset($member['userDescription']['userAvatar']['img'])) ? UserAvatar::getAvatarPath($member['userDescription']['userAvatar']['img'], '150x150_', $member['userDescription']['userAvatar']['service_id']) :
+            UserAvatar::getAvatarPath();
+        }
+
+        /* Reindexing for direct data query by 'userId' key */
+        $dialogMembers = ArrayHelper::index($dialogMembers, 'user');
+
+        return $dialogMembers;
     }
 }

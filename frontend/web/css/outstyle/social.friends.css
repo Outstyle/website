@@ -25,6 +25,10 @@
   width:46px;
   height:46px;
 }
+.friend__avatar--mini{
+  width:30px;
+  height:30px;
+}
 
 
 /* --- FRIENDS SEARCH FORM & RESULTS --- */

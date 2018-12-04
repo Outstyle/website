@@ -61,12 +61,13 @@ class UserAvatar extends \common\models\Photo
 
     /**
      * Gets an avatar absolute path, also relating on services
+     * TODO: Move $size var into avatar_deleted size by default to able to dynamically change it via calling
      * @param  string  $relativePath    Path to avatar from userDescription->avatar column
      * @param  string  $size            i.e. 150x150_
      * @param  integer $serviceId
      * @return string
      */
-    public static function getAvatarPath($relativePath = '', $size = '150x150_', $serviceId = 0)
+    public static function getAvatarPath($relativePath = '', $size = '150x150_', $serviceId = 0) : string
     {
         /* Avatar for deleted or inactive user */
         if (!$relativePath) {
@@ -74,5 +75,20 @@ class UserAvatar extends \common\models\Photo
         }
 
         return self::getByPrefixAndServiceId($relativePath ?? '', $size, $serviceId, $photoType = self::PHOTO_TYPE_AVATAR);
+    }
+
+    /**
+     * Gets an avatar absolute path by avatar ID
+     * @param  int  $avatarId
+     * @return string
+     */
+    public static function getById(int $avatarId = 0) : string
+    {
+        $photo = self::find()
+            ->where(['id' => $avatarId])
+            ->asArray()
+            ->one();
+
+        return self::getAvatarPath($photo['img'], '150x150_', $photo['service_id']);
     }
 }

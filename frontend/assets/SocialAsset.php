@@ -39,6 +39,8 @@ class SocialAsset extends AssetBundle
         'css/outstyle/social.photo.css',
         'css/outstyle/social.friends.css',
         'css/outstyle/social.comments.css',
+        'css/outstyle/social.dialogs.css',
+        'css/outstyle/social.chat.css',
         'css/outstyle/social.board.post.css',
 
     ];
@@ -72,6 +74,7 @@ class SocialAsset extends AssetBundle
         'js/outstyle.user.photoalbum.create.js',
         'js/outstyle.user.photoalbum.edit.js',
         'js/outstyle.user.photoalbum.delete.js',
+        'js/outstyle.user.messages.js',
         'js/outstyle.userboard.js',
         'js/outstyle.userboard.posts.js',
         'js/outstyle.modal.js',

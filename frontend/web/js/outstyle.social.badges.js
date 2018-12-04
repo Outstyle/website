@@ -11,6 +11,11 @@ function appendBadgeToElement(elementId, type, text) {
     var badge = jQuery('<span class="c-badge c-badge--rounded c-badge--shaded c-badge--' + type + '">' + text + '</span>');
     jQuery(elementId).append(badge);
     badge.addClass('popout');
+  } else {
+    existingBadge.html(text);
+    if (text === 0) {
+      existingBadge.remove();
+    }
   }
 }
 

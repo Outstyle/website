@@ -27,6 +27,22 @@ class UserNickname extends UserDescription
     }
 
     /**
+     * Get user nickname by his ID
+     * If user is in STATUS_DELETED, returns User::STATUS_DELETED
+     *
+     * @param  array        $userDescriptionData
+     * @return string              User nickname or empty if user is deleted
+     */
+    public static function composeFullName(array $userDescriptionData = []) : string
+    {
+        $fullName = $userDescriptionData['name']
+            .' &quot;'.$userDescriptionData['nickname']
+            .'&quot; '.$userDescriptionData['last_name'];
+
+        return $fullName;
+    }
+
+    /**
      * Checks if username is not deleted
      *
      * @param  string $nickname   User nickname

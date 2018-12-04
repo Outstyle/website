@@ -67,14 +67,18 @@ class OutstyleSocialController extends Controller
     {
         parent::init();
 
+        $this->boardOwnerUserId = Yii::$app->getRequest()->getQueryParam('userId') ?? Yii::$app->user->id ?? 0;
+
+        /* For AJAXed requests we skip saving */
+        if (!Yii::$app->request->isAjax) {
+            return;
+        }
         /* TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh, move to User model */
         if (Yii::$app->user->id) {
             $userOnline = User::findOne(Yii::$app->user->id);
             $userOnline->lastvisit = time();
             $userOnline->save();
         }
-
-        $this->boardOwnerUserId = Yii::$app->getRequest()->getQueryParam('userId') ?? Yii::$app->user->id ?? 0;
     }
 
     /**
@@ -117,6 +121,7 @@ class OutstyleSocialController extends Controller
             $this->enableCsrfValidation = false;
             $this->layout = false;
             $this->userId = (int)Yii::$app->request->post('user') ?? Yii::$app->user->id ?? 0;
+            return parent::beforeAction($event);
         } else {
             if ($event->controller->id == Yii::$app->controller->id && in_array($event->id, $this->_allowedEntryPoints)) {
                 if (!$csrf_token) {

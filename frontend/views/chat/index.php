@@ -1,6 +1,6 @@
 
 <?php
-   
+
     use yii\helpers\Html;
     use yii\helpers\Url;
 
@@ -37,16 +37,19 @@
     </div>
     <div class="chat-wrap">
     <div class="list-users scrollable">
-      <?php if(!empty($modelDialogs)){
-        foreach ($modelDialogs as $key => $dialog) { ?>
+      <?php if (!empty($modelDialogs)) {
+    foreach ($modelDialogs as $key => $dialog) {
+        ?>
 
           <div data-index="3" id="<?=$dialog['dialog']?>" data-id="<?=$dialog['user_id']?>"  class="user-dialog user3">
             <div class="user-ava-chat">
-              <?php if(!empty($dialog['countNewMessage'])){?>
+              <?php if (!empty($dialog['countNewMessage'])) {
+            ?>
                 <div class="number-message">
                   <?=$dialog['countNewMessage']?>
                 </div>
-              <?php }?>
+              <?php 
+        } ?>
               <img src="<?php echo Yii::$app->homeUrl; ?>images/avatar/<?=$dialog['user_id']?>_small.jpg" alt=''>
             </div>
             <div class="name-time-chat">
@@ -57,43 +60,52 @@
                 <?=$dialog['created']?>
               </div>
             </div>
-            <?php if($dialog['online']!=0){?>
+            <?php if ($dialog['online']!=0) {
+            ?>
               <div class="online-ofline-chat">
               </div>
-            <?php }?>
+            <?php 
+        } ?>
           </div>
-      <?php }}else{?>
+      <?php 
+    }
+} else {
+    ?>
         <div class="new-uzer-massege">
           У Вас нет ещё диалогов <br> Напишите сообщение своим друзьям
         </div>
-      <?php }?>
-        
+      <?php 
+}?>
+
     </div>
     <div class="list-dialogs">
       <div class="last-messages-from-users scrollable">
-        <?php if(!empty($modelDialogs)){
-          foreach ($modelDialogs as $key => $dialog) { ?>
+        <?php if (!empty($modelDialogs)) {
+    foreach ($modelDialogs as $key => $dialog) {
+        ?>
             <div class="last-message-from-user">
               <div class="message-from-user">
                 <?=$dialog['lastMessage']?>
               </div>
             </div>
-        <?php }}?>
+        <?php 
+    }
+}?>
 <!--        <div class="last-message-from-user">
           <div class="message-from-user">
             Человекообразные обезьянки!<br>
-            <img src="<?//php echo Yii::$app->homeUrl; ?>css/img/icon-audio.png"> Аудиозапись
+            <img src="<?//php echo Yii::$app->homeUrl;?>css/img/icon-audio.png"> Аудиозапись
           </div>
         </div>
         <div class="last-message-from-user">
           <div class="message-from-user">
-            <img src="<?//php echo Yii::$app->homeUrl; ?>css/img/icon-video.png">  Видеозапись
+            <img src="<?//php echo Yii::$app->homeUrl;?>css/img/icon-video.png">  Видеозапись
           </div>
         </div>
         <div class="last-message-from-user">
           <div class="message-from-user">
             Лучшее что нашел<br>
-            <img src="<?//php echo Yii::$app->homeUrl; ?>css/img/icon-img.png"> Изображение
+            <img src="<?//php echo Yii::$app->homeUrl;?>css/img/icon-img.png"> Изображение
           </div>
         </div> -->
       </div>
@@ -203,7 +215,7 @@
 
 <script>
 $(document).ready(function() {
-    
+
     $('.user-ava-chat').error(function() {
         $(this).attr( "src", "http://devoutstyle.org/images/avatar/def_avatar.jpg" );
     });
@@ -218,7 +230,7 @@ $(document).ready(function() {
             data : data,
             url : '/chat/search/'
         }).then(function(data){
-            
+
             if ( data ) {
                 $('.list-users').html(' ');
                 $('.last-messages-from-users').html(' ');
@@ -233,7 +245,7 @@ $(document).ready(function() {
                 $('.last-messages-from-users').html(' ');
                 $('.list-users').html('Диалоги не найдены');
             }
-            
+
             $('.user-ava-chat').error(function() {
                 $(this).attr( "src", "http://devoutstyle.org/images/avatar/def_avatar.jpg" );
             });
@@ -299,8 +311,8 @@ $(document).ready(function() {
     });
 
     var timerId;
-    
-    //Выгрузка сообщений пользователя 
+
+    //Выгрузка сообщений пользователя
     $('.user-dialog').on('click', function(){
       $('.dialog').html(' ');
       $('textarea').val("");
@@ -318,7 +330,7 @@ $(document).ready(function() {
         $('.name-column').show();
         $('.name-column1').hide();
       }
-      
+
         $('.send-icon').attr('recipient', $(this).attr('data-id'));
 
         var d = {
@@ -330,25 +342,25 @@ $(document).ready(function() {
             d.dialog = $(this).attr('id');
             d.page = 1;
         };
-      
+
         if ( $(this).attr('data-id') != '' ) {
            d.user_id = $(this).attr('data-id');
         }
-        
+
       $.ajax({
           dataType: 'JSON',
           type : 'get',
           data : d,
           url : '/chat/onedialog/'
       }).then(function(data){
-          
+
         clearTimeout(timerId);
-        
+
         //var idDialog = data.idDialog;
 //        if ( data.idDialog != 0 ) {
             $('.write-message > .send-icon').attr("id",data.idDialog);
 //        }
-        
+
         if(data.messages){
           var count = data.messages.length;
           for (var i = 0; i < count ; i++) {
@@ -391,7 +403,7 @@ $(document).ready(function() {
             });
             timerId = setTimeout(checkHandler, 2000);
         };
-        
+
         timerId = setTimeout( check, 2000);
 
       });
@@ -421,7 +433,7 @@ $(document).ready(function() {
       }).then(function(data){
 
         clearTimeout(timerId);
-        
+
         if (data){
           var comText = getBrString(data.message);
           $('.write-message > .send-icon').attr("id",data.idDialog);
@@ -446,9 +458,9 @@ $(document).ready(function() {
           });
           timerId = setTimeout( checkHandler, 2000 );
         }
-        
+
         timerId = setTimeout( check, 2000 );
-        
+
       });
   });
 textareaInit();

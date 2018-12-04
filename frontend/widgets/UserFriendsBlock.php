@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Widget;
 
 use frontend\models\UserAvatar;
+use frontend\models\UserNickname;
 
 /**
  * Handles User -> Friends block, showing friends of user
@@ -48,7 +49,7 @@ class UserFriendsBlock extends Widget
                 foreach ($friend_info as $k => $friend) {
                     $friends[$k] = $friend;
 
-                    $friends[$k]['fullname'] = $friend['name'].' &quot;'.$friend['nickname'].'&quot; '.$friend['last_name'];
+                    $friends[$k]['fullname'] = UserNickname::composeFullName($friend);
                     $friends[$k]['location'] = '';
                     $friends[$k]['birthday_date'] = $friend['birthday'] ?? '';
                     $friends[$k]['avatar'] = UserAvatar::getAvatarPath($friend['userAvatar']['img'], '150x150_', $friend['userAvatar']['service_id']);

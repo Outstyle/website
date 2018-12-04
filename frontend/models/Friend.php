@@ -89,14 +89,16 @@ class Friend extends \common\models\Friend
         }
 
         foreach ($userFriends as $friend) {
-            if ($friend['user1'] != $userId) {
+            /* We won't show onesided friendship for initiator of friendship */
+            if ($friend['user1'] != $userId && $friend['status'] != self::FRIENDSHIP_STATUS_ONESIDED) {
                 $friends[] = (int)$friend['user1'];
             }
+            /* We also won't show pending friendships for non-owner of friendship */
             if ($friend['user2'] != $userId && $friend['status'] != self::FRIENDSHIP_STATUS_PENDING) {
                 $friends[] = (int)$friend['user2'];
             }
         }
 
-        return $friends ?? '';
+        return $friends ?? [];
     }
 }

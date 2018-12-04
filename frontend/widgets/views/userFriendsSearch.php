@@ -76,11 +76,9 @@ echo Html::beginTag('div', ['id' => 'friendsList']);
                       'id' =>'friend__action-keep',
                       'class' => 'c-button c-button--xsmall i-keepfriend u-pull-right',
                       'title' => Yii::t('app', 'Keep as subscriber'),
-                      'ic-include' => '{"id":'.$friend['id'].'}',
-                      'ic-post-to' => Url::toRoute(['api/friends/accept']),
+                      'ic-include' => '{"friendId":'.$friend['id'].'}',
+                      'ic-post-to' => Url::toRoute(['api/friends/refuse']),
                       'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
-                      'ic-on-beforeSend2' => 'friendBeforeKeepFriend()',
-                      'ic-on-complete2' => 'friendAfterKeepFriend()',
                       'ic-push-url' => 'false'
                     ]
                   ).
@@ -95,8 +93,6 @@ echo Html::beginTag('div', ['id' => 'friendsList']);
                       'ic-include' => '{"friendId":'.$friend['id'].'}',
                       'ic-post-to' => Url::toRoute(['api/friends/accept']),
                       'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
-                      'ic-on-beforeSend2' => 'friendBeforeAddFriend()',
-                      'ic-on-complete2' => 'friendAfterAddFriend()',
                       'ic-push-url' => 'false'
                     ]
                   ),

@@ -4,6 +4,11 @@ namespace common\components\helpers;
 
 use Yii;
 
+/**
+ * StringHelper provides a set of static methods for working with strings, i.e. to modify or to validate them
+ * @author [SC]Smash3r <scsmash3r@gmail.com>
+ * @since 1.0
+ */
 class StringHelper
 {
     /**
@@ -74,17 +79,22 @@ class StringHelper
      *
      * @param string
      * @param number
+     * @param bool
      *
      * @return string
      */
-    public static function cutString($string, $maxlen)
+    public static function cutString($string, $maxlen, $precise = false)
     {
-        $len = (mb_strlen($string) > $maxlen)
+        $cutLen = $len = (mb_strlen($string) > $maxlen)
             ? mb_strripos(mb_substr($string, 0, $maxlen), ' ')
             : $maxlen
         ;
-        $cutStr = strip_tags(mb_substr($string, 0, $len));
 
+        if ($precise) {
+            $cutLen = $maxlen;
+        }
+
+        $cutStr = strip_tags(mb_substr($string, 0, $cutLen));
         return (mb_strlen($string) > $maxlen)
             ? $cutStr.'...'
             : $cutStr
@@ -139,31 +149,38 @@ class StringHelper
         /* Working with different date formats for converting to suit our needs */
         if ($format) {
             switch ($format) {
-              case 'F':
-              return Yii::t('datetime', 'of '.date('F', $time));
+                case 'F':
+                return Yii::t('datetime', 'of '.date($format, $time));
 
-              default:
-              return Yii::t('datetime', date($format, $time));
-          }
+                case 'd M':
+                # Match d m Y date for today's date, returning H:i string
+                if (date('d m Y', time()) === date('d m Y', $time)) {
+                    return date('H:i', $time);
+                }
+                return date('d', $time).' '.Yii::t('datetime', date('M', $time));
+
+                default:
+                return Yii::t('datetime', date($format, $time));
+            }
         }
 
         /* Working with controllers */
         if ($controllerId) {
             switch ($controllerId) {
 
-              case 'events':
-                if ($time < time()) {
-                    return Yii::t('app', 'Event passed');
-                }
+                case 'events':
+                    if ($time < time()) {
+                        return Yii::t('app', 'Event passed');
+                    }
 
-              case 'users':
-                $todayPrefix = 'Was today';
-                $yesterdayPrefix = 'Was yesterday';
-                $longAgoPrefix = 'Last seen';
+                case 'users':
+                    $todayPrefix = 'Was today';
+                    $yesterdayPrefix = 'Was yesterday';
+                    $longAgoPrefix = 'Last seen';
 
-                if ((time() - $time) < 900) {
-                    return Yii::t('app', 'online');
-                }
+                    if ((time() - $time) < 900) {
+                        return Yii::t('app', 'online');
+                    }
             }
         }
 

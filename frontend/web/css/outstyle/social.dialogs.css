@@ -1,0 +1,51 @@
+/* --- SOCIAL DIALOGS --- */
+.dialog__box {
+    border-bottom: 1px solid #ebebeb;
+}
+
+.dialog__box--hoverable {
+    cursor: pointer;
+}
+
+.dialog__box--hoverable:hover {
+    background: #f9f9f9;
+}
+
+.dialog__avatar {
+    float: left;
+}
+
+.dialog__time {
+    float: right;
+    color: #57656e;
+    font-size: 0.9em;
+    font-family: 'OsnovaPro';
+}
+
+.dialog__name {
+    font-family: 'OsnovaProMedium';
+    font-weight: normal;
+    color: #57656e;
+}
+
+.dialog__lastmessage {
+    color: #b5b5b5;
+    font-size: 0.8em;
+    line-height: 0.9em;
+    margin-top: 0.3em;
+}
+
+/* --- SOCIAL MESSAGES --- */
+#messages_area {
+    border-left: 1px solid #ebebeb;
+}
+
+#messages_list,
+#messages_area,
+.conversations__new {
+    height: 100%;
+}
+
+#messages_area {
+    display: none;
+}
