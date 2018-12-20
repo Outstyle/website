@@ -1,68 +1,134 @@
-var conversations_area = '#conversations_area';
-var messages_area = '#messages_area';
-var messages_list = '#messages_list';
-
 /**
- * Initialize photoalbums. This needs to be done after every AJAX call
- * @see: photoalbum/index
+ * Outstyle Messages JS Module
+ * Depends on: JQuery, Intercoolerjs
+ * Author: <scsmash3r@gmail.com>
+ * Copyright (c) 2018 [SC]Smash3r; Beerware
+ * @preserve
  */
-function messagesInit() {
+/* jshint esversion: 6 */
 
-    jQuery(conversations_area).show();
-
-    setTimeout(function() {
-        messagesCalculateEqualHeight();
-        jQuery(messages_area).fadeIn('slow');
-    }, 85);
-
-    sidebarHighlightActiveMenuItem('#menu__item-messages');
-
+/* Define global namespaces */
+if ("undefined" == typeof outstyle) {
+    var outstyle = {};
+}
+if (!outstyle.messages) {
+    outstyle.messages = {};
 }
 
-/**
- * Init scrollbars for photoalbums area
- * @see: https://github.com/KingSora/OverlayScrollbars
- */
-function messagesScrollbarInit() {
-    jQuery(conversations_area).overlayScrollbars({}).overlayScrollbars();
-    jQuery(messages_list).overlayScrollbars({}).overlayScrollbars();
-}
+jQuery(document).ready(function() {
+    (function() {
+        "use strict";
 
-/**
- * Recalculates height for photoalbums sidebar and photos area so they could be equal (UI issues)
- */
-function messagesCalculateEqualHeight() {
-    var h = window.innerHeight;
-    var messagesHeight = jQuery(messages_list).height();
-    if (messagesHeight > h) {
-        jQuery(conversations_area + ', .conversations__new, ' + messages_area).css({
-            'height': messagesHeight + 'px'
+        var _path = '/messages';
+
+        /* --- Global 'ondocumentready' binds for calling out the function from other modules or for IC --- */
+        jQuery("body").on("messagesInit", function(event, data) {
+            init();
         });
-    } else {
-        jQuery(conversations_area + ', .conversations__new, ' + messages_area).css({
-            'height': 'calc(100vh - 90px)'
+
+        jQuery("body").one("bindEvents", function(event, DOM) {
+            _bindKeyEvents(DOM);
+            _bindLocalEvents(DOM);
         });
-    }
-}
 
-/**
- * On succesfull dialogs load more
- */
-jQuery("body").on("messagesDialogsLoadMore", function(event, data) {
-    jQuery('#conversations__loadmore').hide();
-    setTimeout(function() {
-        messagesCalculateEqualHeight();
-        messagesScrollbarInit();
-    }, 50);
-});
+        /* Reinit messages after each time URL is changed (dialog navigation i.e.) */
+        jQuery(document).on("pushUrl.ic", function(event, target, data) {
+            if (window.location.pathname.indexOf(_path) === 0) {
+                init();
+            }
+        });
 
-/**
- * On messages load
- * @see @frontend -> MessagesController -> actionView
- */
-jQuery("body").on("messagesListLoaded", function(event, data) {
-    setTimeout(function() {
-        messagesCalculateEqualHeight();
-        messagesScrollbarInit();
-    }, 50);
+        /* Messages history.back() events */
+        jQuery(document).on("beforeHistorySnapshot.ic", function(evt, target) {
+            if (window.location.pathname.indexOf(_path) === 0) {
+                var messagesScrollbarInstance = jQuery('#messages_list').overlayScrollbars();
+                if (messagesScrollbarInstance !== undefined) {
+                    jQuery('#messages_list').overlayScrollbars().destroy();
+                }
+            }
+        });
+
+        jQuery(document).on("handle.onpopstate.ic", function(evt) {
+            if (window.location.pathname.indexOf(_path) === 0) {
+                jQuery('#messages_area').show();
+            }
+        });
+
+        /**
+         * Init function for messages
+         * Must be called everytime $messagesContainer is rerendered (i.e. by IC ajax)
+         * @return null
+         */
+        var init = function() {
+            var $messagesContainer = jQuery('#outstyle_messages');
+
+            /* Init messages only if #ID is on the page */
+            if ($messagesContainer.length) {
+                var DOM = {
+                    'for': 'messages',
+                    '$messagesContainer': $messagesContainer,
+                    '$messagesArea': $messagesContainer.find('#messages_area'),
+                    '$messagesList': $messagesContainer.find('#messages_list'),
+                    '$messagesSendbox': $messagesContainer.find('#messages_sendbox'),
+                    '$messageTextarea': $messagesContainer.find('#message-text'),
+                };
+
+                DOM.$messagesArea.show();
+                jQuery('body').trigger('bindEvents', DOM);
+                jQuery('body').trigger('layoutInit', DOM);
+                jQuery('body').trigger('setScrollbarOnElement', [DOM.$messagesList]);
+
+                // sidebarHighlightActiveMenuItem(outstyle_messages.DOM.sidebarMenuItem);
+
+                _log('[MESSAGES] init finished');
+            }
+        };
+
+        var _bindKeyEvents = function(DOM = {}) {
+            DOM.$messageTextarea.keydown(function(e) {
+                if (e.keyCode === 13) {
+                    if (e.ctrlKey) {
+                        jQuery(this).val(function(i, val) {
+                            return val + "\n";
+                        });
+                        autosize.update(DOM.$messageTextarea);
+                        return false;
+                    }
+                    if (e.shiftKey) {
+                        jQuery(this).val(function(i, val) {
+                            return val + "\n";
+                        });
+                        autosize.update(DOM.$messageTextarea);
+                        return false;
+                    }
+                }
+            }).keypress(function(e) {
+                if (e.keyCode === 13) {
+                    if (!e.shiftKey && !e.ctrlKey) {
+                        alert('submit');
+                        return false;
+                    }
+                }
+            });
+
+            _log('[MESSAGES] key binding finished');
+        };
+
+        var _bindLocalEvents = function(DOM = {}) {
+            autosize(DOM.$messageTextarea);
+
+            /* Fires up everytime chat box height is changed */
+            DOM.$messageTextarea.on('autosize:resized', function() {
+                jQuery('body').trigger('layoutInit', DOM);
+            });
+
+            _log('[MESSAGES] local events binding finished');
+        };
+
+        /* --- Take out only needed functions to global scope --- */
+        this.init = init;
+
+    }).call(outstyle.messages);
+
+    _log('[JQREADY] outstyle.messages object created');
 });

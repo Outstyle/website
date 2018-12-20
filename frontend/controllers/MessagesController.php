@@ -42,7 +42,12 @@ class MessagesController extends OutstyleSocialController
 
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', [
+            'messages' => [],
+            'dialogMembers' => [],
+            'dialogId' => 0,
+            'dialog' => [],
+        ]);
     }
 
     public function actionView(int $dialogId = 0)
@@ -55,14 +60,19 @@ class MessagesController extends OutstyleSocialController
                 ->all();
             $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
             $dialogMembers = DialogMembers::setupData($dialogMembers);
+            $dialog = Dialog::findOne($dialogId);
         }
 
+        $response['dialogId'] = $dialogId;
+
         $headers = Yii::$app->response->headers;
-        $headers->add('X-IC-Trigger', '{"messagesListLoaded":[]}');
+        $headers->add('X-IC-Trigger', '{"messagesLoaded":['.Json::encode($response).']}');
 
         return $this->render('index', [
-            'messages' => $messages ?? '',
-            'dialogMembers' => $dialogMembers ?? '',
+            'messages' => $messages ?? [],
+            'dialogMembers' => $dialogMembers ?? [],
+            'dialogId' => $dialogId,
+            'dialog' => $dialog ?? [],
         ]);
     }
 }

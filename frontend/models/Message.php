@@ -27,8 +27,6 @@ class Message extends \common\models\Message
      */
     public static function getByDialogId(int $dialogId = 0) : yii\db\ActiveQuery
     {
-        return self::find()
-            ->where(['dialog' => $dialogId])
-            ->with(['dialog']);
+        return self::find()->where(['dialog' => $dialogId]);
     }
 }

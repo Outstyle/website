@@ -34,13 +34,14 @@ Spaceless::begin();
 <script src="/js/misc/jquery.min.js"></script>
 </head>
 <?php
-
+/* TODO: body class assertion must not be here [?] */
 $bodyClass = (Yii::$app->user->id) ? '-registered' : '-guest';
 
 echo Html::beginTag('body', [
-  'class' => 'social user'.$bodyClass,
+  'class' => 'social in-'.Yii::$app->controller->id.' user'.$bodyClass,
   'ic-global-include' => '{"'.Yii::$app->request->csrfParam.'":"'.ElementsHelper::getCSRFToken().'"}'
 ]);
+
 $this->beginBody();
 
 # Fixed width wrapper

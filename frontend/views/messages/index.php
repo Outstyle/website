@@ -17,6 +17,7 @@ use common\components\helpers\html\LoadersHelper;
  *
  * @var $this                       yii\web\View
  * @var $messages                   common\models\Message
+ * @var $dialogId                   common\models\Dialog
  * @var $dialogMembers              common\models\DialogMembers
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
@@ -34,7 +35,7 @@ echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter'
         [
             'id' => 'conversations__loadmore',
             'class' => 'album_area--loader loader--smallest',
-            'ic-post-to' => Url::toRoute(['/dialog/list']),
+            'ic-post-to' => Url::toRoute(['api/dialog/list']),
             'ic-trigger-on' => 'scrolled-into-view',
             'ic-target' => '#conversations_area',
             'ic-push-url' => 'false'
@@ -43,25 +44,34 @@ echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter'
         Html::tag('div', '', ['id' => 'conversations_area']),
 
     [
+        'id' => 'dialogs_area',
         'class' => 'o-grid__cell o-grid__cell--width-35 conversations__list'
     ]).
 
     /* USER CHAT MESSAGES AREA - 65% */
     Html::tag('div',
         $this->render('view', [
-            'messages' => $messages ?? '',
-            'dialogMembers' => $dialogMembers ?? '',
-            'showHeader' => true,
+            'messages' => $messages,
+            'dialogMembers' => $dialogMembers,
+            'dialog' => $dialog,
+            'options' => [
+                'showHeader' => true,
+            ]
         ]),
     [
         'id' => 'messages_area',
         'class' => 'o-grid__cell o-grid__cell--width-65 messages__list'
+    ]).
+
+    /* Send message form */
+    Html::tag('div',
+        $this->render('_form', [
+            'dialogId' => $dialogId,
+        ]),
+    [
+        'id' => 'messages_sendbox',
+        'class' => 'o-grid__cell o-grid__cell--width-100 messages__sendbox'
     ]),
 
     ['class' => 'messages__container']
 );
-
-
-/* JS: @see js/outstyle.user.messages.js */
-?>
-<script>jQuery(document).ready(function(){messagesInit()});</script>

@@ -63,6 +63,8 @@ class SocialAsset extends AssetBundle
         'js/misc/tooltipster.bundle.min.js',
 
         /* website related JS code */
+        'js/outstyle.log.js',
+        'js/outstyle.layout.js',
         'js/outstyle.social.sidebar.js',
         'js/outstyle.social.tooltips.js',
         'js/outstyle.social.badges.js',
@@ -74,6 +76,7 @@ class SocialAsset extends AssetBundle
         'js/outstyle.user.photoalbum.create.js',
         'js/outstyle.user.photoalbum.edit.js',
         'js/outstyle.user.photoalbum.delete.js',
+        'js/outstyle.user.dialogs.js',
         'js/outstyle.user.messages.js',
         'js/outstyle.userboard.js',
         'js/outstyle.userboard.posts.js',

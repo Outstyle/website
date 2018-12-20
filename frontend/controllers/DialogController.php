@@ -69,7 +69,7 @@ class DialogController extends OutstyleSocialController
         }
 
         $headers = Yii::$app->response->headers;
-        $headers->add('X-IC-Trigger', '{"messagesDialogsLoadMore":['.Json::encode($response).']}');
+        $headers->add('X-IC-Trigger', '{"dialogsLoaded":['.Json::encode($response).']}');
 
         return $this->renderPartial('index', [
             'dialogs' => $dialogs

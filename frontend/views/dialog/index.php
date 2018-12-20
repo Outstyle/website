@@ -28,14 +28,14 @@ echo Html::beginTag('div', ['id' => 'ajax']);
     echo Html::beginTag('div', ['class' => 'o-grid o-grid--wrap o-grid--no-gutter']);
 
         foreach ($dialogs as $dialog) {
-
+            $dialogId = (int)$dialog['dialog']['id'];
             /* Dialog single row */
             echo Html::beginTag('div', [
-                'id' => 'dialogbox-'.$dialog['dialog']['id'],
+                'id' => 'dialogbox-'.$dialogId,
                 'class' => 'o-grid__cell--width-100 u-window-box--xsmall dialog__box dialog__box--hoverable',
                 'ic-indicator' => ElementsHelper::DEFAULT_AJAX_LOADER,
                 'ic-target' => '#messages_area',
-                'ic-post-to' => Url::toRoute(['messages/'.$dialog['dialog']['id']]),
+                'ic-post-to' => Url::toRoute(['messages/'.$dialogId]),
                 'ic-push-url' => 'true',
                 'ic-select-from-response' => '#messages_area'
             ]);
@@ -51,10 +51,10 @@ echo Html::beginTag('div', ['id' => 'ajax']);
             $dialogLastMessageTimestamp = $dialog['message']['time'];
             $dialogName = (!empty($dialog['dialog']['name'])) ? $dialog['dialog']['name'] : Yii::t('app', 'Unnamed');
             echo Html::tag('div',
-                '<div class="dialog__name">'.StringHelper::cutString($dialogName, 35, true).'<span class="dialog__time">'.StringHelper::convertTimestampToHuman($dialogLastMessageTimestamp, 'd M').'</span></div>'.
-                '<div class="dialog__lastmessage"><i class="zmdi zmdi-comment-outline zmdi-hc-lg"></i>&nbsp;'.StringHelper::cutString($dialogLastMessage, 55).'</div>',
+                '<div class="dialog__name">'.StringHelper::cutString($dialogName, 30, true).'<span class="dialog__time">'.StringHelper::convertTimestampToHuman($dialogLastMessageTimestamp, 'd M').'</span></div>'.
+                '<div class="dialog__lastmessage"><i class="zmdi zmdi-comment-outline zmdi-hc-lg"></i>&nbsp;'.StringHelper::cutString($dialogLastMessage, 65).'</div>',
             [
-                'class' => 'o-grid__cell--width-100 u-letter-box--medium'
+                'class' => 'o-grid__cell--width-100 u-letter-box--medium dialog__info'
             ]);
 
             echo Html::endTag('div');

@@ -14,12 +14,16 @@ use frontend\models\UserNickname;
  *
  * @var $this                     yii\web\View
  * @var $messages                 common\models\Message
+ * @var $dialog                   common\models\Dialog
  * @var $dialogMembers            common\models\DialogMembers
 */
 
 Spaceless::begin();
 
-if (isset($showHeader)) {
+/* --- MESSAGES HEADER --- */
+if (isset($options['showHeader'])) {
+    echo Html::beginTag('div', ['id' => 'messages_header']);
+    echo Html::endTag('div');
 }
 
 /* --- MESSAGES LIST --- */
@@ -80,5 +84,5 @@ echo Html::beginTag('div', ['id' => 'messages_list']);
     */
 
 echo Html::endTag('div');
-d($messages);
+
 Spaceless::end();

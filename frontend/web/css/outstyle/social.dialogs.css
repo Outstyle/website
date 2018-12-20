@@ -3,12 +3,30 @@
     border-bottom: 1px solid #ebebeb;
 }
 
+.dialog__box.active {
+    background: #6f808a;
+    color: #fff;
+}
+
+.dialog__box.active .dialog__name {
+    color: #fff;
+}
+
+.dialog__box.active .dialog__lastmessage,
+.dialog__box.active .dialog__time {
+    color: #efefef;
+}
+
 .dialog__box--hoverable {
     cursor: pointer;
 }
 
 .dialog__box--hoverable:hover {
     background: #f9f9f9;
+}
+
+.dialog__box--hoverable.active:hover {
+    background: #7b8d98;
 }
 
 .dialog__avatar {
@@ -35,17 +53,44 @@
     margin-top: 0.3em;
 }
 
+.dialog__info {
+    padding-bottom: 0;
+}
+
 /* --- SOCIAL MESSAGES --- */
-#messages_area {
-    border-left: 1px solid #ebebeb;
+.conversations__list {
+    border-right: 1px solid #ebebeb;
 }
 
 #messages_list,
 #messages_area,
 .conversations__new {
     height: 100%;
+    overflow: hidden;
 }
 
-#messages_area {
+#messages_area,
+#messages_sendbox {
     display: none;
+}
+
+#messages_sendbox {
+    border-top: 1px solid #ebebeb;
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    background: #fff;
+    max-height: 200px;
+    width: 100%;
+}
+
+#message-text {
+    max-height:150px;
+}
+#messages_actions {
+    border-right: 1px solid #ebebeb;
+}
+
+.in-messages {
+    overflow:hidden;
 }
