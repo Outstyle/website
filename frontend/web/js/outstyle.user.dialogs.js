@@ -18,9 +18,15 @@ jQuery(document).ready(function() {
     (function() {
         "use strict";
 
+        var _path = '/messages'; /* Since dialogs are a part of messages and are IN messages section */
+
         /* Global 'ondocumentready' bind for calling out the function from other modules */
         jQuery("body").on("dialogsInit", function(event, data) {
             init();
+        });
+
+        jQuery("body").on("highlightCurrentDialogBox", function(event, data) {
+            _highlightCurrentDialogBox();
         });
 
         /* X-IC-Trigger @ DialogsController */
@@ -31,6 +37,21 @@ jQuery(document).ready(function() {
                 jQuery('body').trigger('messagesInit');
             }, 150);
         });
+
+        jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
+            if (settings.url == '/api/messages/get') {
+                var dialogId = _getLastElementFromURI();
+                settings.data = settings.data + '&dialogId=' + dialogId;
+            }
+        });
+
+        /* Triggered before a snapshot is taken for history - unwire custom JS here, restore initial page state */
+        jQuery(document).on("beforeHistorySnapshot.ic", function(evt, target) {
+            if (window.location.pathname.indexOf(_path) === 0) {
+                jQuery('.dialog__box').removeClass('active');
+            }
+        });
+
 
         /**
          * Init function for dialogs
@@ -44,31 +65,23 @@ jQuery(document).ready(function() {
             if ($dialogsContainer.length) {
                 var DOM = {
                     'for': 'dialogs',
-                    '$conversationsArea': $dialogsContainer.find('#conversations_area'),
-                    '$conversationsLoadmore': $dialogsContainer.find('#conversations__loadmore'),
-                    '$dialogBoxes': $dialogsContainer.find('.dialog__box'),
-                    'dialogBoxPrefix': '#dialogbox-'
+                    '$conversationsArea': $dialogsContainer.find('#conversations_area')
                 };
+
+                _highlightCurrentDialogBox();
 
                 _log('[DIALOGS] init finished');
             }
         };
 
-        var _highlightCurrent = function(dialogId) {
-            if (dialogId === undefined) {
-                dialogId = this.getCurrentIdFromURI();
+        var _highlightCurrentDialogBox = function() {
+            var dialogId = _getLastElementFromURI();
+            var $el = jQuery('#dialogbox-' + dialogId);
+            if ($el !== undefined) {
+                $el.addClass('active');
             }
-            var el = jQuery(this.DOM.dialogBoxPrefix + dialogId);
-            if (el !== undefined) {
-                jQuery(this.DOM.dialogBoxes).removeClass('active');
-                el.addClass('active');
-            }
-        };
 
-        var _setScrollbars = function() {
-            if (!jQuery(this.DOM.conversationsArea).hasClass('os-host')) {
-                jQuery(this.DOM.conversationsArea).overlayScrollbars({}).overlayScrollbars();
-            }
+            _log('[DIALOGS] highlight dialog box finished');
         };
 
         var isInDialogue = function() {

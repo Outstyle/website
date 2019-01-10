@@ -21,8 +21,25 @@ use Yii;
 class Message extends \common\models\Message
 {
     /**
+     * @inheritdoc
+     * @see https://www.yiiframework.com/doc/api/2.0/yii-db-baseactiverecord#afterSave()-detail
+     *
+     * If more related DB tables for insertion are about to be added, use transactions
+     * @see: https://stackoverflow.com/a/35225902
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        $setUnread = MessageStatus::setUnread($this->dialog, $this->id);
+        if ($setUnread) {
+            Yii::$app->response->headers->add('X-IC-Trigger', '{"newMessageAdded":[]}');
+        }
+    }
+
+    /**
      * Retrieve all user dialogues by user ID
-     * @param  int          $userId
+     * @param  int          $dialogId
      * @return instanceof   yii\db\ActiveQuery
      */
     public static function getByDialogId(int $dialogId = 0) : yii\db\ActiveQuery

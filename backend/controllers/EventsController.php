@@ -139,11 +139,11 @@ class EventsController extends Controller
             if ($model->validate()) {
                 $model->events_date = date('Y-m-d H:i:s', strtotime($model->events_date));
                 $model->save(false);
-
-                return $this->redirect(['view', 'id' => $model->id]);
+                return;
+                //return $this->redirect(['view', 'id' => $model->id]);
             }
         }
-
+        return;
         /* Default view */
         return $this->render('create', [
             'model' => $model,
@@ -188,7 +188,7 @@ class EventsController extends Controller
             if ($model->validate()) {
                 $model->events_date = date('Y-m-d H:i:s', strtotime($model->events_date));
                 $model->save(false);
-
+                return;
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }

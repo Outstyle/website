@@ -85,12 +85,31 @@
 }
 
 #message-text {
-    max-height:150px;
+    max-height: 150px;
 }
+
 #messages_actions {
     border-right: 1px solid #ebebeb;
 }
 
+#message-send-submit {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color: #57656e;
+}
+#message-send-submit:hover {
+    background-color: rgba(222, 222, 222, 0.2);
+}
+
 .in-messages {
-    overflow:hidden;
+    overflow: hidden;
+}
+
+.message__send .u-center-block__content {
+    height: 100%;
+}
+
+.message__input {
+    padding-right: 0;
 }

@@ -309,6 +309,7 @@ class Geolocation extends \yii\db\ActiveRecord
             $geolocation->google_place_id = $place_id;
             $geolocation->name = $name;
             $geolocation->save();
+            dd($geolocation->errors);
 
             return $geolocation->id;
         }
@@ -359,7 +360,7 @@ class Geolocation extends \yii\db\ActiveRecord
             /* Getting all the countries, that is related to our specified model */
             $geolocation = self::find()->with([
               $model => function (\yii\db\ActiveQuery $query) use ($where) {
-                $query->andWhere($where)->select('id, geolocation_id');
+                  $query->andWhere($where)->select('id, geolocation_id');
               }
             ])->select('id,country,city')->all();
 
@@ -407,7 +408,6 @@ class Geolocation extends \yii\db\ActiveRecord
                               'objects' => $geodata[$model][$iso_code][$city->name],
                             ];
                         }
-
                     }
                 }
             }
@@ -467,5 +467,4 @@ class Geolocation extends \yii\db\ActiveRecord
     {
         return $this->hasMany(School::className(), ['geolocation_id' => 'id']);
     }
-
 }

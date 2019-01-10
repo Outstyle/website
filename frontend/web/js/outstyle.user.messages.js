@@ -21,12 +21,15 @@ jQuery(document).ready(function() {
 
         var _path = '/messages';
 
+        /* --- GLOBAL BINDS --- */
+
         /* --- Global 'ondocumentready' binds for calling out the function from other modules or for IC --- */
         jQuery("body").on("messagesInit", function(event, data) {
             init();
         });
 
-        jQuery("body").one("bindEvents", function(event, DOM) {
+        /* Bind events for messages only once (.one) to prevent repeating of attaching handlers */
+        jQuery("body").one("messagesBindEvents", function(event, DOM) {
             _bindKeyEvents(DOM);
             _bindLocalEvents(DOM);
         });
@@ -38,21 +41,30 @@ jQuery(document).ready(function() {
             }
         });
 
-        /* Messages history.back() events */
+        /* Triggered before a snapshot is taken for history - unwire custom JS here, restore initial page state */
         jQuery(document).on("beforeHistorySnapshot.ic", function(evt, target) {
+            jQuery('#messages_area').hide(); /* To prevent blinking while attaching scrollbars */
             if (window.location.pathname.indexOf(_path) === 0) {
-                var messagesScrollbarInstance = jQuery('#messages_list').overlayScrollbars();
-                if (messagesScrollbarInstance !== undefined) {
-                    jQuery('#messages_list').overlayScrollbars().destroy();
-                }
+                jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#messages_list')]);
             }
         });
 
+        /* @see: https://developer.mozilla.org/ru/docs/Web/Events/popstate */
         jQuery(document).on("handle.onpopstate.ic", function(evt) {
             if (window.location.pathname.indexOf(_path) === 0) {
-                jQuery('#messages_area').show();
+                setTimeout(function() {
+                    init();
+                }, 200);
             }
+
+            _log('[MESSAGES] popstate triggered');
         });
+
+        jQuery("body").on("messagesAddError", function(evt, data) {
+            jQuery('body').trigger('showErrors', data);
+        });
+
+        /* --- GLOBAL BINDS END --- */
 
         /**
          * Init function for messages
@@ -74,12 +86,12 @@ jQuery(document).ready(function() {
                 };
 
                 DOM.$messagesArea.show();
-                jQuery('body').trigger('bindEvents', DOM);
+                jQuery('body').trigger('messagesBindEvents', DOM);
                 jQuery('body').trigger('layoutInit', DOM);
                 jQuery('body').trigger('setScrollbarOnElement', [DOM.$messagesList]);
+                jQuery('body').trigger('highlightCurrentDialogBox');
 
                 // sidebarHighlightActiveMenuItem(outstyle_messages.DOM.sidebarMenuItem);
-
                 _log('[MESSAGES] init finished');
             }
         };

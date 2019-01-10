@@ -60,7 +60,12 @@ echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter'
         ]),
     [
         'id' => 'messages_area',
-        'class' => 'o-grid__cell o-grid__cell--width-65 messages__list'
+        'class' => 'o-grid__cell o-grid__cell--width-65 messages__list',
+        'ic-append-from' => Url::toRoute(['api/messages/get']),
+        'ic-poll' => '5s',
+        'ic-target' => '.chat-thread',
+        'ic-select-from-response' => '#content',
+        'ic-push-url' => 'false',
     ]).
 
     /* Send message form */

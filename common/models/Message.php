@@ -23,11 +23,10 @@ use frontend\models\UserAvatar;
  *
  * @property int      $id
  * @property int      $sender_id
- * @property int      $recipient_id
  * @property string   $message
  * @property int      $dialog
  * @property string   $created
- * @property int      $status
+ * @property int      $type
  *
  * @author [SC]Smash3r <scsmash3r@gmail.com>
  * @since 1.0
@@ -35,16 +34,17 @@ use frontend\models\UserAvatar;
 class Message extends \yii\db\ActiveRecord
 {
     /**
-     * Message is stored in DB but not yet delivered to recipient
+     * Usual user message
      * @var integer
      */
-    const MESSAGE_STATUS_UNREAD = 0;
+    const MESSAGE_TYPE_ORDINARY = 0;
 
     /**
-     * Message is delivered to recipient
+     * System message (i.e. fired for everyone by admins)
      * @var integer
      */
-    const MESSAGE_STATUS_READ = 1;
+    const MESSAGE_TYPE_SYSTEM = 1;
+
 
 
     /**
@@ -61,10 +61,55 @@ class Message extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['sender_id', 'recipient_id', 'message', 'dialog'], 'required'],
-            [['sender_id', 'recipient_id', 'dialog', 'status'], 'integer'],
-            [['created'], 'safe'],
-            [['message'], 'string', 'max' => 4096],
+            [
+                ['sender_id', 'dialog'],
+                'required',
+                'message' => 'REQUIRED',
+            ],
+            [
+                ['sender_id', 'dialog', 'type'],
+                'integer',
+                'message' => 'NOT_AN_INT',
+            ],
+
+            [
+                ['message'],
+                'required',
+                'message' => 'MESSAGE_EMPTY',
+            ],
+            [
+                ['message'],
+                'string',
+                'message' => 'MESSAGE_SYMBOLS_LIMIT',
+                'tooLong' => 'MESSAGE_SYMBOLS_TOO_LONG',
+                'tooShort' => 'MESSAGE_SYMBOLS_TOO_SHORT',
+                'min' => 1,
+                'max' => 2048
+            ],
+            [
+                ['message'],
+                'filter',
+                'filter' => function ($message) {
+                    /* Take out to string helper */
+                    $message = strip_tags($message);
+                    return \yii\helpers\Html::encode($message);
+                },
+            ],
+            [
+                ['type'],
+                'default',
+                'value' => self::MESSAGE_TYPE_ORDINARY
+            ],
+            [
+                ['type'], 'in', 'range' => [
+                    self::MESSAGE_TYPE_ORDINARY,
+                    self::MESSAGE_TYPE_SYSTEM
+                ],
+            ],
+            [
+                ['created'],
+                'safe'
+            ],
         ];
     }
 
@@ -76,11 +121,10 @@ class Message extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'sender_id' => Yii::t('app', 'Sender ID'),
-            'recipient_id' => Yii::t('app', 'Recipient ID'),
             'message' => Yii::t('app', 'Message'),
             'dialog' => Yii::t('app', 'Dialog'),
             'created' => Yii::t('app', 'Created'),
-            'status' => Yii::t('app', 'Status'),
+            'type' => Yii::t('app', 'Type'),
         ];
     }
 

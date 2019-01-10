@@ -41,16 +41,10 @@ echo Html::beginTag('div', [
         echo Html::beginTag('form', [
             'id' => 'message-send-form',
             'class' => 'o-grid o-grid--wrap',
-            'ic-append-from' => Url::toRoute(['api/friends/']),
-            'ic-verb' => 'POST',
-            'ic-include' => '#page',
-            'ic-select-from-response' => '#friendsList',
-            'ic-trigger-from' => '.friends-form-trigger',
-            'ic-indicator' => '#friends__loader',
-            'ic-target' => '#rightBlock #friendsList',
-            'ic-trigger-delay' => '200ms',
-            'ic-on-beforeSend' => 'friendsBeforeSearchActions()',
-            'ic-on-success' => 'friendsAfterSearchActions()'
+            'ic-post-to' => Url::toRoute(['api/messages/add']),
+            'ic-trigger-from' => '.message-send-form-trigger',
+            'ic-indicator' => '#outstyle_loader',
+            'ic-push-url' => 'false'
         ]);
 
             /* Message input */
@@ -60,8 +54,8 @@ echo Html::beginTag('div', [
                     '',
                     [
                         'id' => 'message-text',
-                        'name' => 'messages-text',
-                        'class' => 'c-field',
+                        'name' => 'message-text',
+                        'class' => 'c-field message-send-form-trigger',
                         'maxlength' => 2048,
                         'rows' => 1,
                         'placeholder' => Yii::t('app', 'Enter your message...')
@@ -76,7 +70,13 @@ echo Html::beginTag('div', [
             /* Message send button */
             echo Html::tag('div',
                 Html::tag('div',
-                    'asd',
+                    '<div class="u-center-block"><div class="u-center-block__content">'.
+                        Html::button('<i class="zmdi zmdi-chevron-right zmdi-hc-2x"></i>', [
+                            'id' => 'message-send-submit',
+                            'class' => 'zmdi-icon--hoverable message-send-form-trigger',
+                            'ic-trigger-on' => 'click',
+                        ]).
+                    '</div></div>',
                 [
                     'class' => 'u-letter-box--large'
                 ]),

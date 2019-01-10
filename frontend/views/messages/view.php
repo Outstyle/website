@@ -7,7 +7,6 @@ use yii\widgets\Spaceless;
 
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\StringHelper;
-use frontend\models\UserNickname;
 
 /**
  * User messages list
@@ -45,37 +44,14 @@ echo Html::beginTag('div', ['id' => 'messages_list']);
     if ($messages) {
         echo Html::beginTag('ul', [
             'class' => 'chat-thread'
-        ]);
-        foreach ($messages as $messageId => $message) {
-            $senderId = $message['sender_id'];
-            $senderAvatar = $dialogMembers[$senderId]['userDescription']['userAvatar']['path'];
-            $senderName = $dialogMembers[$senderId]['userDescription']['nickname'];
+        ]).
 
-            /* Message output */
-            echo Html::tag('li',
-                Html::img($senderAvatar, [
-                    'class' => 'o-image roundborder friend__avatar friend__avatar--mini chat-thread__avatar'
-                ]).
+        $this->render('_singlemessage', [
+            'messages' => $messages,
+            'dialogMembers' => $dialogMembers
+        ]).
 
-                Html::tag('div',
-                    '<span class="chat-thread-message__sender">'.$senderName.'</span>&nbsp;',
-                [
-                    'class' => 'chat-thread-message__header clearfix'
-                ]).
-
-                $message['message'].
-
-                Html::tag('div',
-                    '<span class="chat-thread-message__time">'.StringHelper::convertTimestampToHuman(strtotime($message['created']), 'H:i').'</span>',
-                [
-                    'class' => 'chat-thread-message__header clearfix'
-                ]),
-
-            [
-                'class' => 'chat-thread-message'
-            ]);
-        }
-        echo Html::endTag('ul');
+        Html::endTag('ul');
     }
 
 

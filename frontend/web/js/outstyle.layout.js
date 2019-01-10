@@ -28,6 +28,10 @@ jQuery(document).ready(function() {
             _setScrollbarOnElement(element);
         });
 
+        jQuery('body').on('detachScrollbarFromElement', function(event, element) {
+            _detachScrollbarFromElement(element);
+        });
+
         var DOM = {
             '$header': jQuery('.social__header')
         };
@@ -60,11 +64,11 @@ jQuery(document).ready(function() {
 
         /**
          * Sets an equal height for elements
-         * @param  {obj} el              jqObj - List of selectors
-         * @param  {int} offset          Substracted height
-         * @param  {obj} options         Misc options for helping with layout appearance
+         * @param  {Object} [elements={}] jqObj - List of selectors
+         * @param  {Number} [offset=0]    Substracted height
+         * @return {null}
          */
-        var _setEqualHeightForElements = function(elements = {}, offset = 0, options = {}) {
+        var _setEqualHeightForElements = function(elements = {}, offset = 0) {
             var windowHeight = window.innerHeight;
             elements.css({
                 'height': 'calc(100vh - ' + offset + 'px)'
@@ -101,7 +105,16 @@ jQuery(document).ready(function() {
                         });
                 }
 
-                _log('[LAYOUT] scrollbars added on element ' + $el.attr('id'));
+                _log('[LAYOUT] scrollbar attached on #' + $el.attr('id'));
+            }
+        };
+
+        var _detachScrollbarFromElement = function($el) {
+            var messagesScrollbarInstance = $el.overlayScrollbars();
+            if (messagesScrollbarInstance !== undefined) {
+                $el.overlayScrollbars().destroy();
+
+                _log('[LAYOUT] scrollbar detached from #' + $el.attr('id'));
             }
         };
 

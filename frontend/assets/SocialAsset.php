@@ -62,8 +62,9 @@ class SocialAsset extends AssetBundle
         'js/misc/way.min.js',
         'js/misc/tooltipster.bundle.min.js',
 
-        /* website related JS code */
+        /* website related JS code - must follow hierarchy [system functions first, user related last] */
         'js/outstyle.log.js',
+        'js/outstyle.errors.js',
         'js/outstyle.layout.js',
         'js/outstyle.social.sidebar.js',
         'js/outstyle.social.tooltips.js',
