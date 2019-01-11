@@ -49,6 +49,7 @@ echo Html::hiddenInput('page', $page, ['id' => 'page']);
 
     !!! IMPORTANT !!! DON'T FORGET to switch off active events to prevent event binding duplication! (make event .off().on())
 */
+
 ?>
 <script>
 jQuery(document).ready(function () {
@@ -63,8 +64,9 @@ jQuery(document).ready(function () {
     /* --- We need to initialize Packery at start --- */
     jQuery('#outstyle_news .news')
     .packery({
-      itemSelector: '.news__item',
-      gutter: 0
+        itemSelector: '.news__item',
+        gutter: 0,
+        percentPosition: true
     })
     .packery('layout');
 

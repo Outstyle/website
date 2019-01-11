@@ -80,7 +80,26 @@ if (isset($modelEvents)) {
             Html::tag('div', '', ['class' => 'decoration_1']).
             Html::tag('div',
               Html::tag('div',
-                '<h4 class="c-text__color--redshadow">'.StringHelper::convertTimestampToHuman(strtotime($event['events_date'])).'</h4>',
+                '<h4 class="c-text__color--redshadow">'.StringHelper::convertTimestampToHuman(strtotime($event['events_date'])).'</h4>'.
+                        Html::beginTag('div',['
+                        class'=>'in_mobile_event_desc']).
+                                Html::tag('div',
+                                    '<h2 class="c-text__color--redshadow">'.$event['geolocation']['name'].'</h2>',
+                                    ['class' => 'datebox__address']
+                                ).
+                                /* Event country and city */
+                                Html::tag('div',
+                                    $event['geolocation']['formatted_address'],
+                                    ['class' => 'datebox__city']
+                                ).
+                               /* Event price */
+                                Html::tag('span',
+                                    '<sup>'.Yii::t('app', 'from').'</sup>'.
+                                    $event['price'].
+                                    '<sup>'.$event['price_currency'].'</sup>',
+                                    ['class' => 'c-text__color--redshadow c-text--loud event__price']
+                                ).
+                        Html::endTag('div'),
                 [
                   'class' => 'u-center-block__content u-full-width',
                 ]
@@ -90,7 +109,7 @@ if (isset($modelEvents)) {
               ]
             ),
             [
-              'class' => 'o-grid__cell o-grid__cell--width-15 event__datetime',
+              'class' => 'o-grid__cell o-grid__cell--width-15 event__datetime mobile__event__desc',
             ]
           ).
 

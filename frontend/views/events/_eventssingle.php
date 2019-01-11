@@ -6,7 +6,7 @@ use yii\widgets\Breadcrumbs;
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\StringHelper;
 use common\models\geolocation\Geolocation;
-
+use frontend\widgets\WidgetCommentsDisqus;
 use frontend\widgets\WidgetComments;
 
 /* Registering GoogleMaps JS file for map to be shown only on this pages */
@@ -253,7 +253,9 @@ Html::tag('div',
 
 /* RECOMMENDED EVENTS */
 if (isset($modelEvents[0]['recommended'])) {
-
+    echo Html::beginTag('div',[
+      'class' => 'recommended-bottom-wrap'
+    ]);
   // SEPARATOR
   echo ElementsHelper::separatorDiamond(Yii::t('app', 'Recommended events')),
 
@@ -292,6 +294,7 @@ if (isset($modelEvents[0]['recommended'])) {
 
   // SIMILAR EVENTS WRAP END
   echo Html::endTag('div');
+  echo Html::endTag('div');
 }
 
 // SHARE LINE
@@ -325,10 +328,11 @@ Html::tag('div',
 );
 
 # Comments
-echo WidgetComments::widget([
+/*echo WidgetComments::widget([
   'elem_id' => $modelEvents[0]['id'] ?? ''
-]);
+]);*/
 
+echo  WidgetCommentsDisqus::widget();
 
 /* JS: @see js/outstyle.portal.event.js */
 ?>

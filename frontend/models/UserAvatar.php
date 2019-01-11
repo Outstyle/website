@@ -49,5 +49,6 @@ class UserAvatar extends UserDescription
         }
 
         return Yii::$app->params['avatarPathUrl'].$userId.'_'.$avatarSize.'.jpg';
+
     }
 }

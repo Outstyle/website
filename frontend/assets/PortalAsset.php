@@ -31,6 +31,8 @@ class PortalAsset extends AssetBundle
         'css/outstyle/portal.news.css',
 
         'css/outstyle/social.comments.css',
+
+        'css/outstyle/portal.media.css',
     ];
     public $js = [
         'js/jquery.easyModal.js',
@@ -55,6 +57,7 @@ class PortalAsset extends AssetBundle
         'js/outstyle.portal.event.js',
         'js/outstyle.portal.school.js',
         'js/outstyle.googletags.js',
+        'js/outstyle.ya.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

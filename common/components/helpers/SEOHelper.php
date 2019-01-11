@@ -3,6 +3,7 @@
 namespace common\components\helpers;
 
 use Yii;
+use yii\helpers\Url;
 
 /**
  * SEOHelper provides a set of static methods for working with everything that is related to 'SEO' entity.
@@ -46,6 +47,23 @@ class SEOHelper
 
         $model->title = $title;
 
+        return $model;
+    }
+    /**
+     * Set canonical link for page
+     *
+     */
+    public static function setCanonicalForPage($model){
+        $url = '';
+        /**
+         * For page news and are not home
+         */
+        if( (Yii::$app->controller->id=='news') &&
+            (Yii::$app->controller->action->id=='index') &&
+            (Yii::$app->request->url != Yii::$app->homeUrl)){
+            $url = Url::home(true);
+            $model->registerLinkTag(['rel' => 'canonical', 'href' => $url]);
+        }
         return $model;
     }
 }

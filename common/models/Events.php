@@ -5,6 +5,8 @@ namespace common\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use yii\behaviors\TimestampBehavior;
+use DateTime;
 use backend\models\Category;
 use app\models\Comments;
 use app\models\Likes;
@@ -14,6 +16,8 @@ use yii\helpers\ArrayHelper;
 use common\models\geolocation\Geolocation;
 use common\components\helpers\PriceHelper;
 use common\components\helpers\PhoneHelper;
+use himiklab\sitemap\behaviors\SitemapBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%events}}".
@@ -104,10 +108,20 @@ class Events extends ActiveRecord
     /**
      * imageUploaderBehavior - https://github.com/demisang/yii2-image-uploader
      * Needed for 'Events' image uploading and cropping in admin area.
+     * timestamp - https://yiiframework.com.ua/ru/doc/guide/2/concept-behaviors/
      */
     public function behaviors()
     {
         return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'date_redact',
+                ],
+                'value' => function() {
+                    return date('U');
+                },
+            ],
         'imageUploaderBehavior' => [
           'class' => 'demi\image\ImageUploaderBehavior',
           'imageConfig' => [
@@ -137,6 +151,29 @@ class Events extends ActiveRecord
             'backendSubdomain' => 'admin.',
           ],
         ],
+            'sitemap' => [
+                'class' => SitemapBehavior::className(),
+                'scope' => function ($model) {
+                    $model->select(['id', 'created', 'date_redact']);
+                    $model->andWhere(['status' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    if($model->date_redact==0){
+                        $date = new DateTime("@$model->created");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+                    else{
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+                    return [
+                        'loc' => Url::to('/events/'.$model->id, 'https'),
+                        'lastmod' => $time_last_mod,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ]
       ];
     }
 
@@ -184,15 +221,22 @@ class Events extends ActiveRecord
 
         /* Default arguments for 'where' and $andWhere clauses */
         $where['status'] = self::STATUS_PUBLISHED;
+        /**
+        if want print not all events: the array ($andWhere ) must be not empty, but with sort parameters by date, as below */
         $andWhere = ['>', 'events_date', date('Y-m-d H:i:s', time())]; /* Only active events */
-
+        $andWhere = []; /* Only all events */
+        $eventsOrderBy = 'events_date desc';/* Only all events. Default order by id desc */
         /**
          * Getting the events: let's start by partially adding parameters in case we have pagination
          * Notice that we are adding query parameters one by one (chaining), checking additional conditions
          * Read more about QB syntax here: http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html
          * Also we are using 'with()' for eager loading from user description table.
          */
-        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);
+        /**
+         * if want to print not all events, uncomment next line. Parameter 'where' must not empty. Parameter 'orderBy' default: id desc;
+         */
+        /*$eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);*/ /* Only active events */
+        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy($eventsOrderBy);/* Only all events sort by events date*/
 
         /* If we have pagination */
         if ($page) {
@@ -271,7 +315,7 @@ class Events extends ActiveRecord
                     for ($s = 0; $s < $count; ++$s) {
                         $modelEvents[$i]['recommended'][$s]['id'] = $recommendedEvents[$s]->id;
                         $modelEvents[$i]['recommended'][$s]['title'] = $recommendedEvents[$s]->title;
-                        $modelEvents[$i]['recommended'][$s]['img'] = null; /* TODO: similar to news getSrc() */
+                        $modelEvents[$i]['recommended'][$s]['img'] = $recommendedEvents[$s]->getImageSrc('320x120_'); /* TODO: similar to news getSrc() */
                     }
                 }
             }

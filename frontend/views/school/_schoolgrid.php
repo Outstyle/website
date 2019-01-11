@@ -55,6 +55,7 @@ if ($categories) {
 <script>
 jQuery(document).ready(function () {
 
+
   function init_school() {
 
     way.restore(); // https://github.com/gwendall/way.js - We need to restore our values for page TODO: Do we need to use it here?
@@ -65,8 +66,10 @@ jQuery(document).ready(function () {
     /* --- We need to initialize Packery at start --- */
     jQuery('#outstyle_school .school')
     .packery({
-      itemSelector: '.block__item',
-      gutter: 0
+        itemSelector: '.block__item',
+        gutter: 0,
+        resize:true,
+        percentPosition: true
     })
     .off('layoutComplete').on('layoutComplete', function() {
       /* --- Fit text size for each Packery block --- */
@@ -122,6 +125,12 @@ jQuery(document).ready(function () {
   }
 
   init_school();
+  /*function windowSize from add padding to filter geolocation schools*/
+    function windowSize(){
+        jQuery('#outstyle_school').addClass('padding-mobile');
+
+    }
+    windowSize();
 
   /* School geolocation stuff */
   function init_school_geolocation() {

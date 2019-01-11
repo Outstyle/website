@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use DateTime;
 use common\models\geolocation\Geolocation;
 use backend\models\Category;
 use app\models\Comments;
@@ -15,6 +16,8 @@ use common\components\helpers\PriceHelper;
 use common\components\helpers\PhoneHelper;
 use common\components\helpers\BlocksHelper;
 use yii\helpers\Html;
+use himiklab\sitemap\behaviors\SitemapBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%school}}".
@@ -108,6 +111,28 @@ class School extends ActiveRecord
             'backendSubdomain' => 'admin.',
           ],
         ],
+            'sitemap' => [
+                'class' => SitemapBehavior::className(),
+                'scope' => function ($model) {
+                    $model->select(['id', 'created', 'date_redact']);
+                    $model->andWhere(['status' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    if($model->date_redact==0){
+                        $time_last_mod = strtotime($model->created);
+                    }
+                    else{
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+                    return [
+                        'loc' => Url::to('/school/'.$model->id, 'https'),
+                        'lastmod' => $time_last_mod,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ]
       ];
     }
 
