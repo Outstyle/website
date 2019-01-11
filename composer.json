@@ -32,7 +32,8 @@
         "dragonjet/yii2-opengraph": "dev-master",
         "fg/multiplayer": "dev-master",
         "mihaildev/yii2-elfinder": "*",
-        "sadovojav/yii2-ckeditor": "dev-master"
+        "sadovojav/yii2-ckeditor": "dev-master",
+        "yandex/translate-api": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "*",

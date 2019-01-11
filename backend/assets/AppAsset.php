@@ -27,6 +27,7 @@ class AppAsset extends AssetBundle
     public $js = [
         '../frontend/web/js/misc/ohsnap.min.js',
         '../frontend/web/js/misc/jquery.maskedinput.min.js',
+        '../frontend/web/js/intercooler-1.0.3.min.js',
         'js/misc/jquery.slimscroll.min.js',
         'js/misc/jquery.datetimepicker.full.min.js',
         'js/select2/select2.full.min.js',

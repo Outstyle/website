@@ -19,6 +19,8 @@ use common\models\School;
  */
 class Geolocation extends \yii\db\ActiveRecord
 {
+    const URL_GOOGLE_GEODATA_JSON_API = 'https://maps.googleapis.com/maps/api/geocode/json';
+
     public static function tableName()
     {
         return '{{%geolocation}}';
@@ -66,17 +68,12 @@ class Geolocation extends \yii\db\ActiveRecord
         if ($location) {
             $response = '';
 
-            /* headers and init stuff */
-            $headerOptions = array(
-                'http' => array(
-                    'method' => 'GET',
-                    'header' => "Accept-language: ru\r\n",
-                ),
-            );
-            $url = 'https://maps.googleapis.com/maps/api/geocode/json?key='.Yii::$app->params['googleMapsApiKey'].'&address='.urlencode($location);
-            $streamContext = stream_context_create($headerOptions);
-            $json = file_get_contents($url, false, $streamContext);
-            $parsedjson = json_decode($json, true);
+            $googleData = self::getContentsFromGoogleMapsApi($location);
+            if ($googleData === false) {
+                return;
+            }
+
+            $parsedjson = json_decode($googleData, true);
             if (key_exists(0, $parsedjson['results'])) {
 
                 /* check if we already have such geolocation in our DB */
@@ -114,18 +111,12 @@ class Geolocation extends \yii\db\ActiveRecord
     public static function setGoogleGeocode($place_id = '')
     {
         if ($place_id) {
+            $googleData = self::getContentsFromGoogleMapsApi('', $place_id);
+            if ($googleData === false) {
+                return;
+            }
 
-            /* Headers and init stuff */
-            $headerOptions = array(
-                'http' => array(
-                    'method' => 'GET',
-                    'header' => "Accept-language: ru\r\n",
-                ),
-            );
-            $url = 'https://maps.googleapis.com/maps/api/geocode/json?key='.Yii::$app->params['googleMapsApiKey'].'&place_id='.$place_id;
-            $streamContext = stream_context_create($headerOptions);
-            $json = file_get_contents($url, false, $streamContext);
-            $parsedjson = json_decode($json, true);
+            $parsedjson = json_decode($googleData, true);
             if (key_exists(0, $parsedjson['results'])) {
 
                 /* Check if we already have such geolocation in our DB, using google's unique identifier */
@@ -139,6 +130,39 @@ class Geolocation extends \yii\db\ActiveRecord
                 return $checkGeolocation;
             }
         }
+    }
+
+    /**
+     * Gets Geodat afrom Google Maps API either by $location (can be hazy) or by $place_id (must be exact Google place ID)
+     * @param  string $location     Address to queue Google Maps API for
+     * @param  string $place_id     Exact place ID to get info about that point on map
+     * @return string|false
+     */
+    public static function getContentsFromGoogleMapsApi($location = '', $place_id = '')
+    {
+        $headerOptions = array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => "Accept-language: ru\r\n",
+                'timeout' => 5,
+            ),
+        );
+
+        if ($location) {
+            $params = '&address='.urlencode($location);
+        }
+
+        if ($place_id) {
+            $params = '&place_id='.$place_id;
+        }
+
+        $url = self::URL_GOOGLE_GEODATA_JSON_API
+            .'?key='.Yii::$app->params['googleMapsApiKey']
+            .$params;
+
+        $streamContext = stream_context_create($headerOptions);
+        $data = file_get_contents($url, false, $streamContext);
+        return $data;
     }
 
     /**
@@ -359,7 +383,7 @@ class Geolocation extends \yii\db\ActiveRecord
             /* Getting all the countries, that is related to our specified model */
             $geolocation = self::find()->with([
               $model => function (\yii\db\ActiveQuery $query) use ($where) {
-                $query->andWhere($where)->select('id, geolocation_id');
+                  $query->andWhere($where)->select('id, geolocation_id');
               }
             ])->select('id,country,city')->all();
 
@@ -407,7 +431,6 @@ class Geolocation extends \yii\db\ActiveRecord
                               'objects' => $geodata[$model][$iso_code][$city->name],
                             ];
                         }
-
                     }
                 }
             }
@@ -467,5 +490,4 @@ class Geolocation extends \yii\db\ActiveRecord
     {
         return $this->hasMany(School::className(), ['geolocation_id' => 'id']);
     }
-
 }
