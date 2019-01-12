@@ -18,6 +18,8 @@ use common\components\helpers\CURLHelper;
  */
 class GeolocationCities extends \yii\db\ActiveRecord
 {
+    const URL_VK_API_CITIES = 'https://api.vk.com/api.php?oauth=1&method=database.getCities&v=5.7';
+
     /**
      * @inheritdoc
      */
@@ -54,8 +56,9 @@ class GeolocationCities extends \yii\db\ActiveRecord
 
     /**
      * Gets an array of possible cities (fuzzy search) from VK social networks by queue string
-     * @param  string  $q              Possible queue string for city
-     * @return array                   Returns empty array if wasn't been able to find anything
+     * @param  string  $q                Possible queue string for city (i.e. 'Киев')
+     * @param  int     $vk_country_id
+     * @return array                     Returns empty array if wasn't been able to find anything
      */
     public static function getVkCity($q, $vk_country_id)
     {
@@ -71,19 +74,12 @@ class GeolocationCities extends \yii\db\ActiveRecord
         $city_exists = self::find()->where(['like', 'name', $q])->all();
 
         if (empty($city_exists)) {
-
-            # headers and init stuff
-            $headerOptions = [
-                'method' => "GET",
-                'header' => "Accept-language: en\r\n" .
-                "Cookie: remixlang=0\r\n"
-            ];
-
-            $url = 'https://api.vk.com/api.php?oauth=1&method=database.getCities&v=5.5&q='.$q.'&country_id='.$vk_country_id;
-            $json = CURLHelper::getURL($url, $headerOptions);
+            $curlData = self::curlVkCities($q, $vk_country_id);
 
             # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($curlData['content']) {
+                $parsedjson = json_decode($curlData['content'], true);
+            }
 
             if (isset($parsedjson['response']) && !empty($parsedjson['response']['items'][0]['title'])) {
                 /**
@@ -97,14 +93,14 @@ class GeolocationCities extends \yii\db\ActiveRecord
                     $geolocation_country->name = $city['title'];
                     $geolocation_country->area = (isset($city['area'])) ? $city['area'] : '';
                     $geolocation_country->region = (isset($city['region'])) ? $city['region'] : '';
-                    $geolocation_country->save();
+                    $isAdded = $geolocation_country->save();
                     break;
                 }
 
                 $response[] = [
                   'id' => $parsedjson['response']['items'][0]['id'],
                   'title' => $parsedjson['response']['items'][0]['title'],
-                  'added' => true
+                  'added' => $isAdded
                 ];
 
                 return $response;
@@ -123,5 +119,27 @@ class GeolocationCities extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * CURLs VK api for cities, using query param and country ID
+     * @param  string  $q               Search query (city name)
+     * @param  integer $vk_country_id   Country ID (1 for Russia, 2 for Ukraine and so on)
+     * @return array
+     */
+    public static function curlVkCities($q = 'Киев', $vk_country_id = 2) : array
+    {
+        $headerOptions = [
+            'method' => "GET",
+            'header' => "Accept-language: en\r\n" .
+            "Cookie: remixlang=0\r\n"
+        ];
+
+        $url = self::URL_VK_API_CITIES
+            .'&q='.$q
+            .'&country_id='.$vk_country_id
+            .'&access_token='.Yii::$app->params['vkServiceAccessToken'];
+
+        return CURLHelper::getURL($url, $headerOptions);
     }
 }

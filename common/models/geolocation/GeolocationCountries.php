@@ -16,6 +16,13 @@ use common\components\helpers\CURLHelper;
  */
 class GeolocationCountries extends \yii\db\ActiveRecord
 {
+    const URL_VK_API_COUNTRIES = 'https://api.vk.com/api.php?oauth=1&method=database.getCountries&v=5.7';
+
+    public static $vk_api_languages = [
+        0 => 'ru',
+        1 => 'uk'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -49,7 +56,7 @@ class GeolocationCountries extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets global countries list from VK socail network (JSON format)
+     * Gets global countries list from VK social network (JSON format)
      * @param  integer  $lang   What language to use in response? See languages list and details here: https://habrahabr.ru/post/204840/
      * @return array            VK API response (see docs for more: https://vk.com/dev/database.getCountries)
      */
@@ -61,19 +68,12 @@ class GeolocationCountries extends \yii\db\ActiveRecord
 
         $parsedjson = $cache->get($cache_key);
         if ($parsedjson === false) {
-
-            # headers and init stuff
-            $headerOptions = [
-                'method' => "GET",
-                'header' => "Accept-language: en\r\n" .
-                "Cookie: remixlang=$lang\r\n"
-            ];
-
-            $url = 'https://api.vk.com/api.php?oauth=1&method=database.getCountries&v=5.5&need_all=1&count=1000';
-            $json = CURLHelper::getURL($url, $headerOptions);
+            $curlData = self::curlVkCountries($lang);
 
             # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($curlData['content']) {
+                $parsedjson = json_decode($curlData['content'], true);
+            }
 
             if (isset($parsedjson['response'])) {
                 $parsedjson = $parsedjson['response']['items'];
@@ -104,8 +104,8 @@ class GeolocationCountries extends \yii\db\ActiveRecord
         $placeholder = ['id' => 0, 'title' => Yii::t('app', 'Choose country...')];
 
         if ($countries) {
-          array_unshift($countries, $placeholder);
-          return $countries;
+            array_unshift($countries, $placeholder);
+            return $countries;
         }
 
         return $placeholder;
@@ -124,19 +124,11 @@ class GeolocationCountries extends \yii\db\ActiveRecord
         $country_exists = self::find()->where(['iso_code' => $iso_code])->one();
 
         if ($country_exists === null) {
+            $curlData = self::curlVkCountries(0, $iso_code);
 
-            # headers and init stuff
-            $headerOptions = [
-                'method' => "GET",
-                'header' => "Accept-language: en\r\n" .
-                "Cookie: remixlang=0\r\n"
-            ];
-
-            $url = 'https://api.vk.com/api.php?oauth=1&method=database.getCountries&v=5.5&code='.$iso_code;
-            $json = CURLHelper::getURL($url, $headerOptions);
-
-            # decoding JSON and saving it to our cache so not to make additional queries to VK API for next [$cache_time]
-            if ($json) $parsedjson = json_decode($json, true);
+            if ($curlData['content']) {
+                $parsedjson = json_decode($curlData['content'], true);
+            }
 
             if (isset($parsedjson['response']) && !empty($parsedjson['response']['items'][0]['title'])) {
 
@@ -154,5 +146,35 @@ class GeolocationCountries extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * CURLs VK api for countries, using lang param and ISO code (for single requests)
+     * @param  integer  $lang       What language to use in response? See languages list and details here: https://habrahabr.ru/post/204840/
+     * @param  string   $iso_code   ISO 3166-1 alpha-2 country name (i.e. UA, RU, CA)
+     * @return array
+     */
+    public static function curlVkCountries($lang = 0, $iso_code = '') : array
+    {
+        $headerOptions = [
+            'method' => "GET",
+            'header' => "Accept-language: en\r\n" .
+            "Cookie: remixlang=0\r\n"
+        ];
+
+        $params = '';
+        if (!$iso_code) {
+            $params = '&need_all=1&count=1000';
+        } else {
+            $params = '&code='.$iso_code;
+        }
+
+        if (is_numeric($lang)) {
+            $params .= '&lang='.self::$vk_api_languages[$lang];
+        }
+
+        $url = self::URL_VK_API_COUNTRIES.$params.'&access_token='.Yii::$app->params['vkServiceAccessToken'];
+
+        return CURLHelper::getURL($url, $headerOptions);
     }
 }
