@@ -40,8 +40,12 @@ jQuery(document).ready(function() {
 
         jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
             if (settings.url == '/api/messages/get') {
-                var dialogId = _getLastElementFromURI();
-                settings.data = settings.data + '&dialogId=' + dialogId;
+                if (isInDialogue()) {
+                    var dialogId = _getLastElementFromURI();
+                    settings.data = settings.data + '&dialog=' + dialogId;
+                } else {
+                    settings.cancel = 'true';
+                }
             }
         });
 

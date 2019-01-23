@@ -62,6 +62,8 @@ class MessagesController extends OutstyleSocialController
             $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
             $dialogMembers = DialogMembers::setupData($dialogMembers);
             $dialog = Dialog::findOne($dialogId);
+        } else {
+            throw new HttpException(403, Yii::t('err', 'Conversation not found'));
         }
 
         $response['dialogId'] = $dialogId;
@@ -87,7 +89,7 @@ class MessagesController extends OutstyleSocialController
             $model = new Message();
             $model->load(Yii::$app->request->post(), '');
             $model->sender_id = 14;
-            $model->message = 'Test message';
+            $model->message = 'Test again';
             $model->dialog = 1;
 
             if ($model->validate()) {
@@ -108,23 +110,37 @@ class MessagesController extends OutstyleSocialController
     public function actionGet()
     {
         if (Yii::$app->request->isAjax) {
-            $dialogId = Yii::$app->request->get('dialogId');
-            $unreadMessages = MessageStatus::getUnread($dialogId, $userId = Yii::$app->user->id)
-                ->asArray()
-                ->all();
-            $messages = ArrayHelper::getColumn($unreadMessages, 'message');
-            $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
-            $dialogMembers = DialogMembers::setupData($dialogMembers);
+            $model = new MessageStatus();
+            $model->load(Yii::$app->request->get(), '');
+            if ($model->validate()) {
+                $data = $model->getAttributes([
+                    'message_id',
+                    'dialog',
+                    'user',
+                    'status'
+                ]);
+                $unreadMessages = MessageStatus::getUnread($data['dialog'], $userId = Yii::$app->user->id)
+                    ->asArray()
+                    ->all();
+                if ($unreadMessages) {
+                    $messages = ArrayHelper::getColumn($unreadMessages, 'message');
+                    $dialogMembers = DialogMembers::getDialogMembersById($data['dialog']);
+                    $dialogMembers = DialogMembers::setupData($dialogMembers);
+                    //$deliveredMessages = MessageStatus::setDelivered();
 
-            $response = count($unreadMessages);
+                    $response = count($unreadMessages);
 
-            $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($response).']}');
+                    $headers = Yii::$app->response->headers;
+                    $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($response).']}');
 
-            return $this->render('_singlemessage', [
-                'messages' => $messages,
-                'dialogMembers' => $dialogMembers,
-            ]);
+                    return $this->render('_singlemessage', [
+                        'messages' => $messages,
+                        'dialogMembers' => $dialogMembers,
+                    ]);
+                }
+            } else {
+                ErrorHandler::triggerHeaderError($model->errors);
+            }
         }
     }
 }

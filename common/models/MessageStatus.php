@@ -34,7 +34,7 @@ class MessageStatus extends \yii\db\ActiveRecord
     const MESSAGE_STATUS_UNREAD = 0;
     const MESSAGE_STATUS_DELIVERED = 1;
     const MESSAGE_STATUS_READ = 2;
-
+    const MESSAGE_STATUS_ERROR_UNDELIVERED = 3;
 
     /**
      * @inheritdoc
@@ -55,6 +55,33 @@ class MessageStatus extends \yii\db\ActiveRecord
             'message_id' => Yii::t('app', 'Message ID'),
             'user' => Yii::t('app', 'User'),
             'status' => Yii::t('app', 'Status'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [
+                ['dialog', 'message_id', 'user', 'status'],
+                'integer',
+                'message' => 'NOT_AN_INT',
+            ],
+            [
+                ['status'],
+                'default',
+                'value' => self::MESSAGE_STATUS_UNREAD
+            ],
+            [
+                ['status'], 'in', 'range' => [
+                    self::MESSAGE_STATUS_UNREAD,
+                    self::MESSAGE_STATUS_DELIVERED,
+                    self::MESSAGE_STATUS_READ,
+                    self::MESSAGE_STATUS_ERROR_UNDELIVERED
+                ],
+            ],
         ];
     }
 

@@ -43,6 +43,18 @@ class MessageStatus extends \common\models\MessageStatus
     }
 
     /**
+     * Sets delivered status for certain messages, for certain user
+     * @param  int          $dialogId
+     * @param  int          $dialogId
+     * @return bool
+     */
+    public static function setDelivered(int $dialogId = 0, $messageIds = [], $userId = 0) : int
+    {
+        Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')->execute();
+        return 0;
+    }
+
+    /**
      * ActiveQuery for unread messages
      * @param  integer            $dialogId
      * @param  integer            $userId
