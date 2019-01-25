@@ -54,6 +54,7 @@ return [
     'Main page' => 'Главная страница',
     'Messages' => 'Сообщения',
     'Mirrors' => 'Зеркала',
+    'More details:' => 'Подробнее на сайте:',
     'My page' => 'Моя страница',
     'New articles' => 'Новые статьи',
     'New events' => 'Новые события',

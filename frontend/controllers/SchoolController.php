@@ -253,7 +253,7 @@ class SchoolController extends ParentController
               'category' => $model[0]['category'],
               'city' => $model[0]['geolocation']['city'],
             ]),
-            'description' => StringHelper::cutString($model[0]['description'], 140),
+            'description' => StringHelper::cutString($model[0]['description'] ?? '', 140),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 

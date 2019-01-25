@@ -244,6 +244,13 @@ Html::tag('div',
     Html::tag('div',
       $modelEvents[0]['description'],
       ['class' => 'u-letter-box--medium events__body']
+    ).
+
+    /* Event website */
+    Html::tag('div',
+      '<b>'.Yii::t('app', 'More details:').'</b>'.
+      '&nbsp;<noindex><a href="'.$modelEvents[0]['site'].'" target="_blank" rel="nofollow">'.$modelEvents[0]['site'].'</a></noindex>',
+      ['class' => 'u-letter-box--medium events__site']
     ),
 
     ['class' => 'u-window-box--super']
@@ -253,7 +260,7 @@ Html::tag('div',
 
 /* RECOMMENDED EVENTS */
 if (isset($modelEvents[0]['recommended'])) {
-    echo Html::beginTag('div',[
+    echo Html::beginTag('div', [
       'class' => 'recommended-bottom-wrap'
     ]);
   // SEPARATOR
@@ -294,7 +301,7 @@ if (isset($modelEvents[0]['recommended'])) {
 
   // SIMILAR EVENTS WRAP END
   echo Html::endTag('div');
-  echo Html::endTag('div');
+    echo Html::endTag('div');
 }
 
 // SHARE LINE

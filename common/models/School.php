@@ -118,10 +118,9 @@ class School extends ActiveRecord
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
-                    if($model->date_redact==0){
+                    if ($model->date_redact==0) {
                         $time_last_mod = strtotime($model->created);
-                    }
-                    else{
+                    } else {
                         $date = new DateTime("@$model->date_redact");
                         $time_last_mod = $date->format('Y-m-d');
                     }
