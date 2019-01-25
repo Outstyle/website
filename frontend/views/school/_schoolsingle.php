@@ -109,7 +109,7 @@ Html::tag('div',
  * Button visible map
  */
 echo
-Html::tag('div','Показать карту',[
+Html::tag('div', 'Показать карту', [
     'class'=>'mobile map__canvas__visible',
     'data-toggle-text' => 'Скрыть карту'
 ]);
@@ -138,7 +138,7 @@ Html::tag('div',
         Yii::t('app', 'Country').': '.$school[0]['geolocation']['country'],
         Yii::t('app', 'City').': '.$school[0]['geolocation']['city'],
         Yii::t('app', 'Address').': '.$school[0]['geolocation']['address'],
-        Yii::t('app', 'Phone').': '.$school[0]['phone'],
+        isset($school[0]['phone']) ? Yii::t('app', 'Phone').': '.$school[0]['phone'] : '',
         isset($school[0]['site']) ? Yii::t('app', 'Website').': '.$school[0]['site'] : '',
         isset($school[0]['trainingTime']) ? Yii::t('app', 'Training time').': '.$school[0]['trainingTime'] : '',
       ],
@@ -176,7 +176,8 @@ Html::tag('div',
       /* School gallery */
       Html::tag('div',
         Html::tag('div',
-          isset($school[0]['gallery']) ? ElementsHelper::galleryBlock($school[0]['gallery']) : '',
+          //isset($school[0]['gallery']) ? ElementsHelper::galleryBlock($school[0]['gallery']) : '',
+          '',
           ['class' => 'owl-carousel owl-theme']
         ),
         ['class' => 'o-grid__cell o-grid__cell--width-60 o-grid__cell--center school__gallery']

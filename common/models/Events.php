@@ -118,7 +118,7 @@ class Events extends ActiveRecord
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_UPDATE => 'date_redact',
                 ],
-                'value' => function() {
+                'value' => function () {
                     return date('U');
                 },
             ],
@@ -158,11 +158,10 @@ class Events extends ActiveRecord
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
-                    if($model->date_redact==0){
+                    if ($model->date_redact==0) {
                         $date = new DateTime("@$model->created");
                         $time_last_mod = $date->format('Y-m-d');
-                    }
-                    else{
+                    } else {
                         $date = new DateTime("@$model->date_redact");
                         $time_last_mod = $date->format('Y-m-d');
                     }
@@ -287,7 +286,8 @@ class Events extends ActiveRecord
              * Description key is needed for single events page (SEO purposes). You can add additional stuff for singles here
              */
             if (isset($where['id'])) {
-                $modelEvents[$i]['description'] = $events[$i]->description;
+                $modelEvents[$i]['description'] = $events[$i]->description ?? '';
+                $modelEvents[$i]['site'] = $events[$i]->site;
                 $modelEvents[$i]['userName'] = $events[$i]->userDescription->nickname;
                 $modelEvents[$i]['userAvatar'] = UserAvatar::getAvatarPath($events[$i]->user);
                 $modelEvents[$i]['userCulture'] = ArrayHelper::getValue(UserDescription::cultureList(true), $events[$i]->userDescription->culture);
@@ -297,8 +297,8 @@ class Events extends ActiveRecord
                 $modelEvents[$i]['img_big'] = $events[$i]->getImageSrc('960x360_');
 
                 /* Getting recommended events */
-                /* TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
-                /* TODO: make it as a separate method */
+                /* x TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
+                /* x TODO: make it as a separate method */
 
                 $where['category'] = $events[$i]->category;
                 $andWhere = ['!=', 'id', $events[$i]->id];
@@ -315,7 +315,7 @@ class Events extends ActiveRecord
                     for ($s = 0; $s < $count; ++$s) {
                         $modelEvents[$i]['recommended'][$s]['id'] = $recommendedEvents[$s]->id;
                         $modelEvents[$i]['recommended'][$s]['title'] = $recommendedEvents[$s]->title;
-                        $modelEvents[$i]['recommended'][$s]['img'] = $recommendedEvents[$s]->getImageSrc('320x120_'); /* TODO: similar to news getSrc() */
+                        $modelEvents[$i]['recommended'][$s]['img'] = $recommendedEvents[$s]->getImageSrc('320x120_'); /* x TODO: similar to news getSrc() */
                     }
                 }
             }
