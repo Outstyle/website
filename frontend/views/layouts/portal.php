@@ -56,7 +56,7 @@ $this->beginBody();
                         'ic-push-url' => 'true',
                         'ic-select-from-response' => '#ajax'
                     ]),
-                    Html::beginTag('div',[
+                    Html::beginTag('div', [
                             'class'=>'menu__icon'
                     ]),
                     Html::tag('span'),
@@ -64,7 +64,7 @@ $this->beginBody();
                     Html::tag('span'),
                     Html::tag('span'),
                     Html::endTag('div'),
-                    Html::beginTag('div',[
+                    Html::beginTag('div', [
                             'class'=>'menu__links'
                     ]),
 
@@ -96,24 +96,44 @@ $this->beginBody();
             Html::endTag('main'),
         Html::endTag('div');
 
-        /*
-            ==================================
-            Actions & stuff for unlogged users
-            ==================================
-        */
-        if (!Yii::$app->user->id) {
-            echo $this->render('@modals/passwordRestore');
-            echo $this->render('@modals/loginRequire');
-            echo $this->render('@modals/register');
-        }
-
     echo Html::endTag('div');
-    $clientSecret = Yii::$app->params['SubscribeConfig']['path'] ?? '';
-    if (class_exists('andrij200390\subscribe\Subscribe')){
-        echo Subscribe::widget([
-            'clientSecret' => $clientSecret
-        ]);
+
+    /*
+        ==================================
+        Actions & stuff for unlogged users
+        ==================================
+    */
+    if (!Yii::$app->user->id) {
+        echo $this->render('@modals/passwordRestore');
+        echo $this->render('@modals/loginRequire');
+        echo $this->render('@modals/register');
+
+        if (class_exists('andrij200390\subscribe\Subscribe')) {
+            echo Subscribe::widget([
+                'mode' => 'telegram',
+                'cookie' => [
+                    'name' => 'subscribe',
+                    'max-age' => 0,
+                ],
+                'email' => [
+                    'message' => Yii::t('app', 'Subscribe to keep up with our latest news!'),
+                    'submitButtonText' => Yii::t('app', 'Subscribe'),
+                    'placeholderText' => Yii::t('app', 'Enter your e-mail'),
+                ],
+                'telegram' => [
+                    'message' => Yii::t('app', 'Subscribe to our Telegram channel!'),
+                    'submitButtonText' => Yii::t('app', 'Subscribe'),
+                    'channelName' => 'outstyle',
+                ],
+                'provider' => [
+                    'google' => [
+                        'clientSecretJSON' => Yii::$app->params['google']['clientSecretJSONpath'] ?? ''
+                    ]
+                ]
+            ]);
+        }
     }
+
     $this->endBody();
 
 /**
