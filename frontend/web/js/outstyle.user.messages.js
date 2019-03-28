@@ -5,7 +5,21 @@
  * Copyright (c) 2018 [SC]Smash3r; Beerware
  * @preserve
  */
+
+/**
+ * JSHint options
+ * @see https://jshint.com/docs/options/
+ */
+/* globals jQuery: false,
+           Intercooler: false,
+           autosize: false,
+           _log: false,
+           OUTSTYLE_GLOBALS: false */
 /* jshint esversion: 6 */
+/* jshint maxparams: 3 */
+/* jshint undef: true */
+/* jshint unused: true */
+/* jshint browser: true */
 
 /* Define global namespaces */
 if ("undefined" == typeof outstyle) {
@@ -21,28 +35,78 @@ jQuery(document).ready(function() {
 
         var _path = '/messages';
 
-        /* --- GLOBAL BINDS --- */
+        /* ! --- GLOBAL BINDS --- */
 
         /* --- Global 'ondocumentready' binds for calling out the function from other modules or for IC --- */
-        jQuery("body").on("messagesInit", function(event, data) {
+        jQuery("body").on("messagesInit", function() {
             init();
         });
 
-        /* Bind events for messages only once (.one) to prevent repeating of attaching handlers */
-        jQuery("body").one("messagesBindEvents", function(event, DOM) {
-            _bindKeyEvents(DOM);
-            _bindLocalEvents(DOM);
+        jQuery("body").on("messageMarkAsRead", function(event, $message) {
+            var currentDialogueId = outstyle.dialogs.getDialogueId();
+            OUTSTYLE_GLOBALS.owner.messages.unread[currentDialogueId] -= 1;
+            OUTSTYLE_GLOBALS.owner.messages.count.unread -= 1;
+            jQuery($message).removeClass('message-unread').addClass('read');
+
+            jQuery('body').trigger('appendBadge', {
+                'id': '#dialogbox-' + currentDialogueId + ' .dialog__info',
+                'color': 'blue',
+                'type': 'ordinary',
+                'text': OUTSTYLE_GLOBALS.owner.messages.unread[currentDialogueId]
+            });
         });
 
+        jQuery("body").on("messagesHighlightUnread", function(event, $messagesList) {
+            _highlightUnreadMessages($messagesList);
+        });
+
+        jQuery("body").on("messagesLastUnreadReached", function() {
+            jQuery('.chat-thread .chat-thread-separator').fadeOut("slow", function() {
+                jQuery(this).remove();
+            });
+
+            jQuery('body').trigger('appendBadge', {
+                'id': '#menu__item-messages a',
+                'color': 'red',
+                'type': 'shaded',
+                'text': OUTSTYLE_GLOBALS.owner.messages.count.unread
+            });
+
+        });
+
+        /* When user sends a message, we need to re-trigger chatbox immediately to receive that message */
+        jQuery("body").on("newMessageAdded", function() {
+            jQuery('#message')
+                .removeAttr('disabled')
+                .val('')
+                .focus();
+            autosize.update(jQuery('#message'));
+            Intercooler.triggerRequest("#messages_area");
+        });
+
+        /* Timeout is needed so new node could be inserted into DOM for manipulation (i.e. scrollbars reinit -> scroll.y) */
+        jQuery("body").on("messageNew", function() {
+            window.setTimeout(function() {
+                init();
+            }, 200);
+        });
+
+        jQuery("body").on("messagesAddError", function(event, data) {
+            jQuery('body').trigger('showErrors', data);
+            jQuery('#message').removeAttr('disabled').focus();
+        });
+
+        /* ! --- INTERCOOLER BINDS --- */
+
         /* Reinit messages after each time URL is changed (dialog navigation i.e.) */
-        jQuery(document).on("pushUrl.ic", function(event, target, data) {
+        jQuery(document).on("pushUrl.ic", function() {
             if (window.location.pathname.indexOf(_path) === 0) {
                 init();
             }
         });
 
         /* Triggered before a snapshot is taken for history - unwire custom JS here, restore initial page state */
-        jQuery(document).on("beforeHistorySnapshot.ic", function(evt, target) {
+        jQuery(document).on("beforeHistorySnapshot.ic", function() {
             jQuery('#messages_area').hide(); /* To prevent blinking while attaching scrollbars */
             if (window.location.pathname.indexOf(_path) === 0) {
                 jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#messages_list')]);
@@ -50,9 +114,9 @@ jQuery(document).ready(function() {
         });
 
         /* @see: https://developer.mozilla.org/ru/docs/Web/Events/popstate */
-        jQuery(document).on("handle.onpopstate.ic", function(evt) {
+        jQuery(document).on("handle.onpopstate.ic", function() {
             if (window.location.pathname.indexOf(_path) === 0) {
-                setTimeout(function() {
+                window.setTimeout(function() {
                     init();
                 }, 200);
             }
@@ -60,9 +124,25 @@ jQuery(document).ready(function() {
             _log('[MESSAGES] popstate triggered');
         });
 
-        jQuery("body").on("messagesAddError", function(evt, data) {
-            jQuery('body').trigger('showErrors', data);
+        /* Before any request is fired up by IC */
+        jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
+            if (settings.url == '/api/messages/get') {
+                if (outstyle.dialogs.isInDialogue() && !outstyle.dialogs.hasUnreadMessagesInDialogue()) {
+                    settings.data = settings.data + '&dialog=' + outstyle.dialogs.getDialogueId();
+                } else {
+                    settings.cancel = 'true';
+                }
+            }
+
+            if (settings.url == '/api/messages/add') {
+                jQuery('#message').attr('disabled', true);
+                if (outstyle.dialogs.isInDialogue()) {
+                    settings.data = settings.data + '&dialog=' + outstyle.dialogs.getDialogueId();
+                }
+            }
         });
+
+        /* --- INTERCOOLER BINDS END --- */
 
         /* --- GLOBAL BINDS END --- */
 
@@ -74,31 +154,63 @@ jQuery(document).ready(function() {
         var init = function() {
             var $messagesContainer = jQuery('#outstyle_messages');
 
-            /* Init messages only if #ID is on the page */
             if ($messagesContainer.length) {
                 var DOM = {
-                    'for': 'messages',
+                    'forElement': 'messages',
                     '$messagesContainer': $messagesContainer,
                     '$messagesArea': $messagesContainer.find('#messages_area'),
                     '$messagesList': $messagesContainer.find('#messages_list'),
+                    '$messagesBottomPanel': $messagesContainer.find('#messages_bottompanel'),
                     '$messagesSendbox': $messagesContainer.find('#messages_sendbox'),
-                    '$messageTextarea': $messagesContainer.find('#message-text'),
+                    '$messageTextarea': $messagesContainer.find('#message'),
                 };
 
                 DOM.$messagesArea.show();
-                jQuery('body').trigger('messagesBindEvents', DOM);
-                jQuery('body').trigger('layoutInit', DOM);
-                jQuery('body').trigger('setScrollbarOnElement', [DOM.$messagesList]);
-                jQuery('body').trigger('highlightCurrentDialogBox');
 
-                // sidebarHighlightActiveMenuItem(outstyle_messages.DOM.sidebarMenuItem);
+                _bindKeyEvents(DOM);
+                _bindLocalEvents(DOM);
+
+                jQuery('body').trigger('layoutInit', DOM);
+                jQuery('body').trigger('messagesHighlightUnread', [DOM.$messagesList]);
+                jQuery('body').trigger('setScrollbarOnElement', [DOM.$messagesList]);
+
+
                 _log('[MESSAGES] init finished');
             }
         };
 
+        var _highlightUnreadMessages = function($messagesList) {
+            var currentDialogueId = outstyle.dialogs.getDialogueId(),
+                lastUnreadMessagesAmount = OUTSTYLE_GLOBALS.owner.messages.unread[currentDialogueId];
+            if (outstyle.dialogs.hasUnreadMessagesInDialogue()) {
+                var $lastUnreadMessages = $messagesList
+                    .find('li.chat-thread-message')
+                    .slice(-lastUnreadMessagesAmount);
+                $lastUnreadMessages
+                    .addClass('message-unread')
+                    .last()
+                    .addClass('message-last')
+                    .attr('name', 'message-last')
+                    .attr('ic-trigger-on', 'scrolled-into-view');
+
+                jQuery('<li class="chat-thread-separator"></li>')
+                    .insertBefore($lastUnreadMessages[0]);
+            }
+        };
+
+        /**
+         * Key bindings in messages section
+         * !!! IMPORTANT !!! DON'T FORGET to switch off active events to prevent event binding duplication!
+         * (make event .off().on())
+         * @param  {Object} [DOM={}] Current DOM nodes
+         */
         var _bindKeyEvents = function(DOM = {}) {
-            DOM.$messageTextarea.keydown(function(e) {
-                if (e.keyCode === 13) {
+
+            var enterKey = 13;
+
+            /* ! --- BIND EVENTS FOR MESSAGES TEXTAREA --- */
+            DOM.$messageTextarea.off('keydown').on('keydown', function(e) {
+                if (e.keyCode === enterKey) {
                     if (e.ctrlKey) {
                         jQuery(this).val(function(i, val) {
                             return val + "\n";
@@ -114,10 +226,10 @@ jQuery(document).ready(function() {
                         return false;
                     }
                 }
-            }).keypress(function(e) {
-                if (e.keyCode === 13) {
+            }).off('keypress').on('keypress', function(e) {
+                if (e.keyCode === enterKey) {
                     if (!e.shiftKey && !e.ctrlKey) {
-                        alert('submit');
+                        Intercooler.triggerRequest("#message-send-submit");
                         return false;
                     }
                 }
@@ -126,11 +238,21 @@ jQuery(document).ready(function() {
             _log('[MESSAGES] key binding finished');
         };
 
+        /**
+         * Local events are meant to be binded onto DOM nodes that are not in global scope
+         * (means that elements are not 'body' nor 'document')
+         * !!! IMPORTANT !!! DON'T FORGET to switch off active events to prevent event binding duplication!
+         * (make event .off().on())
+         * @param  {Object} [DOM={}] Current DOM nodes
+         */
         var _bindLocalEvents = function(DOM = {}) {
-            autosize(DOM.$messageTextarea);
+
+            DOM.$messageTextarea.off('focus').on('focus', function() {
+                autosize(DOM.$messageTextarea);
+            });
 
             /* Fires up everytime chat box height is changed */
-            DOM.$messageTextarea.on('autosize:resized', function() {
+            DOM.$messageTextarea.off('autosize:resized').on('autosize:resized', function() {
                 jQuery('body').trigger('layoutInit', DOM);
             });
 

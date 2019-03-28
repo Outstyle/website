@@ -12,6 +12,7 @@ use Yii;
 use frontend\models\DialogMembers;
 use frontend\models\UserAvatar;
 use frontend\models\UserNickname;
+use frontend\models\Message;
 
 /**
  * This is the model class for table "{{%dialog}}".
@@ -33,10 +34,7 @@ class Dialog extends \common\models\Dialog
     {
         return DialogMembers::find()
             ->where(['user' => $userId])
-            ->with([
-                'dialog',
-                'message'
-            ]);
+            ->with(['dialog']);
     }
 
     /**
@@ -47,8 +45,10 @@ class Dialog extends \common\models\Dialog
     public static function setupData(array $dialogs = []) : array
     {
         foreach ($dialogs as $dialogKey => $dialog) {
+            $dialogId = $dialog['dialog']['id'];
             $dialogName = $dialogs[$dialogKey]['dialog']['name'];
-            $dialogMembers = $dialogs[$dialogKey]['dialog']['members'] = DialogMembers::getDialogMembersById($dialog['dialog']['id']);
+            $dialogMembers = $dialogs[$dialogKey]['dialog']['members'] = DialogMembers::getDialogMembersById($dialogId);
+            $dialogLastMessage = Message::getByDialogId($dialogId)->orderBy('id DESC')->one();
 
             foreach ($dialogMembers as $memberKey => $member) {
                 $dialogs[$dialogKey]['dialog']['members'][$memberKey]['userDescription']['userAvatar']['path'] = UserAvatar::getAvatarPath($member['userDescription']['userAvatar']['img'], '150x150_', $member['userDescription']['userAvatar']['service_id']);
@@ -59,15 +59,18 @@ class Dialog extends \common\models\Dialog
                 $dialogs[$dialogKey]['dialog']['name'] = UserNickname::composeFullName($dialogMembers[1]['userDescription']);
             }
 
+            /* Get last message from any dialog to be shown in dialogs list */
+
+
             /* Predefine array keys for last message and time of last message
                If no last message is found, time must be dialog creation date */
             $dialogs[$dialogKey]['message']['last'] = '';
             $dialogs[$dialogKey]['message']['time'] = strtotime($dialogs[$dialogKey]['dialog']['created']);
 
             /* If dialog has any messages */
-            if (isset($dialogs[$dialogKey]['message'][0])) {
-                $dialogs[$dialogKey]['message']['last'] = $dialogs[$dialogKey]['message'][0]['message'];
-                $dialogs[$dialogKey]['message']['time'] = strtotime($dialogs[$dialogKey]['message'][0]['created']);
+            if (isset($dialogLastMessage['message'])) {
+                $dialogs[$dialogKey]['message']['last'] = $dialogLastMessage['message'];
+                $dialogs[$dialogKey]['message']['time'] = strtotime($dialogLastMessage['created']);
             }
         }
 

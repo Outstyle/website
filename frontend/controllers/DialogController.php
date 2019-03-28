@@ -72,7 +72,8 @@ class DialogController extends OutstyleSocialController
         $headers->add('X-IC-Trigger', '{"dialogsLoaded":['.Json::encode($response).']}');
 
         return $this->renderPartial('index', [
-            'dialogs' => $dialogs
+            'dialogs' => $dialogs,
+            'messages' => $messages ?? []
         ]);
     }
 }

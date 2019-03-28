@@ -10,10 +10,12 @@ use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 
 use frontend\models\User;
 use frontend\models\Friend;
 use frontend\models\Board;
+use frontend\models\MessageStatus;
 
 use common\components\helpers\ElementsHelper;
 
@@ -73,7 +75,7 @@ class OutstyleSocialController extends Controller
         if (!Yii::$app->request->isAjax) {
             return;
         }
-        /* TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh, move to User model */
+        /* x TODO: Make local 5 minutes checktime to prevent DB trigerring every time on page refresh, move to User model */
         if (Yii::$app->user->id) {
             $userOnline = User::findOne(Yii::$app->user->id);
             $userOnline->lastvisit = time();
@@ -89,18 +91,22 @@ class OutstyleSocialController extends Controller
         $this->layout = 'social';
         $this->userId = Yii::$app->user->id ?? 0;
 
+        if (!$this->userId) {
+            throw new HttpException(401, Yii::t('err', 'User is not logged in'));
+        }
+
         /**
         * Check if it's an Intercooler request, and if so - using ajaxed layout
         **/
 
-        if (Yii::$app->request->get('ic-request') == true || Yii::$app->request->post('ic-request') == true) {
+        if (Yii::$app->request->get('ic-request') == true || Yii::$app->request->post('ic-request') == true || Yii::$app->request->isAjax) {
             $this->layout = 'ajax/social';
         }
 
 
         /**
         * Working with _csrf tokens
-        * TODO: Move this code to a more appropriate placeholder
+        * x TODO: Move this code to a more appropriate placeholder
         *
         * Here we are comparing our tokens from IC requests with $_POST ones
         * Since we don't want direct access to content, we should perform token check every time we access the controller
@@ -141,6 +147,7 @@ class OutstyleSocialController extends Controller
 
         /* Callable methods on each controller action triggered */
         $this->setUserFriends($userId = Yii::$app->user->id, $relation = Board::BOARD_STATE_OWNER);
+        $this->setUserMessages($userId = Yii::$app->user->id, $relation = Board::BOARD_STATE_OWNER);
 
         /* Viewing another user's board? */
         if ($this->boardOwnerUserId !== Yii::$app->user->id) {
@@ -201,12 +208,27 @@ class OutstyleSocialController extends Controller
         $this->view->params[$relation]['friends']['count']['online'] = count($friendsOnline);
     }
 
+    protected function setUserMessages($userId = 0, $relation = Board::BOARD_STATE_OWNER)
+    {
+        $messages = MessageStatus::getUnread(0, $userId)
+            ->limit(MessageStatus::$messagesUnreadLimit)
+            ->select('message_id, dialog')
+            ->asArray()
+            ->all();
+
+        $messagesArray = MessageStatus::createMessagesArrayForUser($messages, $userId);
+
+        /* Passing parameters to any child view */
+        $this->view->params[$relation]['messages']['unread'] = $messagesArray;
+        $this->view->params[$relation]['messages']['count']['unread'] = count($messages);
+    }
+
     /**
      * Setting up JS global data for clientside scripts to access
      */
     protected function setGlobalJsParams()
     {
         $this->view->registerJs(
-          'var outstyle_globals = '.Json::encode($this->view->params), \yii\web\View::POS_HEAD);
+          'var OUTSTYLE_GLOBALS = '.Json::encode($this->view->params), \yii\web\View::POS_HEAD);
     }
 }

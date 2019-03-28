@@ -36,7 +36,7 @@ echo Html::beginTag('div', ['id' => 'friendsList']);
             if ($friendsCounter === $friendsTotal) {
                 echo Html::tag('div', '', [
                 'id' => 'friends_loadmore',
-                'ic-action' => 'loadMoreFriends',
+                'ic-action' => 'trigger:loadMoreFriends',
                 'ic-trigger-on' => 'scrolled-into-view'
               ]);
             }

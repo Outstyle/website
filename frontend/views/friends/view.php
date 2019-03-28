@@ -37,7 +37,7 @@ echo UserFriendsBlock::widget([
 echo Html::tag('div',
   LoadersHelper::loaderImage('breakdance', 'friends__loader'), [
   'id' => 'friends__loader',
-  'ic-action' => 'loadMoreFriends',
+  'ic-action' => 'trigger:loadMoreFriends',
   'ic-trigger-on' => 'scrolled-into-view'
 ]);
 

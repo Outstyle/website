@@ -21,9 +21,7 @@ use Yii;
 class MessageStatus extends \common\models\MessageStatus
 {
     /**
-     * Sets unread message status for every user
-     * @param  int          $dialogId
-     * @return bool
+     * Sets unread message status for every user, except current
      */
     public static function setUnread(int $dialogId = 0, int $messageId = 0) : int
     {
@@ -44,27 +42,62 @@ class MessageStatus extends \common\models\MessageStatus
 
     /**
      * Sets delivered status for certain messages, for certain user
-     * @param  int          $dialogId
-     * @param  int          $dialogId
-     * @return bool
      */
-    public static function setDelivered(int $dialogId = 0, $messageIds = [], $userId = 0) : int
+    public static function setDelivered(int $dialogId = 0, array $messageIds = [0], int $userId = 0) : int
     {
-        Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')->execute();
-        return 0;
+        return self::updateAll(['status' => self::MESSAGE_STATUS_DELIVERED],
+            [
+                'message_id' => $messageIds,
+                'user' => $userId,
+                'dialog' => $dialogId
+            ]
+        );
     }
 
     /**
      * ActiveQuery for unread messages
-     * @param  integer            $dialogId
+     * @param  integer            $dialogId     0 - for ignoring dialogId (default)
      * @param  integer            $userId
-     * @return obj
+     * @return instanceof         yii\db\ActiveQuery
      */
     public static function getUnread(int $dialogId = 0, int $userId = 0) : yii\db\ActiveQuery
     {
+        $where = [
+            'status' => self::MESSAGE_STATUS_UNREAD,
+            'user' => $userId
+        ];
+
+        if ($dialogId != 0 && is_int($dialogId)) {
+            $where['dialog'] = $dialogId;
+        }
+
         return self::find()
-            ->where(['status' => self::MESSAGE_STATUS_UNREAD])
-            ->with(['message'])
-            ->where(['dialog' => $dialogId, 'user' => $userId]);
+            ->where($where)
+            ->with(['message']);
+    }
+
+    /**
+     * Form an array of messages, counting messages for each dialog
+     * This is used to represent total sum of unread messages i.e. instead of array with unique unread messages IDs
+     */
+    public static function createMessagesArrayForUser(array $messages = [], int $userId = 0) : array
+    {
+        if (!$userId) {
+            $userId = Yii::$app->user->id;
+        }
+
+        $messagesArray = [];
+        if ($messages) {
+            foreach ($messages as $message) {
+                $dialogId = (int)$message['dialog'];
+                if (!isset($messagesArray[$dialogId])) {
+                    $messagesArray[$dialogId] = 1;
+                } else {
+                    $messagesArray[$dialogId]++;
+                }
+            }
+        }
+
+        return $messagesArray;
     }
 }

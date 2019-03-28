@@ -48,7 +48,7 @@ echo Html::beginTag('form', [
 
   echo Html::tag('div',
 
-    /* Full search field with icon */
+    /* --- FULL SEARCH FIELD WITH ICON --- */
     Html::tag('div',
       Html::input('text', 'search', '', [
         'id' => 'friends-search',
@@ -100,7 +100,7 @@ echo Html::beginTag('form', [
       /* Search friends */
       echo Html::tag('div',
         ElementsHelper::linkElement('roundbutton',
-          Html::tag('i', '', ['class' => 'zmdi zmdi-accounts-add zmdi-hc-2x c-icon']),
+         Html::tag('i', '', ['class' => 'zmdi zmdi-search zmdi-hc-2x c-icon']),
         Url::to(['/friends/search'], true), '', Yii::t('app', 'Search friends')),
       [
         'id' => 'friends__roundbutton-search',

@@ -1,0 +1,53 @@
+/* ! --- SOCIAL MESSAGES --- */
+#messages_list,
+#messages_area,
+.conversations__new {
+    height: 100%;
+    overflow: hidden;
+}
+
+#messages_area {
+    display: none;
+}
+
+#messages_bottompanel {
+    border-top: 1px solid #ebebeb;
+    position: fixed;
+    bottom: 0;
+    z-index: 1339;
+    background: #fff;
+    max-height: 200px;
+    width: 100%;
+}
+
+#message {
+    max-height: 150px;
+    min-height: 30px;
+}
+
+#messages_actions {
+    border-right: 1px solid #ebebeb;
+}
+
+#message-send-submit {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color: #57656e;
+}
+
+#message-send-submit:hover {
+    background-color: rgba(222, 222, 222, 0.2);
+}
+
+.in-messages {
+    overflow: hidden;
+}
+
+.message__send .u-center-block__content {
+    height: 100%;
+}
+
+.message__input {
+    padding-right: 0;
+}

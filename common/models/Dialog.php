@@ -75,4 +75,9 @@ class Dialog extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DialogMembers::className(), ['dialog' => 'id']);
     }
+
+    public function getMessage()
+    {
+        return $this->hasMany(Message::className(), ['dialog' => 'id']);
+    }
 }

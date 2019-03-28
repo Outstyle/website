@@ -23,14 +23,13 @@ class ErrorHandler
      *
      * @param  array  $errors   Model errors (@see: https://www.yiiframework.com/doc/api/2.0/yii-base-model#$errors-detail)
      */
-    public static function triggerHeaderError($errors = [])
+    public static function triggerHeaderError(array $errors = [])
     {
         if ($errors) {
             foreach ($errors as $k => $error) {
                 $response[$k] = urlencode($error[0]);
             }
-
-            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            
             $headers = Yii::$app->response->headers;
             $headers->add('X-IC-Trigger', '{"'.
               Yii::$app->controller->id.

@@ -33,8 +33,21 @@ class MessageStatus extends \yii\db\ActiveRecord
 {
     const MESSAGE_STATUS_UNREAD = 0;
     const MESSAGE_STATUS_DELIVERED = 1;
-    const MESSAGE_STATUS_READ = 2;
+    const MESSAGE_STATUS_SELF = 2;
     const MESSAGE_STATUS_ERROR_UNDELIVERED = 3;
+
+    /**
+     * Maximum limit of messages to show as a badge in 'Unread messages' i.e. or for paging
+     * @var int $messagesNotificationLimit
+     */
+    public static $messagesNotificationLimit = 99;
+
+    /**
+     * Maximum limit of unread messages to show (overall)
+     * @var int $messagesUnreadLimit
+     */
+    public static $messagesUnreadLimit = 1000;
+
 
     /**
      * @inheritdoc
@@ -78,7 +91,7 @@ class MessageStatus extends \yii\db\ActiveRecord
                 ['status'], 'in', 'range' => [
                     self::MESSAGE_STATUS_UNREAD,
                     self::MESSAGE_STATUS_DELIVERED,
-                    self::MESSAGE_STATUS_READ,
+                    self::MESSAGE_STATUS_SELF,
                     self::MESSAGE_STATUS_ERROR_UNDELIVERED
                 ],
             ],

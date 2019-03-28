@@ -73,6 +73,16 @@ class UserFriendsBlock extends Widget
             $this->options['view'] = 'userFriendsBlock';
         }
 
+        /* If friends are requested in dialogs area from loader */
+        if (Yii::$app->request->post('ic-target-id') == 'friends_in_dialogs_content') {
+            $this->options['view'] = 'userFriendsSearchInDialogue';
+        }
+
+        /* If friends are requested from searchbox input */
+        if (Yii::$app->request->post('ic-element-id') == 'friends_in_dialogs_search') {
+            $this->options['view'] = 'userFriendsSearchInDialogue';
+        }
+
         /* If no friends found at all - setting another view */
         if (!$this->friends) {
             $this->options['view'] = 'userFriendsNotFound';

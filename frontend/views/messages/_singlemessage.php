@@ -22,11 +22,11 @@ use common\components\helpers\StringHelper;
  * @since 1.0
 **/
 
-Spaceless::begin();
-foreach ($messages as $messageId => $message) {
+foreach ($messages as $message) {
+    $messageId = $message['id'];
     $senderId = $message['sender_id'];
     $messageText = $message['message'];
-    $messageTime = $message['created'];
+    $messageTime = StringHelper::convertTimestampToHuman(strtotime($message['created']), 'H:i');
     $senderAvatar = $dialogMembers[$senderId]['userDescription']['userAvatar']['path'];
     $senderName = $dialogMembers[$senderId]['userDescription']['nickname'];
 
@@ -45,14 +45,13 @@ foreach ($messages as $messageId => $message) {
         $messageText.
 
         Html::tag('div',
-            '<span class="chat-thread-message__time">'.StringHelper::convertTimestampToHuman(strtotime($messageTime), 'H:i').'</span>',
+            '<span class="chat-thread-message__time">'.$messageTime.'</span>',
         [
-            'class' => 'chat-thread-message__header clearfix'
+            'class' => 'chat-thread-message__footer clearfix'
         ]),
 
     [
-        'id' => 'message-'.$messageId,
+        'id' => 'm'.$messageId,
         'class' => 'chat-thread-message',
     ]);
 }
-Spaceless::end();

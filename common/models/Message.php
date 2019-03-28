@@ -45,6 +45,11 @@ class Message extends \yii\db\ActiveRecord
      */
     const MESSAGE_TYPE_SYSTEM = 1;
 
+    /**
+     * Maximum limit of messages to show in particular dialog
+     * @var int $messagesListLimit
+     */
+    public static $messagesListLimit = 50;
 
 
     /**

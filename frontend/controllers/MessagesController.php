@@ -6,6 +6,7 @@ use Yii;
 use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 use yii\web\HttpException;
 
 use frontend\models\Message;
@@ -15,7 +16,6 @@ use frontend\models\DialogMembers;
 
 use frontend\components\handlers\ErrorHandler;
 use frontend\components\OutstyleSocialController;
-use yii\helpers\ArrayHelper;
 
 class MessagesController extends OutstyleSocialController
 {
@@ -46,10 +46,10 @@ class MessagesController extends OutstyleSocialController
     public function actionIndex()
     {
         return $this->render('index', [
-            'messages' => [],
-            'dialogMembers' => [],
+            'messages' => 0,
+            'dialogMembers' => 0,
             'dialogId' => 0,
-            'dialog' => [],
+            'dialog' => 0,
         ]);
     }
 
@@ -58,7 +58,11 @@ class MessagesController extends OutstyleSocialController
 
         /* Filling dialogs var only if current user is a member of currently browsable dialog */
         if (DialogMembers::isDialogMember(Yii::$app->user->id, $dialogId)) {
-            $messages = Message::getByDialogId($dialogId)->asArray()->all();
+            $messages = Message::getByDialogId($dialogId)
+                ->limit(Message::$messagesListLimit)
+                ->orderBy(['id' => SORT_DESC])
+                ->asArray()
+                ->all();
             $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
             $dialogMembers = DialogMembers::setupData($dialogMembers);
             $dialog = Dialog::findOne($dialogId);
@@ -72,7 +76,7 @@ class MessagesController extends OutstyleSocialController
         $headers->add('X-IC-Trigger', '{"messagesLoaded":['.Json::encode($response).']}');
 
         return $this->render('index', [
-            'messages' => $messages ?? [],
+            'messages' => array_reverse($messages) ?? [],
             'dialogMembers' => $dialogMembers ?? [],
             'dialogId' => $dialogId,
             'dialog' => $dialog ?? [],
@@ -81,16 +85,13 @@ class MessagesController extends OutstyleSocialController
 
     /**
      * [API] Add message action
-     * @return null
      */
     public function actionAdd()
     {
         if (Yii::$app->request->isAjax) {
             $model = new Message();
             $model->load(Yii::$app->request->post(), '');
-            $model->sender_id = 14;
-            $model->message = 'Test again';
-            $model->dialog = 1;
+            $model->sender_id = Yii::$app->user->id;
 
             if ($model->validate()) {
                 $data = $model->getAttributes([
@@ -105,33 +106,50 @@ class MessagesController extends OutstyleSocialController
 
     /**
      * [API] Get message action (check for new)
-     * @return string
+     * Here we're cancelling short-polling, if user has unread messages
      */
     public function actionGet()
     {
         if (Yii::$app->request->isAjax) {
             $model = new MessageStatus();
             $model->load(Yii::$app->request->get(), '');
+
             if ($model->validate()) {
-                $data = $model->getAttributes([
-                    'message_id',
-                    'dialog',
-                    'user',
-                    'status'
-                ]);
-                $unreadMessages = MessageStatus::getUnread($data['dialog'], $userId = Yii::$app->user->id)
+                $data = $model->getAttributes(['dialog']);
+                $currentUserId = Yii::$app->user->id;
+
+                /* Checking if there is any unread messages for current user arrived between polling ticks? */
+                $unreadMessages = MessageStatus::getUnread($data['dialog'], $currentUserId)
+                    ->limit(MessageStatus::$messagesNotificationLimit)
                     ->asArray()
                     ->all();
+
+                /* Queue DB and mark all unread messages as 'read', if triggered from last recieved message */
+                if (Yii::$app->request->get('ic-trigger-name') == 'message-last') {
+                    $unreadMessageIdsArray = ArrayHelper::getColumn($unreadMessages, 'message_id');
+                    $deliveredMessages = MessageStatus::setDelivered($data['dialog'], $unreadMessageIdsArray, $currentUserId);
+                    return;
+                }
+
                 if ($unreadMessages) {
                     $messages = ArrayHelper::getColumn($unreadMessages, 'message');
                     $dialogMembers = DialogMembers::getDialogMembersById($data['dialog']);
                     $dialogMembers = DialogMembers::setupData($dialogMembers);
-                    //$deliveredMessages = MessageStatus::setDelivered();
 
-                    $response = count($unreadMessages);
+                    $countMessages = count($unreadMessages);
+
+                    foreach ($messages as $message) {
+                        if ($message['sender_id'] == $currentUserId) {
+                            $selfMessages[] = $message['id'];
+                        }
+                    }
+
+                    if (isset($selfMessages)) {
+                        $deliveredMessages = MessageStatus::setDelivered($data['dialog'], $selfMessages, $currentUserId);
+                    }
 
                     $headers = Yii::$app->response->headers;
-                    $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($response).']}');
+                    $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($countMessages).']}');
 
                     return $this->render('_singlemessage', [
                         'messages' => $messages,

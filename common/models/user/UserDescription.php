@@ -161,7 +161,8 @@ class UserDescription extends \yii\db\ActiveRecord
           ['rating', 'integer'],
           ['avatar', 'integer'],
 
-          /* Additional validation rules */
+          /* ! TODO Split this into separate file
+               Additional validation rules */
           ['user', 'default', 'value' => Yii::$app->user->id ?? 0],
           ['user', 'integer'],
           ['user', 'required',
@@ -253,6 +254,7 @@ class UserDescription extends \yii\db\ActiveRecord
           ['sort_by', 'in', 'range' => ['id','rating'],
            'message' => Yii::t('app', 'Sort value is invalid')],
 
+          ['page', 'default', 'value' => 0],
           ['page', 'integer'],
 
           ['is_online', 'default', 'value' => UserStatus::USER_SOCIAL_OFFLINE],

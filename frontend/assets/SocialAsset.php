@@ -40,6 +40,7 @@ class SocialAsset extends AssetBundle
         'css/outstyle/social.friends.css',
         'css/outstyle/social.comments.css',
         'css/outstyle/social.dialogs.css',
+        'css/outstyle/social.messages.css',
         'css/outstyle/social.chat.css',
         'css/outstyle/social.board.post.css',
 

@@ -1,6 +1,23 @@
-/* --- SOCIAL DIALOGS --- */
+/* ! --- SOCIAL DIALOGS --- */
+#dialogs_area {
+    margin: -32px 0 0;
+    vertical-align: top;
+    position: relative;
+    z-index: 1338;
+    overflow: hidden;
+    border-right: 1px solid #ebebeb;
+}
+
+#dialogs_search,
+#friends_in_dialogs_search {
+    font-size: 0.8em;
+    border-bottom: 1px solid #ddd;
+    background: #e2e2e2;
+}
+
 .dialog__box {
     border-bottom: 1px solid #ebebeb;
+    position: relative;
 }
 
 .dialog__box.active {
@@ -49,67 +66,42 @@
 .dialog__lastmessage {
     color: #b5b5b5;
     font-size: 0.8em;
-    line-height: 0.9em;
+    line-height: 1.1em;
     margin-top: 0.3em;
+    padding-right: 2.5em;
 }
 
 .dialog__info {
     padding-bottom: 0;
 }
 
-/* --- SOCIAL MESSAGES --- */
-.conversations__list {
-    border-right: 1px solid #ebebeb;
+/* ! --- DIALOGS SEARCH FORM --- */
+.dialogs__search input[name=search],
+.friends__search input[name=search] {
+    height: 23px;
+    margin: 4px 0;
+    background: #f3f3f3;
 }
 
-#messages_list,
-#messages_area,
-.conversations__new {
-    height: 100%;
-    overflow: hidden;
+.dialogs__add,
+.dialogs__close {
+    background: #e2e2e2;
 }
 
-#messages_area,
-#messages_sendbox {
-    display: none;
-}
-
-#messages_sendbox {
-    border-top: 1px solid #ebebeb;
-    position: fixed;
-    bottom: 0;
-    z-index: 1;
-    background: #fff;
-    max-height: 200px;
-    width: 100%;
-}
-
-#message-text {
-    max-height: 150px;
-}
-
-#messages_actions {
-    border-right: 1px solid #ebebeb;
-}
-
-#message-send-submit {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
+.dialogs__add:hover,
+.dialogs__close:hover {
+    background: #f3f3f3;
     color: #57656e;
-}
-#message-send-submit:hover {
-    background-color: rgba(222, 222, 222, 0.2);
+    cursor: pointer;
 }
 
-.in-messages {
-    overflow: hidden;
+.dialogs__add .c-icon,
+.dialogs__close .c-icon {
+    font-size: 2.3em;
 }
 
-.message__send .u-center-block__content {
-    height: 100%;
-}
-
-.message__input {
-    padding-right: 0;
+/* ! --- DIALOGS: Create new [bottom panel] --- */
+#dialog_actions {
+    border-right: 1px solid #ebebeb;
+    background: #f9f9f9;
 }

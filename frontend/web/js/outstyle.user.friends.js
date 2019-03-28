@@ -1,4 +1,6 @@
+/* ! TODO Move this to separate loaders module */
 var friends_loader = '<div class="loader--smallest"></div>';
+/* ! TODO Move this to separate tooltips module */
 var friendsTooltipContentClass = '.tooltipster-content .friend_options_tooltip_content';
 
 /* Take this out to another file */
@@ -30,9 +32,9 @@ function hideFriendsFromList(friendsArray) {
 }
 
 function moveFriendFromPendingToActive(friendId) {
-    outstyle_globals.owner.friends.active.push(friendId);
-    outstyle_globals.owner.friends.pending.splice(jQuery.inArray(friendId, outstyle_globals.owner.friends.pending), 1);
-    outstyle_globals.owner.friends.count.pending = outstyle_globals.owner.friends.pending.length;
+    OUTSTYLE_GLOBALS.owner.friends.active.push(friendId);
+    OUTSTYLE_GLOBALS.owner.friends.pending.splice(jQuery.inArray(friendId, OUTSTYLE_GLOBALS.owner.friends.pending), 1);
+    OUTSTYLE_GLOBALS.owner.friends.count.pending = OUTSTYLE_GLOBALS.owner.friends.pending.length;
 }
 
 jQuery("body").on("friendsFindError friendsFilterError", function(evt, data) {
@@ -49,7 +51,7 @@ jQuery("body").on("newFriendAddedSuccess", function(evt, addedFriendId) {
         .addClass('friend__added')
         .slideUp('slow');
     jQuery('#friendbox-' + addedFriendId + ' .friend__options').tooltipster('close');
-    outstyle_globals.owner.friends.active.push(addedFriendId);
+    OUTSTYLE_GLOBALS.owner.friends.active.push(addedFriendId);
 });
 
 jQuery("body").on("newFriendAlreadyAdded", function(evt, data) {
@@ -87,8 +89,8 @@ jQuery("body").on("friendsFindSuccess", function(evt, data) {
 
     jQuery('#outstyle_loader').show();
 
-    hideFriendsFromList(outstyle_globals.owner.friends.pending);
-    hideFriendsFromList(outstyle_globals.owner.friends.active);
+    hideFriendsFromList(OUTSTYLE_GLOBALS.owner.friends.pending);
+    hideFriendsFromList(OUTSTYLE_GLOBALS.owner.friends.active);
 });
 
 /* When IC returned successfull AJAX callback */
@@ -99,10 +101,12 @@ jQuery("body").on("friendsFilterSuccess", function(evt, data) {
     if (jQuery.isNumeric(data.page)) {
         jQuery("#page").val(data.page);
     }
-    jQuery('#outstyle_loader').show();
     setTimeout(function() {
         jQuery('.search__friends').show();
         jQuery('#outstyle_loader').hide();
+        if (data.triggeredBy == 'friends__loadonce') {
+            jQuery('body').trigger('setScrollbarOnElement', [jQuery('#friends_in_dialogs_area')]);
+        }
     }, 25);
 });
 
@@ -138,16 +142,20 @@ function friendShowOptionsTooltip(friendId) {
 
 }
 
-function loadMoreFriends() {
-    Intercooler.triggerRequest('#friends-search-form');
-}
+/* ! TODO Trigger event attach directly on elements? */
+jQuery("body").on("loadMoreFriends", function(event, elt) {
+    if ("undefined" == typeof elt) {
+        elt = '#friends-search-form';
+    }
+    Intercooler.triggerRequest(elt);
+});
 
 function friendsSearchFormInit() {
 
     jQuery('#friends-search-form').on('keypress', function(e) {
         if (e.keyCode == 13) {
             e.preventDefault();
-            loadMoreFriends();
+            jQuery('body').trigger('loadMoreFriends', '.friends-form-trigger');
         }
     });
 

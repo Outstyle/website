@@ -150,18 +150,30 @@ class FriendsController extends OutstyleSocialController
               'is_online'
             ]);
 
-            $response['triggeredBy'] = Yii::$app->request->post('ic-trigger-name');
-            $response['page'] = 0;
+            /* ! TODO Move this chunk into more appropriate place? v REDO this stuff. */
+            $response['triggeredBy'] = Yii::$app->request->post('ic-trigger-name') ?? Yii::$app->request->post('ic-trigger-id');
+            $response['page'] = (int)$data['page'];
 
             if (!$response['triggeredBy']) {
                 $response['triggeredBy'] = 'loadmore';
-                $response['page'] = (int)$data['page'];
+            }
+
+            if ($data['search'] && $response['triggeredBy'] != 'loadmore') {
+                $response['page'] = 0;
+                $response['search'] = $data['search'];
+                $response['triggeredBy'] = Yii::$app->request->post('ic-element-id');
+            }
+
+            if (empty($data['search']) && $response['triggeredBy'] != 'loadmore') {
+                $response['page'] = 0;
+                $response['triggeredBy'] = Yii::$app->request->post('ic-element-id');
             }
 
             $friends = Friend::getUserFriends([$data['friendship_status'], Friend::FRIENDSHIP_STATUS_ONESIDED])
               ->limit(Friend::$friendsPageSize)
               ->asArray()
               ->all();
+
             $friends = Friend::createFriendsArrayForUser($friends);
             $friends = UserDescription::findUsersByData($data)
               ->andWhere(['{{%user_description}}.id' => $friends]);
