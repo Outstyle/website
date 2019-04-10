@@ -110,7 +110,11 @@ $this->beginBody();
 
         if (class_exists('andrij200390\subscribe\Subscribe')) {
             echo Subscribe::widget([
-                'mode' => 'telegram',
+                'mode' => [
+                    'telegram',
+                    'instagram',
+                    'vk'
+                ],
                 'cookie' => [
                     'name' => 'subscribe',
                     'max-age' => 0,
@@ -124,6 +128,19 @@ $this->beginBody();
                     'message' => Yii::t('app', 'Subscribe to our Telegram channel!'),
                     'submitButtonText' => Yii::t('app', 'Subscribe'),
                     'channelName' => 'outstyle',
+                ],
+                'instagram' => [
+                    'message' => Yii::t('app', 'Subscribe to our Instagram channel!'),
+                    'submitButtonText' => Yii::t('app', 'Subscribe'),
+                    'channelName' => 'outstyle_hiphop',
+                ],
+                'vk' => [
+                    'message' => Yii::t('app', 'Subscribe to our VKontakte channel!'),
+                    'submitButtonText' => Yii::t('app', 'Subscribe'),
+                    'channelName' => 'outstyle_org',
+                ],
+                'all' => [
+                    'message' => Yii::t('app', 'Subscribe to our channels: ')
                 ],
                 'provider' => [
                     'google' => [

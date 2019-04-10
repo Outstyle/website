@@ -104,6 +104,7 @@ return [
     'Subscribe' => 'Подписаться',
     'Subscribe to our Telegram channel!' => 'Подпишись на наш Telegram канал!',
     'Subscribe to keep up with our latest news!' => 'Подпишитесь и будьте в курсе всех Хип-Хоп новостей!',
+    'Subscribe to our channels: ' => 'Подпишись на наши каналы: ',
     'Status' => 'Статус',
     'Teaches' => 'Обучает',
     'This category has no active events!' => 'В этой категории нет активных событий!',
