@@ -90,4 +90,46 @@ class TooltipsHelper extends ElementsHelper
           ['class' => 'tooltip_templates']
         );
     }
+
+    /**
+     * Tooltip template for dialog options in messages section
+     * @see: http://iamceege.github.io/tooltipster/
+     *
+     * @return HTML
+     */
+    public static function tooltipContainerForDialogOptions()
+    {
+        return Html::tag('div',
+
+            Html::tag('span',
+
+                Html::a(Yii::t('app', 'Members list'),
+                  '#dialoguserslist',
+                  [
+                    'class' => 'dialog_action_list modal-open tooltip-close'
+                  ]
+                ).
+
+                Html::a(Yii::t('app', 'Add friend...'),
+                  'javascript:void(0)',
+                  [
+                    'class' => 'dialog_action_add tooltip-close',
+                    'ic-trigger-on' => 'click',
+                    'ic-action' => 'trigger:dialogsAddNewMember',
+                  ]
+                ).
+
+                Html::a(Yii::t('app', 'Leave this conversation'),
+                  '#dialoguserleave',
+                  [
+                    'class' => 'dialog_action_leave modal-open tooltip-close'
+                  ]
+                ),
+
+              ['class' => 'dialog_options_tooltip_content']
+            ),
+
+          ['class' => 'tooltip_templates']
+        );
+    }
 }

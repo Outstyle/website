@@ -31,8 +31,12 @@ use frontend\models\user\UserAvatar;
  */
 class DialogMembers extends \yii\db\ActiveRecord
 {
+    const MEMBER_STATUS_ACTIVE = 0;
+    const MEMBER_STATUS_QUIT = 1;
+    const MEMBER_STATUS_BANNED = 2;
+
     /**
-     * @var $friendsPageSize  How much friends per request to get
+     * @var $dialogMembersLimit  How much members can one dialog have?
      */
     public static $dialogMembersLimit = 100;
 
@@ -51,8 +55,19 @@ class DialogMembers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user', 'dialog'], 'required'],
-            [['user', 'dialog'], 'integer']
+            [
+                ['is_owner', 'status'],
+                'default',
+                'value' => 0
+            ],
+            [
+                ['user', 'dialog'],
+                'required'
+            ],
+            [
+                ['user', 'dialog', 'is_owner', 'status'],
+                'integer'
+            ]
         ];
     }
 
@@ -65,6 +80,7 @@ class DialogMembers extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'user' => Yii::t('app', 'User'),
             'dialog' => Yii::t('app', 'Dialog'),
+            'is_owner' => Yii::t('app', 'Owner'),
         ];
     }
 

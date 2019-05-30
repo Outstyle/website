@@ -14,6 +14,8 @@ use frontend\models\MessageStatus;
 use frontend\models\Dialog;
 use frontend\models\DialogMembers;
 
+use frontend\models\UserNickname;
+
 use frontend\components\handlers\ErrorHandler;
 use frontend\components\OutstyleSocialController;
 
@@ -57,17 +59,25 @@ class MessagesController extends OutstyleSocialController
     {
 
         /* Filling dialogs var only if current user is a member of currently browsable dialog */
-        if (DialogMembers::isDialogMember(Yii::$app->user->id, $dialogId)) {
-            $messages = Message::getByDialogId($dialogId)
-                ->limit(Message::$messagesListLimit)
-                ->orderBy(['id' => SORT_DESC])
-                ->asArray()
-                ->all();
-            $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
-            $dialogMembers = DialogMembers::setupData($dialogMembers);
-            $dialog = Dialog::findOne($dialogId);
-        } else {
+        if (!DialogMembers::isDialogMember(Yii::$app->user->id, $dialogId)) {
             throw new HttpException(403, Yii::t('err', 'Conversation not found'));
+        }
+
+        /* Getting all dialogue messages within limit */
+        $messages = Message::getByDialogId($dialogId)
+            ->limit(Message::$messagesListLimit)
+            ->orderBy(['id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        /* Getting dialogue members and setting appropriate dialogue name for 1x1 chat */
+        $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
+        $dialogMembers = DialogMembers::setupData($dialogMembers);
+        $firstDialogMember = array_key_first($dialogMembers);
+        
+        $dialog = Dialog::findOne($dialogId);
+        if (!$dialog->name) {
+            $dialog->name = UserNickname::composeFullName($dialogMembers[$firstDialogMember]['userDescription']);
         }
 
         $response['dialogId'] = $dialogId;
@@ -95,8 +105,15 @@ class MessagesController extends OutstyleSocialController
 
             if ($model->validate()) {
                 $data = $model->getAttributes([
-                    'message'
+                    'message',
+                    'dialog'
                 ]);
+
+                /* TODO: Move this to onbeforesave */
+                $dialog = Dialog::findOne($data['dialog']);
+                $dialog->modified = date('Y-m-d h:i:s');
+                $dialog->update();
+
                 $model->save();
             } else {
                 ErrorHandler::triggerHeaderError($model->errors);
@@ -124,6 +141,10 @@ class MessagesController extends OutstyleSocialController
                     ->asArray()
                     ->all();
 
+                if (!$unreadMessages) {
+                    return;
+                }
+
                 /* Queue DB and mark all unread messages as 'read', if triggered from last recieved message */
                 if (Yii::$app->request->get('ic-trigger-name') == 'message-last') {
                     $unreadMessageIdsArray = ArrayHelper::getColumn($unreadMessages, 'message_id');
@@ -131,31 +152,31 @@ class MessagesController extends OutstyleSocialController
                     return;
                 }
 
-                if ($unreadMessages) {
-                    $messages = ArrayHelper::getColumn($unreadMessages, 'message');
-                    $dialogMembers = DialogMembers::getDialogMembersById($data['dialog']);
-                    $dialogMembers = DialogMembers::setupData($dialogMembers);
+                $messages = ArrayHelper::getColumn($unreadMessages, 'message');
+                $dialogMembers = DialogMembers::getDialogMembersById($data['dialog']);
+                $dialogMembers = DialogMembers::setupData($dialogMembers);
 
-                    $countMessages = count($unreadMessages);
+                $countMessages = count($unreadMessages);
 
-                    foreach ($messages as $message) {
-                        if ($message['sender_id'] == $currentUserId) {
-                            $selfMessages[] = $message['id'];
-                        }
+                /* Checking if unread message is actually current user's message? (own) */
+                foreach ($messages as $message) {
+                    if ($message['sender_id'] == $currentUserId) {
+                        $selfMessages[] = $message['id'];
                     }
-
-                    if (isset($selfMessages)) {
-                        $deliveredMessages = MessageStatus::setDelivered($data['dialog'], $selfMessages, $currentUserId);
-                    }
-
-                    $headers = Yii::$app->response->headers;
-                    $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($countMessages).']}');
-
-                    return $this->render('_singlemessage', [
-                        'messages' => $messages,
-                        'dialogMembers' => $dialogMembers,
-                    ]);
                 }
+
+                /* If it is own message, status for current user should be `already delivered` */
+                if (isset($selfMessages)) {
+                    $deliveredMessages = MessageStatus::setDelivered($data['dialog'], $selfMessages, $currentUserId);
+                }
+
+                $headers = Yii::$app->response->headers;
+                $headers->add('X-IC-Trigger', '{"messageNew":['.Json::encode($countMessages).']}');
+
+                return $this->render('_singlemessage', [
+                    'messages' => $messages,
+                    'dialogMembers' => $dialogMembers,
+                ]);
             } else {
                 ErrorHandler::triggerHeaderError($model->errors);
             }

@@ -9,7 +9,6 @@ use yii\helpers\Url;
 
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\SEOHelper;
-use common\components\helpers\html\LoadersHelper;
 
 /**
  * User messages page
@@ -17,6 +16,7 @@ use common\components\helpers\html\LoadersHelper;
  *
  * @var $this                       yii\web\View
  * @var $messages                   common\models\Message
+ * @var $dialog                     common\models\Dialog
  * @var $dialogId                   common\models\Dialog
  * @var $dialogMembers              common\models\DialogMembers
  *
@@ -46,11 +46,13 @@ echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter'
         Html::tag('div',
             Html::tag('div', '',
             [
-                'id' => 'conversations__loadmore',
+                'id' => 'conversations__loadonce',
                 'class' => 'loader--smallest',
                 'ic-post-to' => Url::toRoute(['api/dialog/list']),
                 'ic-trigger-on' => 'scrolled-into-view',
                 'ic-target' => '#conversations_area',
+                'ic-select-from-response' => '#dialogsList',
+                'ic-on-success' => 'jQuery("#conversations__loadonce").remove()',
                 'ic-push-url' => 'false'
             ]),
         [
@@ -63,7 +65,7 @@ echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter'
          * FRIENDS IN DIALOGS LOADER (API CALL)
          * Loader element, when shown, loads data into #friends_in_dialogs_area
          * This request is needed to fetch active friends of user and list them
-         * User then can add any user into dialog or initiate a new one
+         * Active user can then add any other user into dialog or initiate a new one
          * @see http://intercoolerjs.org/attributes/ic-post-to.html
          */
         Html::tag('div',

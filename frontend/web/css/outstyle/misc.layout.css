@@ -281,6 +281,10 @@ ul {
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
+.c-text--medium {
+    font-size: 1.4em;
+}
+
 .o-shadow-bottomtop {
     background: rgba(0, 0, 0, 0);
     background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .7) 100%);
@@ -313,6 +317,25 @@ ul {
 
 .c-field--rounded {
     border-radius: 25px;
+}
+
+.c-field--editable {
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.c-field--editable:hover {
+    background: #fff;
+    cursor: pointer;
+}
+
+.c-field--editable:focus {
+    background: #fff;
+}
+
+.c-field--noteditable {
+    background: transparent;
+    border: 1px solid transparent;
 }
 
 .c-field:focus {
@@ -525,6 +548,10 @@ ul {
 
 .u-npr, .u-prn {
     padding-right: 0px;
+}
+
+.u-nm {
+    margin: 0;
 }
 
 /* Margin controls */
@@ -848,16 +875,6 @@ img.grayscale {
     height: 20px;
     border-radius: 10px;
     font-size: 0.8em;
-}
-
-.dialog__box .c-badge {
-    right: 0.75em;
-    bottom: 0.75em;
-}
-
-.dialog__box.active .c-badge {
-    background-color: #fff;
-    color: #595959;
 }
 
 .c-badge--red {

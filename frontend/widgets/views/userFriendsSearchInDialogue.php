@@ -56,9 +56,8 @@ echo Html::beginTag('div', ['id' => 'friendsList']);
 
                   /* ! FRIEND SELECT CHECKBOX */
                   Html::tag('label',
-                    Html::input('checkbox', 'selected', $friend['id'], [
-                        'class' => 'friends-form-trigger',
-                        'ic-trigger-on' => 'click',
+                    Html::input('checkbox', 'selected[]', $friend['id'], [
+                        'class' => 'friend-selection-checkbox'
                     ]).
                     '<span class="circle circle--bright big"></span>'),
 

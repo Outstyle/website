@@ -253,7 +253,11 @@ class ElementsHelper extends Html
 
           case 'title':
             $elem_title = strip_tags($elem_text);
-            $elem_name .= ' c-text--shadow block__'.$elem_name;
+            $elem_class .= ' c-text--shadow block__'.$elem_name;
+            break;
+
+          case 'newdialogue':
+            $elem_class .= ' search-mode-switch';
             break;
 
           case 'roundbutton':

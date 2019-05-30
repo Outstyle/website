@@ -88,6 +88,10 @@ class OutstyleSocialController extends Controller
      */
     public function beforeAction($event)
     {
+        if (!parent::beforeAction($event)) {
+            return false;
+        }
+
         $this->layout = 'social';
         $this->userId = Yii::$app->user->id ?? 0;
 
@@ -96,17 +100,7 @@ class OutstyleSocialController extends Controller
         }
 
         /**
-        * Check if it's an Intercooler request, and if so - using ajaxed layout
-        **/
-
-        if (Yii::$app->request->get('ic-request') == true || Yii::$app->request->post('ic-request') == true || Yii::$app->request->isAjax) {
-            $this->layout = 'ajax/social';
-        }
-
-
-        /**
         * Working with _csrf tokens
-        * x TODO: Move this code to a more appropriate placeholder
         *
         * Here we are comparing our tokens from IC requests with $_POST ones
         * Since we don't want direct access to content, we should perform token check every time we access the controller
@@ -115,6 +109,8 @@ class OutstyleSocialController extends Controller
         * @see: $allowedEntryPoints
         *
         **/
+
+        /* TODO Move this code to a more appropriate placeholder */
         $csrf_token = Yii::$app->request->headers->get('x-csrf-token');
         $user_token = ElementsHelper::getCSRFToken();
         $allowed_token = in_array(Yii::$app->request->post('token'), Yii::$app->params['AllowedTokens']);
@@ -122,7 +118,6 @@ class OutstyleSocialController extends Controller
         /**
          * If it's an allowed source or we have static token, sent with $_POST, ignoring _csrf check
          */
-
         if ($allowed_token) {
             $this->enableCsrfValidation = false;
             $this->layout = false;
@@ -144,6 +139,7 @@ class OutstyleSocialController extends Controller
                 throw new HttpException(401, Yii::t('err', 'Token is invalid!'));
             }
         }
+
 
         /* Callable methods on each controller action triggered */
         $this->setUserFriends($userId = Yii::$app->user->id, $relation = Board::BOARD_STATE_OWNER);
@@ -172,6 +168,7 @@ class OutstyleSocialController extends Controller
      */
     protected function setUserFriends($userId = 0, $relation = Board::BOARD_STATE_OWNER)
     {
+        /* ! Active user friends, who are actually in a friendship with this user */
         $friends = Friend::getUserFriends([Friend::FRIENDSHIP_STATUS_ACTIVE, Friend::FRIENDSHIP_STATUS_ONESIDED], $userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
@@ -179,6 +176,7 @@ class OutstyleSocialController extends Controller
         $friends = $activeFriends = Friend::createFriendsArrayForUser($friends);
         $friends = Friend::getFriendsDescription($friends);
 
+        /* ! Friends who are not yet confirmed friendship status */
         $friendsPending = Friend::getUserFriends(Friend::FRIENDSHIP_STATUS_PENDING, $userId)
           ->limit(Friend::$friendsPendingPageSize)
           ->asArray()
@@ -186,6 +184,7 @@ class OutstyleSocialController extends Controller
         $friendsPending = $pendingFriends = Friend::createFriendsArrayForUser($friendsPending, $userId);
         $friendsPending = Friend::getFriendsDescription($friendsPending, $userId);
 
+        /* ! Friends who are online and are in a friendship */
         $friendsOnline = Friend::getUserFriendsOnline($userId)
           ->limit(Friend::$friendsPageSize)
           ->asArray()
@@ -197,15 +196,18 @@ class OutstyleSocialController extends Controller
         $this->userGlobalData[$relation]['friends']['active'] = $friends;
         $this->userGlobalData[$relation]['friends']['pending'] = $friendsPending;
         $this->userGlobalData[$relation]['friends']['online'] = $friendsOnline;
+        $this->userGlobalData[$relation]['friends']['selected'] = []; /* When selecting friend (i.e. to add in dialog) */
 
         /* Passing parameters to any child view */
         $this->view->params[$relation]['friends']['active'] = $activeFriends;
         $this->view->params[$relation]['friends']['online'] = $activeOnlineFriends;
         $this->view->params[$relation]['friends']['pending'] = $pendingFriends;
+        $this->view->params[$relation]['friends']['selected'] = [];
 
         $this->view->params[$relation]['friends']['count']['active'] = count($friends);
         $this->view->params[$relation]['friends']['count']['pending'] = count($friendsPending);
         $this->view->params[$relation]['friends']['count']['online'] = count($friendsOnline);
+        $this->view->params[$relation]['friends']['count']['selected'] = 0;
     }
 
     protected function setUserMessages($userId = 0, $relation = Board::BOARD_STATE_OWNER)

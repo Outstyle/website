@@ -56,7 +56,7 @@ class Friend extends \common\models\Friend
         if (!$userId) {
             $userId = Yii::$app->user->id;
         }
-
+        
         return self::getUserFriends([self::FRIENDSHIP_STATUS_ACTIVE, self::FRIENDSHIP_STATUS_ONESIDED], $userId)
           ->join('INNER JOIN', '{{%user}} u',
             '((u.`id` = {{%friend}}.`user1` AND {{%friend}}.`user2` = :user) OR
@@ -72,7 +72,7 @@ class Friend extends \common\models\Friend
      * @param  array  $friendsIdArray
      * @return array
      */
-    public static function getFriendsDescription($friendsIdArray = [])
+    public static function getFriendsDescription($friendsIdArray = []) : array
     {
         return UserDescription::findUsers()->where(['id' => $friendsIdArray])->asArray()->all();
     }
@@ -82,7 +82,7 @@ class Friend extends \common\models\Friend
      * @param  array  $userFriends    Array from getUserFriends
      * @return array
      */
-    public static function createFriendsArrayForUser($userFriends = [], $userId = 0)
+    public static function createFriendsArrayForUser($userFriends = [], $userId = 0) : array
     {
         if (!$userId) {
             $userId = Yii::$app->user->id;

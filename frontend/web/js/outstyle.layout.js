@@ -1,6 +1,6 @@
 /**
  * Outstyle Layout JS Functions
- * Depends on: JQuery, Intercoolerjs
+ * Depends on: JQuery, Intercoolerjs, OverlayScrollbars
  * This file must contain all the functions, related to overall Outstyle layout
  * Author: <scsmash3r@gmail.com>
  * Copyright (c) 2018 [SC]Smash3r; Beerware
@@ -79,6 +79,13 @@ jQuery(document).ready(function() {
                     /* Setting equal width for whole messages area and botom pane (flexbox stuff) */
                     $elements = DOM.$messagesContainer.add(DOM.$messagesBottomPanel);
                     _setEqualWidthForElements($elements, true);
+
+                    /* Setting proper width for messages list, excluding messages header block */
+                    if (DOM.$messagesHeader.length > 0) {
+                        DOM.$messagesList.css({
+                            'height': 'calc(100% - ' + DOM.$messagesHeader.outerHeight() + 'px)'
+                        });
+                    }
 
                     /* If we're not in dialogue itself - hiding certain elements*/
                     if (outstyle.dialogs.isInDialogue()) {
@@ -174,10 +181,8 @@ jQuery(document).ready(function() {
          * @return null
          */
         var _setScrollbarOnElement = function($el) {
-
             /* ! [REFRESH] Scrollbars (AJAXED call, i.e. - existing instance) */
             if ($el.overlayScrollbars()) {
-                /* [REFRESH] Scrollbars for messages list (chat) */
                 if ($el.attr('id') === 'messages_list') {
                     $el.overlayScrollbars({})
                         .overlayScrollbars()
@@ -194,6 +199,14 @@ jQuery(document).ready(function() {
                         });
                 }
 
+                if ($el.attr('id') === 'conversations_area') {
+                    $el.overlayScrollbars({})
+                        .overlayScrollbars()
+                        .scroll({
+                            y: "0"
+                        });
+                }
+
                 _log('[LAYOUT] scrollbar is refreshed for #' + $el.attr('id'));
             }
 
@@ -201,6 +214,7 @@ jQuery(document).ready(function() {
             /* ! [INIT] Scrollbars (new instance) */
             if (!$el.hasClass('os-host') && typeof $el.attr('id') !== typeof undefined) {
 
+                /** @see: https://kingsora.github.io/OverlayScrollbars/#!documentation/initialization-jquery */
                 var osInstance = $el.overlayScrollbars({});
                 var collideDetector = osInstance.find('.os-content-glue');
 
@@ -259,9 +273,27 @@ jQuery(document).ready(function() {
                 }
 
                 /* ! --- [INIT] Scrollbars for dialogs list (friends search mode) --- */
-
                 if (osInstance.attr('id') === 'friends_in_dialogs_area') {
                     osInstance.overlayScrollbars({}).overlayScrollbars();
+                }
+
+                /* ! --- [INIT] Scrollbars for conversations sidebar --- */
+                if (osInstance.attr('id') === 'conversations_area') {
+                    osInstance.overlayScrollbars({
+                        scrollbars: {
+                            autoHide: 'leave',
+                            autoHideDelay: 100
+                        }
+                    });
+
+                    /* ! Autoscroll to active dialog/conversation */
+                    osInstance.overlayScrollbars().scroll({
+                        el: osInstance.find('.dialog__box.active'),
+                        scroll: "ifneeded",
+                        block: ["begin", "end"],
+                        margin: 0
+                    });
+
                 }
 
                 _log('[LAYOUT] scrollbar attached on #' + $el.attr('id'));

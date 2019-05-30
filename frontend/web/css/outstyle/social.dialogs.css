@@ -8,16 +8,25 @@
     border-right: 1px solid #ebebeb;
 }
 
+#conversations_area .os-scrollbar-vertical {
+    border: 0px;
+    width: 1px;
+    padding: 0;
+}
+
 #dialogs_search,
 #friends_in_dialogs_search {
     font-size: 0.8em;
     border-bottom: 1px solid #ddd;
     background: #e2e2e2;
+    position: relative;
+    z-index: 5;
 }
 
 .dialog__box {
     border-bottom: 1px solid #ebebeb;
     position: relative;
+    padding-right: .9em;
 }
 
 .dialog__box.active {
@@ -100,8 +109,66 @@
     font-size: 2.3em;
 }
 
-/* ! --- DIALOGS: Create new [bottom panel] --- */
+/* ! --- DIALOGS: Create new [bottom panel] / MISC --- */
 #dialog_actions {
     border-right: 1px solid #ebebeb;
     background: #f9f9f9;
+}
+
+.dialogs__new {
+    width: 100%;
+    color: #ddd;
+}
+
+/* ! --- DIALOGS: options --- */
+.i-dialogbutton {
+    color: #374045;
+    padding: 0.8em;
+}
+
+.i-dialogbutton:hover,
+.i-dialogbutton:focus {
+    color: #6f808a;
+}
+
+/* ! --- [MISC] Dialog Badges --- */
+.dialog__box .c-badge--bottomright {
+    right: 0.75em;
+    bottom: 0.75em;
+}
+
+.dialog__box .c-badge--bottomleft {
+    left: 0.75em;
+    bottom: 0.75em;
+}
+
+.dialog__box.active .c-badge {
+    background-color: #fff;
+    color: #595959;
+}
+
+.dialog__memberscount {
+    position: absolute;
+    background: #f9f9f9;
+    font-weight: normal;
+    opacity: 0;
+    padding: 0.2em 0.4em;
+    font-size: 0.8em;
+    color: #57656e;
+}
+
+.dialog__box--hoverable:hover .dialog__memberscount {
+    opacity: 1;
+}
+
+.dialog__box--hoverable.active .dialog__memberscount {
+    opacity: 1;
+    background: rgba(111, 128, 138, 0.8);
+    color: #fff;
+}
+
+.dialog__box--hoverable.active:hover .dialog__memberscount {
+    opacity: 1;
+    background: rgba(123, 141, 152, 0.8);
+    color: #fff;
 }

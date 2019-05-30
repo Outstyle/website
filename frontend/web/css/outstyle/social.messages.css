@@ -10,6 +10,10 @@
     display: none;
 }
 
+#messages_header {
+    background: #f9f9f9;
+}
+
 #messages_bottompanel {
     border-top: 1px solid #ebebeb;
     position: fixed;

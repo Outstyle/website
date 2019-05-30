@@ -8,6 +8,7 @@
 namespace frontend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 use frontend\models\DialogMembers;
 use frontend\models\UserAvatar;
@@ -44,23 +45,25 @@ class Dialog extends \common\models\Dialog
      */
     public static function setupData(array $dialogs = []) : array
     {
+        /* ! Sort dialogues so the latest modified one could be on top */
+        ArrayHelper::multisort($dialogs, ['dialog.modified'], [SORT_DESC]);
+
         foreach ($dialogs as $dialogKey => $dialog) {
             $dialogId = $dialog['dialog']['id'];
             $dialogName = $dialogs[$dialogKey]['dialog']['name'];
             $dialogMembers = $dialogs[$dialogKey]['dialog']['members'] = DialogMembers::getDialogMembersById($dialogId);
+            $dialogMembersCount = $dialogs[$dialogKey]['dialog']['membersCount'] = count($dialogMembers);
             $dialogLastMessage = Message::getByDialogId($dialogId)->orderBy('id DESC')->one();
 
+            /* Setting each dialog member data */
             foreach ($dialogMembers as $memberKey => $member) {
                 $dialogs[$dialogKey]['dialog']['members'][$memberKey]['userDescription']['userAvatar']['path'] = UserAvatar::getAvatarPath($member['userDescription']['userAvatar']['img'], '150x150_', $member['userDescription']['userAvatar']['service_id']);
             }
 
             /* If dialog has only one member (straight 1x1 chat), dialog name will be username */
             if (!$dialogName && count($dialogMembers) == 2) {
-                $dialogs[$dialogKey]['dialog']['name'] = UserNickname::composeFullName($dialogMembers[1]['userDescription']);
+                $dialogs[$dialogKey]['dialog']['name'] = UserNickname::composeFullName($dialogMembers[0]['userDescription']);
             }
-
-            /* Get last message from any dialog to be shown in dialogs list */
-
 
             /* Predefine array keys for last message and time of last message
                If no last message is found, time must be dialog creation date */

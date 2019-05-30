@@ -8,6 +8,7 @@
 namespace common\models;
 
 use Yii;
+use common\components\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%dialog}}".
@@ -51,9 +52,27 @@ class Dialog extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['name', 'default', 'value' => ''],
-            [['created'], 'safe'],
-            [['name'], 'string', 'max' => 255]
+            [
+                ['name'],
+                'default',
+                'value' => ''
+            ],
+            [
+                ['name'],
+                'string',
+                'max' => 40
+            ],
+            [
+                ['name'],
+                'filter',
+                'filter' => function ($name) {
+                    return StringHelper::clearString($name);
+                },
+            ],
+            [
+                ['created', 'modified'],
+                'safe'
+            ],
         ];
     }
 

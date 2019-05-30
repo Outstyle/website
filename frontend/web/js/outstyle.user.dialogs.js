@@ -44,24 +44,81 @@ jQuery(document).ready(function() {
         /* When dialogues list are loaded into dialogs sidebar (header passed from server) */
         /* X-IC-Trigger @ DialogsController */
         jQuery("body").on("dialogsLoaded", function() {
-            jQuery('#conversations__loadmore').remove();
+            jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#conversations_area')]);
             window.setTimeout(function() {
-                jQuery('body').trigger('dialogsInit');
+                /*
+                --- Init order MATTERS! ---
+                First we need to init messages section, because it builds layout and makes equalheight elements
+                Only after we can init dialogs section an apply scrollbars and stuff, because dialogs sidebar relies on messages height area
+                 */
                 jQuery('body').trigger('messagesInit');
+                jQuery('body').trigger('dialogsInit');
             }, 150);
         });
 
-        jQuery("body").on("createNewDialog", function() {
-            window.alert('Get checked friends and initiate new dialogue or conversation');
+        /* When new dialogue is successfully created (header passed from server) */
+        jQuery("body").on("dialogCreated", function() {
+            Intercooler.triggerRequest("#menu__item-messages>a");
+        });
+
+        /* When dialogue with certain user already exists (header passed from server) */
+        jQuery("body").on("dialogAlreadyExists", function(e, dialogId) {
+            var dialogBoxId = '#dialogbox-' + dialogId;
+
+            /* Making another request to dialogues list, getting needed dialogueId */
+            Intercooler.triggerRequest("#dialogs_search", function(data) {
+                var newDialogBox = jQuery(data).find(dialogBoxId);
+                var existingDialogBox = jQuery('#conversations_area').find(dialogBoxId);
+
+                /* If we already have dialog box with userId on first page of dialogs list, we simply move it to the top of the DOM tree. In other case - prepend that dialogBox as a new DOM node */
+                if (existingDialogBox.length) {
+                    existingDialogBox.slideUp("slow", function() {
+                        existingDialogBox
+                            .detach()
+                            .prependTo('#conversations_area .dialogs__list')
+                            .slideDown("slow");
+                    });
+                } else {
+                    newDialogBox.prependTo('#conversations_area .dialogs__list');
+                }
+            });
+
+            Intercooler.triggerRequest(dialogBoxId);
+        });
+
+        /* When new dialogue is successfully created (header passed from server) */
+        jQuery("body").on("dialogUpdated", function(e, dialog) {
+
+            /* If dialogue name was changed */
+            if (dialog.name !== "") {
+                var dialogName = decodeURIComponent((dialog.name).replace(/\+/g, " ")); /* CYR support i.e. */
+                jQuery('.dialog__name--dynamic').val(dialogName);
+                jQuery('.dialog__box.active .dialog__name--dynamic').html(dialogName);
+            } else {
+                var oldDialogName = jQuery('.dialog__box.active .dialog__name--dynamic').html();
+                jQuery('.dialog__name--dynamic').val(oldDialogName);
+            }
         });
 
         /* @ dialog/search view */
-        jQuery("body").on("dialogsSearchModeSwitch", function() {
+        jQuery("body").on("dialogsSearchModeSwitch", function(e, mode) {
+            if (mode == 'add') {
+                jQuery('#dialog-create-new').hide();
+                jQuery('#dialog-add-members').show();
+            } else {
+                jQuery('#dialog-create-new').show();
+                jQuery('#dialog-add-members').hide();
+            }
+
             jQuery('body').trigger('layoutInit', {
                 'forElement': 'dialogs'
             });
             jQuery('body').trigger('layoutSwitch', 'friends_dialogs');
             Intercooler.triggerRequest("#friends__loadonce");
+        });
+
+        jQuery("body").on("dialogsAddNewMember", function() {
+            jQuery('body').trigger('dialogsSearchModeSwitch', 'add');
         });
 
         jQuery("body").on("highlightCurrentDialogBox", function() {
@@ -83,6 +140,7 @@ jQuery(document).ready(function() {
             if (window.location.pathname.indexOf(_path) === 0) {
                 jQuery('.dialog__box').removeClass('active');
                 jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#friends_in_dialogs_area')]);
+                jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#conversations_area')]);
             }
         });
 
@@ -95,6 +153,15 @@ jQuery(document).ready(function() {
             }
 
             _log('[DIALOGS] popstate triggered');
+        });
+
+        /* Before any request is fired up by IC */
+        jQuery(document).on("beforeAjaxSend.ic", function(event, settings) {
+            if (settings.url == '/api/dialog/update') {
+                if (outstyle.dialogs.isInDialogue()) {
+                    settings.data = settings.data + '&dialog=' + outstyle.dialogs.getDialogueId();
+                }
+            }
         });
 
         /* --- INTERCOOLER BINDS END --- */
@@ -115,6 +182,7 @@ jQuery(document).ready(function() {
                     'forElement': 'dialogs',
                     '$dialogsContainer': $dialogsContainer,
                     '$dialogsSearchForm': $dialogsContainer.find('#dialogs_search'),
+                    '$conversationsArea': $dialogsContainer.find('#conversations_area'),
                     '$friendsSearchForm': $dialogsContainer.find('#friends_in_dialogs_search'),
                     '$friendsInDialogsArea': $dialogsContainer.find('#friends_in_dialogs_area'),
                 };
@@ -124,6 +192,7 @@ jQuery(document).ready(function() {
                 _highlightCurrentDialogBox();
 
                 jQuery('body').trigger('setScrollbarOnElement', [DOM.$friendsInDialogsArea]);
+                jQuery('body').trigger('setScrollbarOnElement', [DOM.$conversationsArea]);
 
                 _log('[DIALOGS] init finished');
             }
@@ -139,6 +208,12 @@ jQuery(document).ready(function() {
 
             /* ! --- BIND EVENTS FOR DIALOGS AREA --- */
             jQuery(DOM.$friendsSearchForm).off('submit').on("submit", function(e) {
+                /* Prevent form submission and page refresh, sending only IC requests */
+                e.preventDefault();
+            });
+
+            jQuery(DOM.$dialogsSearchForm).off('submit').on("submit", function(e) {
+                /* Prevent form submission and page refresh, sending only IC requests */
                 e.preventDefault();
             });
 
@@ -157,8 +232,7 @@ jQuery(document).ready(function() {
                 jQuery.each(OUTSTYLE_GLOBALS.owner.messages.unread, function(dialogId, unreadMessagesAmount) {
                     var dialogData = {
                         'id': '#dialogbox-' + dialogId + ' .dialog__info',
-                        'color': 'blue',
-                        'type': 'ordinary',
+                        'classes': 'c-badge--rounded c-badge--blue c-badge--ordinary c-badge--bottomright',
                         'text': unreadMessagesAmount
                     };
                     jQuery('body').trigger('appendBadge', dialogData);

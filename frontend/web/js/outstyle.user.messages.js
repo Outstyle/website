@@ -81,6 +81,7 @@ jQuery(document).ready(function() {
                 .val('')
                 .focus();
             autosize.update(jQuery('#message'));
+            jQuery('.chat-thread .conversations__new').remove();
             Intercooler.triggerRequest("#messages_area");
         });
 
@@ -108,6 +109,11 @@ jQuery(document).ready(function() {
         /* Triggered before a snapshot is taken for history - unwire custom JS here, restore initial page state */
         jQuery(document).on("beforeHistorySnapshot.ic", function() {
             jQuery('#messages_area').hide(); /* To prevent blinking while attaching scrollbars */
+
+            /* TODO: move this */
+            jQuery('#dialog-create-new').attr('disabled', true);
+            OUTSTYLE_GLOBALS.owner.friends.selected.length = 0;
+
             if (window.location.pathname.indexOf(_path) === 0) {
                 jQuery('body').trigger('detachScrollbarFromElement', [jQuery('#messages_list')]);
             }
@@ -159,9 +165,12 @@ jQuery(document).ready(function() {
                     'forElement': 'messages',
                     '$messagesContainer': $messagesContainer,
                     '$messagesArea': $messagesContainer.find('#messages_area'),
+                    '$messagesHeader': $messagesContainer.find('#messages_header'),
                     '$messagesList': $messagesContainer.find('#messages_list'),
                     '$messagesBottomPanel': $messagesContainer.find('#messages_bottompanel'),
                     '$messagesSendbox': $messagesContainer.find('#messages_sendbox'),
+                    '$messagesDialogName': $messagesContainer.find('input[name=dialog_name]'),
+                    '$messagesDialogOptionsButton': $messagesContainer.find('.dialog__settingsbutton'),
                     '$messageTextarea': $messagesContainer.find('#message'),
                 };
 
@@ -171,6 +180,7 @@ jQuery(document).ready(function() {
                 _bindLocalEvents(DOM);
 
                 jQuery('body').trigger('layoutInit', DOM);
+                jQuery('body').trigger('tooltipsInit', DOM);
                 jQuery('body').trigger('messagesHighlightUnread', [DOM.$messagesList]);
                 jQuery('body').trigger('setScrollbarOnElement', [DOM.$messagesList]);
 
@@ -249,6 +259,14 @@ jQuery(document).ready(function() {
 
             DOM.$messageTextarea.off('focus').on('focus', function() {
                 autosize(DOM.$messageTextarea);
+            });
+
+            DOM.$messagesDialogName.off('focus').on('focus', function() {
+                jQuery(this).removeClass('c-field--editable');
+            });
+
+            DOM.$messagesDialogName.off('focusout').on('focusout', function() {
+                jQuery(this).addClass('c-field--editable');
             });
 
             /* Fires up everytime chat box height is changed */

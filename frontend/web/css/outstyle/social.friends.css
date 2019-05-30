@@ -14,7 +14,8 @@
     font-size: 0.8em;
 }
 
-.friend__avatar {
+.friend__avatar,
+.member__avatar {
     display: block;
     margin: .5em;
 }
@@ -30,12 +31,14 @@
     opacity: 0.6;
 }
 
-.friend__avatar--small {
+.friend__avatar--small,
+.member__avatar--small {
     width: 46px;
     height: 46px;
 }
 
-.friend__avatar--mini {
+.friend__avatar--mini,
+.member__avatar--mini {
     width: 30px;
     height: 30px;
 }

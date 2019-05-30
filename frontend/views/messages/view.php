@@ -5,9 +5,6 @@ use yii\helpers\Url;
 
 use yii\widgets\Spaceless;
 
-use common\components\helpers\ElementsHelper;
-use common\components\helpers\StringHelper;
-
 /**
  * User messages list
  *
@@ -18,31 +15,43 @@ use common\components\helpers\StringHelper;
  * @var $dialogMembers            common\models\DialogMembers
 */
 
-
+/* ! --- NO MESSAGES AT ALL --- */
+if ($messages === 0) {
+    echo $this->render('_nomessages');
+    return;
+}
 
 /* ! --- MESSAGES HEADER --- */
 if (isset($options['showHeader'])) {
-    echo Html::beginTag('div', ['id' => 'messages_header']);
-    echo Html::endTag('div');
+    echo Html::beginTag('div', [
+        'id' => 'messages_header',
+        'class' => 'u-window-box--medium',
+    ]).
+
+        $this->render('../dialog/_dialogoptions', [
+            'dialog' => $dialog,
+            'dialogMembers' => $dialogMembers
+        ]).
+
+    Html::endTag('div');
 }
 
 /* ! --- MESSAGES LIST --- */
 echo Html::beginTag('div', ['id' => 'messages_list']);
 
-    /* REDO: Move this. --- NO MESSAGES AT ALL - MEANING WE'RE ON MESSAGES MAIN PAGE --- */
-    if ($messages === 0) {
-        echo Html::tag('div',
-            '<div class="u-center-block__content"><i class="zmdi zmdi-comment-more zmdi-hc-5x"></i><br>'.
-                \Yii::t('app', 'Please choose a dialogue or {dialogue_action_new}', [
-                'dialogue_action_new' => 'создайте новый',
-                ]).
-            '</div>',
-        [
-            'class' => 'u-center-block u-c conversations__new'
+
+        /* ! Messages thread */
+        echo Html::beginTag('ul', [
+            'class' => 'chat-thread'
         ]);
-    } else {
-        /* --- NO MESSAGES IN THIS DIALOG --- */
-        if (!$messages) {
+
+        if ($messages) {
+            echo $this->render('_singlemessage', [
+                'messages' => $messages,
+                'dialogMembers' => $dialogMembers
+            ]);
+        } else {
+            /* ! No messages in this dialog */
             echo Html::tag('div',
                 '<div class="u-center-block__content"><i class="zmdi zmdi-collection-text zmdi-hc-5x"></i><br>'.
                     \Yii::t('app', 'No messages has been written yet... Be first and say something!').
@@ -52,18 +61,7 @@ echo Html::beginTag('div', ['id' => 'messages_list']);
             ]);
         }
 
-        if ($messages) {
-            echo Html::beginTag('ul', [
-                'class' => 'chat-thread'
-            ]).
+        echo Html::endTag('ul');
 
-            $this->render('_singlemessage', [
-                'messages' => $messages,
-                'dialogMembers' => $dialogMembers
-            ]).
-
-            Html::endTag('ul');
-        }
-    }
 
 echo Html::endTag('div');

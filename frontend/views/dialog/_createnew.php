@@ -36,10 +36,25 @@ echo Html::beginTag('div', [
                 Html::button(
                     Yii::t('app', 'Create new dialog'),
                     [
-                      'id' => 'dialog-create-new',
-                      'class' => 'c-button c-button--default u-small',
-                      'title' => Yii::t('app', 'Delete album'),
-                      'ic-action' => 'trigger:createNewDialog'
+                        'id' => 'dialog-create-new',
+                        'class' => 'c-button c-button--default u-small u-i',
+                        'title' => Yii::t('app', 'Create new dialog'),
+                        'disabled' => 'disabled',
+                        'ic-post-to' => Url::toRoute(['api/dialog/add']),
+                        'ic-on-beforeTrigger' => "jQuery('body').trigger('dialogsSearchModeSwitch')",
+                        'ic-include' => '.friend-selection-checkbox',
+                        'ic-push-url' => 'false',
+                    ]
+                ).
+                Html::button(
+                    Yii::t('app', 'Add to this dialog'),
+                    [
+                        'id' => 'dialog-add-members',
+                        'class' => 'c-button c-button--default u-small u-i',
+                        'title' => Yii::t('app', 'Add to this dialog'),
+                        'disabled' => 'disabled',
+                        'ic-action' => "javascript:alert('Ещё не реализовано')",
+                        'ic-push-url' => 'false',
                     ]
                 ),
             [

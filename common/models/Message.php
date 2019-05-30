@@ -95,7 +95,7 @@ class Message extends \yii\db\ActiveRecord
                 ['message'],
                 'filter',
                 'filter' => function ($message) {
-                    /* Take out to string helper */
+                    /* FIXME: Take out to string helper */
                     $message = strip_tags($message);
                     return \yii\helpers\Html::encode($message);
                 },

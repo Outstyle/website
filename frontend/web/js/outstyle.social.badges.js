@@ -22,7 +22,7 @@ jQuery(document).ready(function() {
 
         /* --- Global 'ondocumentready' binds for calling out the function from other modules or for IC --- */
         jQuery("body").on("appendBadge", function(event, data) {
-            _appendBadgeToElement(data.id, data.color, data.type, data.text);
+            _appendBadgeToElement(data.id, data.classes, data.text);
 
             _log('[BADGES] appendBadge for ' + data.id + ' triggered');
         });
@@ -41,9 +41,11 @@ jQuery(document).ready(function() {
          * @return null
          */
         var init = function() {
-            _appendBadgeToElement('#menu__item-friends a', 'red', 'shaded', OUTSTYLE_GLOBALS.owner.friends.count.pending);
-            _appendBadgeToElement('#menu__item-messages a', 'red', 'shaded', OUTSTYLE_GLOBALS.owner.messages.count.unread);
-            _appendBadgeToElement('#friends__roundbutton-all a', 'red', 'shaded', OUTSTYLE_GLOBALS.owner.friends.count.pending);
+            var standardVisualClasses = 'c-badge--rounded c-badge--red c-badge--shaded';
+
+            _appendBadgeToElement('#menu__item-friends a', standardVisualClasses, OUTSTYLE_GLOBALS.owner.friends.count.pending);
+            _appendBadgeToElement('#menu__item-messages a', standardVisualClasses, OUTSTYLE_GLOBALS.owner.messages.count.unread);
+            _appendBadgeToElement('#friends__roundbutton-all a', standardVisualClasses, OUTSTYLE_GLOBALS.owner.friends.count.pending);
 
             _log('[BADGES] init finished');
         };
@@ -52,15 +54,14 @@ jQuery(document).ready(function() {
         /**
          * Append badge to element
          * @param {string} elementId  CSS selector
-         * @param {string} color     CSS class or color, according to BlazeUI
-         * @param {string} type      CSS class or color, according to BlazeUI
+         * @param {string} classes     CSS class or color, according to BlazeUI
          * @param {string} text
          * @see {@link https://www.blazeui.com/components/badges|BlazeUI Badges}
          */
-        var _appendBadgeToElement = function(elementId, color, type, text) {
+        var _appendBadgeToElement = function(elementId, classes, text) {
             var existingBadge = jQuery(elementId).find('span.c-badge');
             if (existingBadge.length <= 0 && text != 0) {
-                var badge = jQuery('<span class="c-badge c-badge--rounded c-badge--' + color + ' c-badge--' + type + '">' + text + '</span>');
+                var badge = jQuery('<span class="' + classes + ' c-badge">' + text + '</span>');
                 jQuery(elementId).append(badge);
                 badge.addClass('popout');
             } else {

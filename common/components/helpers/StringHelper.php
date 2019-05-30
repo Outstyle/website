@@ -126,7 +126,7 @@ class StringHelper
      */
     public static function clearString($string)
     {
-        return mb_ereg_replace('/[^a-zа-яА-Я0-9\-\. _]/i', '', trim(strip_tags($string)));
+        return mb_ereg_replace("[^A-Za-zа-яА-Я0-9\-\.\,\"\'\!\@\#\$\%\^\&\*\(\)\[\]\~\+\=\:\;\|\\\/ _]", '', trim(strip_tags($string)));
     }
 
     /**
