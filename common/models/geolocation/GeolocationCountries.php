@@ -3,6 +3,7 @@
 namespace common\models\geolocation;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 use common\components\helpers\BackupHelper;
 use common\components\helpers\CURLHelper;
@@ -194,7 +195,7 @@ class GeolocationCountries extends \yii\db\ActiveRecord
      */
     public static function getAllActiveCountriesDropdown()
     {
-        $countries = ArrayHelper::map(self::getAllActiveCountriesArray(), 'vk_country_id', 'name_ru');
+        $countries = \yii\helpers\ArrayHelper::map(self::getAllActiveCountriesArray(), 'vk_country_id', 'name_ru');
         if (is_array($countries)) {
             return ['' => Yii::t('app', 'Choose country...')] + $countries;
         }
