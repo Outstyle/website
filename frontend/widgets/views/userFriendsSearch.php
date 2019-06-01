@@ -33,7 +33,7 @@ echo Html::beginTag('div', ['id' => 'friendsList']);
 
             /* Load more trigger */
             $friendsCounter++;
-            if ($friendsCounter === $friendsTotal) {
+            if ($friendsCounter === $friendsTotal && empty($_POST['search'])) {
                 echo Html::tag('div', '', [
                 'id' => 'friends_loadmore',
                 'ic-action' => 'trigger:loadMoreFriends',

@@ -69,7 +69,7 @@ class Photoalbum extends \yii\db\ActiveRecord
             ],
             [
               ['name', 'text'],
-              'match', 'pattern' => '/^[а-яА-ЯЁёa-zA-Z0-90-9\-\.\,\!\?\:\;\s_]+$/ui',
+              'match', 'pattern' => '/^[а-яА-ЯЁё\w\-.,!\?:;\s]+$/ui',
               'message' => Yii::t('app', 'This field can only contain letters and numbers'),
             ],
             [

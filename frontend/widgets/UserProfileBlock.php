@@ -97,7 +97,7 @@ class UserProfileBlock extends Widget
 
         # User avatar
         if (isset($this->user->userDescription->avatar)) {
-            $this->userAvatarPath = \frontend\models\UserAvatar::getAvatarPath($this->user->id);
+            $this->userAvatarPath = \frontend\models\UserAvatar::getById($this->user->userDescription->avatar);
         }
 
         # User birthday + Privacy check

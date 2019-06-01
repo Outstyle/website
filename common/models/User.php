@@ -258,7 +258,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
     }
 
     /* RELATIONS */
-    public function getUserdescription()
+    public function getUserDescription()
     {
         return $this->hasOne(UserDescription::className(), ['id' => 'id']);
     }

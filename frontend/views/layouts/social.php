@@ -38,7 +38,7 @@ Spaceless::begin();
 $bodyClass = (Yii::$app->user->id) ? '-registered' : '-guest';
 
 echo Html::beginTag('body', [
-  'class' => 'social in-'.Yii::$app->controller->id.' user'.$bodyClass,
+  'class' => 'social user'.$bodyClass,
   'ic-global-include' => '{"'.Yii::$app->request->csrfParam.'":"'.ElementsHelper::getCSRFToken().'"}'
 ]);
 

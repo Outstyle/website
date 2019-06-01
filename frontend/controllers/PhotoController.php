@@ -84,7 +84,8 @@ class PhotoController extends OutstyleSocialController
     public function actionView(int $photoId)
     {
         $photo = Photo::getById($photoId);
-
+        $photo['img'] = Photo::getByPrefixAndServiceId($photo['img'], '', $photo['service_id']);
+        
         if (!$photo) {
             throw new HttpException(400, Yii::t('err', 'Photo not found'));
         }

@@ -18,6 +18,7 @@ use common\models\Photo;
 * @var object $model
 */
 $model = new Photo();
+$photosCounter = (!empty($photos) ? count($photos) : 0);
 
 $form = ActiveForm::begin(
   [
@@ -40,7 +41,7 @@ $form = ActiveForm::begin(
     /* Add new photos widget */
     $form->field($model, 'img')->widget('demi\image\FormImagesWidget')->label(false).
     $form->field($model, 'album')->hiddenInput(['value'=> $album_id ?? 0])->label(false).
-    $form->field($model, 'album_photos_count')->hiddenInput(['value'=> count($photos)])->label(false)
+    $form->field($model, 'album_photos_count')->hiddenInput(['value'=> $photosCounter])->label(false)
 
   );
 

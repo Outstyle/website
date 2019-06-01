@@ -49,6 +49,7 @@ echo Html::hiddenInput('page', $page, ['id' => 'page']);
 
     !!! IMPORTANT !!! DON'T FORGET to switch off active events to prevent event binding duplication! (make event .off().on())
 */
+
 ?>
 <script>
 jQuery(document).ready(function () {
@@ -63,8 +64,9 @@ jQuery(document).ready(function () {
     /* --- We need to initialize Packery at start --- */
     jQuery('#outstyle_news .news')
     .packery({
-      itemSelector: '.news__item',
-      gutter: 0
+        itemSelector: '.news__item',
+        gutter: 0,
+        percentPosition: true
     })
     .packery('layout');
 
@@ -137,7 +139,9 @@ jQuery(document).ready(function () {
 
       init_news();
     },50);
-
+	if (jQuery("#bnr").length == 0) {
+		jQuery("#content").prepend('<noindex><a href="https://vk.com/outstyle_org?w=wall-152369034_421" target="_blank" rel="nofollow" id="bnr"><img src="/images/bigsize.png" class="o-image"></a></noindex>');
+	}
   });
 
   /* --- Before sending our Intercooler AJAX request, we check for stored values from way.js and pass them too --- */

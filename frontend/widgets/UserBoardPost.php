@@ -56,8 +56,9 @@ class UserBoardPost extends Widget
 
                 # Post author
                 $posts[$id]['userId'] = $userId;
+
                 if (!isset($cachedUserInfo[$userId])) {
-                    $posts[$id]['userAvatar'] = $cachedUserInfo[$userId]['userAvatar'] = \frontend\models\UserAvatar::getAvatarPath($userId);
+                    $posts[$id]['userAvatar'] = $cachedUserInfo[$userId]['userAvatar'] = \frontend\models\UserAvatar::getByUserId($userId);
                     $posts[$id]['userNickname'] = $cachedUserInfo[$userId]['userNickname'] = \frontend\models\UserNickname::getNickname($userId);
                     $posts[$id]['userCulture'] = $cachedUserInfo[$userId]['userCulture'] = \frontend\models\UserDescription::getUserCultureByUserId($userId);
                 } else {

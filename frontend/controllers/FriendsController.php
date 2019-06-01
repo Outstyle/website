@@ -150,15 +150,16 @@ class FriendsController extends OutstyleSocialController
               'is_online'
             ]);
 
-            /* ! TODO Move this chunk into more appropriate place? v REDO this stuff. */
+            /* TODO: Move this chunk into more appropriate place? */
+            /* FIXME: redo this stuff */
             $response['triggeredBy'] = Yii::$app->request->post('ic-trigger-name') ?? Yii::$app->request->post('ic-trigger-id');
             $response['page'] = (int)$data['page'];
 
-            if (!$response['triggeredBy']) {
+            if (!$response['triggeredBy'] || $response['triggeredBy'] == 'friends-search-form') {
                 $response['triggeredBy'] = 'loadmore';
             }
 
-            if ($data['search'] && $response['triggeredBy'] != 'loadmore') {
+            if (!empty($data['search']) && $response['triggeredBy'] != 'loadmore') {
                 $response['page'] = 0;
                 $response['search'] = $data['search'];
                 $response['triggeredBy'] = Yii::$app->request->post('ic-element-id');

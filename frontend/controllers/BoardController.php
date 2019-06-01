@@ -78,9 +78,29 @@ class BoardController extends OutstyleSocialController
         return $this->render('view', [
             'user' => $user,
             'friends' => [
-              'active' => array_slice($this->userGlobalData[$this->boardOwnerRelation]['friends']['active'], 0, 6)
-            ]
+                'active' => array_slice($this->userGlobalData[$this->boardOwnerRelation]['friends']['active'], 0, 6)
+            ],
+            'isOwner' => ($this->boardOwnerRelation == 'owner' ? 1 : 0), /* HACK: [?] */
+            'boardOwnerUserId' => $this->boardOwnerUserId /* HACK: [?] */
         ]);
+    }
+
+    public function actionAddpost()
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = new Board();
+            $model->load(Yii::$app->request->post(), '');
+            $model->user = Yii::$app->user->id;
+            $model->validate();
+
+            if ($model->validate()) {
+                $model->save();
+                $headers = Yii::$app->response->headers;
+                $headers->add('X-IC-Trigger', '{"boardPostAdded":[]}');
+            } else {
+                ErrorHandler::triggerHeaderError($model->errors);
+            }
+        }
     }
 
     public function actionAddboard()

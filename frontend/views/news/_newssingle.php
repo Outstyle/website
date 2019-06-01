@@ -5,6 +5,9 @@ use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 use common\components\helpers\ElementsHelper;
 use frontend\widgets\WidgetComments;
+use frontend\widgets\WidgetCommentsDisqus;
+
+echo '<noindex><a href="https://vk.com/outstyle_org?w=wall-152369034_421" target="_blank" rel="nofollow" id="bnr"><img src="/images/bigsize.png" class="o-image"></a></noindex>';
 
 echo
 Html::tag('div',
@@ -113,7 +116,7 @@ Html::tag('div',
           ['class' => 'authorbox__date']
         ),
 
-        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--bottom o-grid__cell--width-25 color-default u-l']
+        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--bottom o-grid__cell--width-25 color-default u-l authorbox__date__wrap']
       ).
 
       //cell 2
@@ -144,7 +147,7 @@ Html::tag('div',
           ]
         ),
 
-        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-50 u-c']
+        ['class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-50 u-c authorbox__author__wrap']
       ).
 
       //cell 3
@@ -255,9 +258,11 @@ Html::tag('div',
 );
 
 # Comments
-echo WidgetComments::widget([
+/*echo WidgetComments::widget([
   'elem_id' => $modelNews[0]['id'] ?? ''
-]);
+]);*/
+
+echo  WidgetCommentsDisqus::widget();
 
 /* JS: @see js/outstyle.portal.news.js */
 ?>

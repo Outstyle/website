@@ -145,7 +145,7 @@ class Comments extends \common\models\Comments
             $modelComments[$i]['elemId']             = $comments[$i]->elem_id;
             $modelComments[$i]['userId']             = $comments[$i]->user_id;
             $modelComments[$i]['userNickname']       = $comments[$i]->user ? $comments[$i]->userDescription->nickname : 0;
-            $modelComments[$i]['userAvatar']         = UserAvatar::getAvatarPath($comments[$i]->user ? $comments[$i]->user->id : 0, 'small');
+            $modelComments[$i]['userAvatar']         = UserAvatar::getById($comments[$i]->userDescription->avatar ? $comments[$i]->userDescription->avatar : 0, 'small');
             $modelComments[$i]['userCulture']        = $comments[$i]->user ? ArrayHelper::getValue(UserDescription::cultureList(true), $comments[$i]->userDescription->culture) : 0;
             $modelComments[$i]['created']            = StringHelper::convertTimestampToHuman(strtotime($comments[$i]->created));
             $modelComments[$i]['commentText']        = $comments[$i]->comment;

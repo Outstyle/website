@@ -5,6 +5,7 @@
  * @license Beerware
  */
 use yii\helpers\Html;
+use frontend\models\Photo;
 
 /**
  * Photo container
@@ -16,4 +17,6 @@ use yii\helpers\Html;
  * @since 1.0
 */
 
-echo 'Photo here';
+echo Html::img($photo['img'], [
+    'class' => 'o-image'
+]);

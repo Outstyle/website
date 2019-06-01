@@ -13,11 +13,10 @@ echo Html::tag('div',
   ]),
 
 [
-  'class' => 'o-grid__cell o-grid__cell--width-100'
+  'class' => 'o-grid__cell o-grid__cell--width-100 u-c'
 ]);
 
-echo '1';
-# Comments
+# ! Comments
 echo WidgetComments::widget([
   'elem_id' => $photo['id']
 ]);

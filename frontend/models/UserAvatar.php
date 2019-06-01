@@ -74,7 +74,7 @@ class UserAvatar extends \common\models\Photo
             return Yii::$app->params['imagesPathUrl'].'images/54x54_avatar_deleted.png';
         }
 
-        return self::getByPrefixAndServiceId($relativePath ?? '', $size, $serviceId, $photoType = self::PHOTO_TYPE_AVATAR);
+        return self::getByPrefixAndServiceId($relativePath, $size, $serviceId, $photoType = self::PHOTO_TYPE_AVATAR);
     }
 
     /**
@@ -84,11 +84,33 @@ class UserAvatar extends \common\models\Photo
      */
     public static function getById(int $avatarId = 0) : string
     {
+        if ($avatarId === 0) {
+            return Yii::$app->params['imagesPathUrl'].'images/54x54_avatar_deleted.png';
+        }
+
         $photo = self::find()
             ->where(['id' => $avatarId])
             ->asArray()
             ->one();
 
         return self::getAvatarPath($photo['img'], '150x150_', $photo['service_id']);
+    }
+
+    /**
+     * Gets an avatar absolute path by user ID
+     * @param  int  $userId
+     * @return string
+     */
+    public static function getByUserId(int $userId = 0) : string
+    {
+        $avatar = UserDescription::find()
+            ->select('avatar')
+            ->where(['id' => $userId])
+            ->asArray()
+            ->one();
+
+        $avatarId = (isset($avatar['avatar']) ? $avatar['avatar'] : 0);
+
+        return self::getById($avatarId);
     }
 }

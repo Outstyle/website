@@ -177,7 +177,7 @@ class ElementsHelper extends Html
             'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
             'ic-target' => '#uservideo .modal__iframe',
             'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-            'ic-push-url' => 'true',
+            'ic-push-url' => 'false',
           ]
         );
     }
@@ -199,7 +199,7 @@ class ElementsHelper extends Html
             'ic-select-from-response' => '#'.self::DEFAULT_AJAX_ID,
             'ic-target' => '#userphoto .modal__iframe',
             'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-            'ic-push-url' => 'true',
+            'ic-push-url' => 'false',
           ]
         );
     }

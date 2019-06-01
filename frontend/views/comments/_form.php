@@ -25,10 +25,10 @@ if (!Yii::$app->user->isGuest) {
         Html::tag('div',
 
           Html::img(
-            UserAvatar::getAvatarPath(Yii::$app->user->id),
+            UserAvatar::getById(Yii::$app->user->identity->userDescription->avatar),
             [
-              'alt' => Yii::$app->user->identity->userdescription->name.' '.Yii::$app->user->identity->userdescription->last_name,
-              'class' => 'roundborder color-'.Yii::$app->user->identity->userdescription->culture.'--border avatar avatar--smallest',
+              'alt' => Yii::$app->user->identity->userDescription->name.' '.Yii::$app->user->identity->userDescription->last_name,
+              'class' => 'roundborder color-'.Yii::$app->user->identity->userDescription->culture.'--border avatar avatar--smallest',
             ]
           ),
 

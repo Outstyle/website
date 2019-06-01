@@ -53,6 +53,7 @@ class Board extends \yii\db\ActiveRecord
      */
     public function rules()
     {
+        /* FIXME: This rules are somewhat weird. Needs checking (i.e. repost_type must be `int`, not `string`) */
         return [
             [['text'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
             [['user', 'owner'], 'required'],
@@ -86,24 +87,30 @@ class Board extends \yii\db\ActiveRecord
     {
         $board = User::find()
         ->where([
-          'id' => $userId,
-          'status' => User::STATUS_ACTIVE
+            'id' => $userId,
+            'status' => User::STATUS_ACTIVE
         ])
         ->with([
-          'userDescription',
-          'userPrivacy',
-          'video' => function (\yii\db\ActiveQuery $query) {
-              $query->orderBy(self::$boardOrderBy)->limit(2)->asArray()->all();
-          },
-          'photo' => function (\yii\db\ActiveQuery $query) {
-              $query->orderBy(self::$boardOrderBy)->limit(2)->asArray()->all();
-          },
-          'friend' => function (\yii\db\ActiveQuery $query) {
-              $query->orderBy(self::$boardOrderBy)->limit(6)->asArray()->all();
-          },
-          'board' => function (\yii\db\ActiveQuery $query) {
-              $query->orderBy(self::$boardOrderBy)->limit(self::$boardPageSize)->all();
-          }
+            'userDescription',
+            'userPrivacy',
+            'video' => function (\yii\db\ActiveQuery $query) {
+                $query->orderBy(self::$boardOrderBy)->limit(2)->asArray()->all();
+            },
+            'photo' => function (\yii\db\ActiveQuery $query) {
+                $query->where([
+                    'type' => \frontend\models\Photo::PHOTO_TYPE_DEFAULT
+                ])
+                ->orderBy(self::$boardOrderBy)
+                ->limit(2)
+                ->asArray()
+                ->all();
+            },
+            'friend' => function (\yii\db\ActiveQuery $query) {
+                $query->orderBy(self::$boardOrderBy)->limit(6)->asArray()->all();
+            },
+            'board' => function (\yii\db\ActiveQuery $query) {
+                $query->orderBy(self::$boardOrderBy)->limit(self::$boardPageSize)->all();
+            }
         ])
         ->one();
 

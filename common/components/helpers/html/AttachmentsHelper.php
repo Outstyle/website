@@ -6,6 +6,8 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+use frontend\models\Photo;
+
 use common\components\helpers\ElementsHelper;
 
 /**
@@ -74,7 +76,8 @@ class AttachmentsHelper extends ElementsHelper
         if (isset($model['img']) && isset($model['id'])) {
             $attachment_type = 'photo';
             $attachment_link = Url::toRoute('/photo-'.$model['id'], true);
-            $attachment_title = Html::img($model['img'], ['class' => 'o-image u-full-width u-pull-left user__photothumbnail']).'<i class="zmdi zmdi-check-circle zmdi-hc-5x"></i><div class="clearfix"></div>';
+            $attachment_preview_image = Photo::getByPrefixAndServiceId($model['img'], '210x126_', $model['service_id']);
+            $attachment_title = Html::img($attachment_preview_image, ['class' => 'o-image u-full-width u-pull-left user__photothumbnail']).'<i class="zmdi zmdi-check-circle zmdi-hc-5x"></i><div class="clearfix"></div>';
         }
 
         return Html::a($attachment_title, $attachment_link,

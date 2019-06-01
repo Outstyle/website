@@ -45,7 +45,7 @@ echo Html::beginTag('div', ['class' => 'u-window-box--medium u-window-box--shado
 
             # Friend image
             ElementsHelper::linkElement('friend', Html::img($friend['avatar'], [
-              'class' => "o-image roundborder friend__avatar"
+              'class' => "o-image roundborder friend__avatar friend__avatar--medium"
             ]), Url::to(['/id'.$friend['id']], true), false, $friend['name']).
 
             # Friend name

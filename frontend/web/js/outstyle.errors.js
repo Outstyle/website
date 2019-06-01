@@ -19,6 +19,7 @@ jQuery(document).ready(function() {
     (function() {
         "use strict";
 
+        /* Handle error triggering from our server (headers) */
         jQuery('body').on('showErrors', function(event, data) {
             ohSnapX();
             jQuery.each(data, function(key, value) {
@@ -26,6 +27,11 @@ jQuery(document).ready(function() {
                     'color': 'red'
                 });
             });
+        });
+
+        /* Handle broken images error */
+        jQuery("img").one("error", function() {
+            jQuery(this).attr("src", "/images/images/250x250_noimage.jpg");
         });
 
     }).call(outstyle.errors);

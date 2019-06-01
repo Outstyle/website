@@ -326,6 +326,4 @@ function friendsSearchFormInit() {
  * Initialize friends. This needs to be done after every AJAX call
  * @see: friends/view
  */
-function friendsInit() {
-    alert('Remove me');
-}
+function friendsInit() {}
