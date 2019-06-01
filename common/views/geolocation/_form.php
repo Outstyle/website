@@ -14,6 +14,8 @@ Html::beginTag('div', ['class' => 'geolocation__box']),
   Html::tag('div',
     Html::tag('div',
 
+     '<div id="geolocation_fields_loader" class="loader loader--medium u-l"></div>'.
+
       Html::tag('label',
         Yii::t('app', 'Selected address').
           '&nbsp;'.
@@ -160,6 +162,7 @@ jQuery(document).ready(function () {
   jQuery.ajax({
     dataType: "json",
     url: "/api/geo/vk/get?countries&formatted",
+    delay: 500,
     success: function(data) {
       var dropdownitems = '';
       jQuery.each(data.vk, function(key, country) {
@@ -180,7 +183,7 @@ jQuery(document).ready(function () {
           ajax: {
             url: "/api/geo/vk/get",
             dataType: 'json',
-            delay: 250,
+            delay: 500,
             data: function (params) {
               return {
                 q: params.term,
@@ -244,7 +247,7 @@ jQuery(document).ready(function () {
 
 
 
-  /* TODO: Select2 visual stuff */
+  /* x TODO: Select2 visual stuff */
   function formatVkCity (vk) {
     if (vk.loading) return vk.text;
     var markup = "<div class='select2-result-vkcity clearfix'>"+ vk.title + "</div>";
@@ -280,6 +283,7 @@ jQuery(document).ready(function () {
           placename.parent('.field-placename').show();
         });
     }
+    jQuery('#geolocation_fields_loader').hide();
   }
 
 });

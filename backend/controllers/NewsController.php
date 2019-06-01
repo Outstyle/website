@@ -159,7 +159,7 @@ class NewsController extends Controller
             'model' => $model,
             'categories' => $categories,
             'status' => $status,
-            'errors' => $model->errors,
+            'errors' => $model->errors
         ]);
     }
 
@@ -257,8 +257,20 @@ class NewsController extends Controller
      */
     protected function setData($data, $model)
     {
-        $model->url = StringHelper::slugify($model->name);
-        $model->user = Yii::$app->user->id;
+        if(empty($model->url)){
+            $model->url = StringHelper::slugify($model->name);
+        }
+        else{
+            $model->url = StringHelper::slugify($model->url);
+        }
+
+        if($model->isNewRecord){
+            $model->user = Yii::$app->user->id;
+        }
+        else{
+            $model->user = $model->user;
+        }
+        $model->redactor_id = Yii::$app->user->id;
         $model->article = (Yii::$app->controller->id == 'news') ? 0 : 1;
 
         return $model;

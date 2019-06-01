@@ -14,15 +14,16 @@ use Yii;
  */
 class CURLHelper
 {
-    public static function getURL($url, $headerOptions = [])
+    public static function getURL($url = '', $headerOptions = []) : array
     {
+        $results = [];
 
-        // Choose a random proxy
         $proxies = Yii::$app->params['CURLHelper']['proxies'] ?? '';
         $useProxies = Yii::$app->params['CURLHelper']['useProxies'] ?? '';
 
-        $ch = curl_init();  // Initialize a cURL handle
+        $ch = curl_init();
 
+        // Choose a random proxy
         if (isset($proxies) && $useProxies === true) {
             $proxy = $proxies[array_rand($proxies)];
             curl_setopt($ch, CURLOPT_PROXY, $proxy);
@@ -38,22 +39,14 @@ class CURLHelper
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
 
-        $results = curl_exec($ch);
-        curl_close($ch);
+        $results['content'] = curl_exec($ch) !== false ? curl_exec($ch) : '';
 
-        return $results;
-    }
+        // Error tracking
+        if (curl_errno($ch)) {
+            $results['error'] = curl_error($ch);
+            $results['proxy'] = (isset($proxy)) ? $proxy : $_SERVER['SERVER_ADDR'];
+        }
 
-    public static function postToURL($url, $postData = [])
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-
-        $results = curl_exec($ch);
         curl_close($ch);
 
         return $results;

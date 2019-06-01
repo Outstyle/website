@@ -166,12 +166,12 @@ class SchoolController extends ParentController
         /*
          * Working with objects (schools in cities), if there are any
          * FIXME: Rewrite this code to some more elegant solution regarding sibgle schoolId and array of schools
+         * FIXME: Move this check to rules() in model
          */
         if (isset($data['schoolsId']) && !is_array($data['schoolsId'])) {
-            $schools_to_show = (!array_diff($a = explode(',', $data['schoolsId']), array_map('intval', $a))) ? $data['schoolsId'] : '';
-        }
-        if (!empty($schools_to_show)) {
-            $where['id'] = (is_array($schools_to_show)) ? explode(',', $schools_to_show) : $schools_to_show;
+            if ((preg_match('/^\d+(\,\d+)*$/', $data['schoolsId']))) {
+                $where['id'] = explode(',', $data['schoolsId']);
+            }
         }
 
         /* If news does not exist - we show 404 */
@@ -253,7 +253,7 @@ class SchoolController extends ParentController
               'category' => $model[0]['category'],
               'city' => $model[0]['geolocation']['city'],
             ]),
-            'description' => StringHelper::cutString($model[0]['description'], 140),
+            'description' => StringHelper::cutString($model[0]['description'] ?? '', 140),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 

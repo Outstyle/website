@@ -7,8 +7,6 @@ use common\components\helpers\ElementsHelper;
 use frontend\widgets\WidgetComments;
 use frontend\widgets\WidgetCommentsDisqus;
 
-echo '<noindex><a href="https://vk.com/outstyle_org?w=wall-152369034_421" target="_blank" rel="nofollow" id="bnr"><img src="/images/bigsize.png" class="o-image"></a></noindex>';
-
 echo
 Html::tag('div',
 

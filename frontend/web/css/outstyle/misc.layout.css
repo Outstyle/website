@@ -674,7 +674,7 @@ hr {
 #scrollup {
     position: fixed;
     right: 10px;
-    bottom: 10px;
+    bottom: 50px;
     display: none;
     cursor: pointer;
 }

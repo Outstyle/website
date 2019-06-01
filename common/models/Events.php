@@ -5,6 +5,8 @@ namespace common\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\data\Pagination;
+use yii\behaviors\TimestampBehavior;
+use DateTime;
 use backend\models\Category;
 use frontend\models\Comments;
 use frontend\models\Likes;
@@ -14,6 +16,8 @@ use yii\helpers\ArrayHelper;
 use common\models\geolocation\Geolocation;
 use common\components\helpers\PriceHelper;
 use common\components\helpers\PhoneHelper;
+use himiklab\sitemap\behaviors\SitemapBehavior;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%events}}".
@@ -82,6 +86,7 @@ class Events extends ActiveRecord
             ],
             ['date_redact', 'default', 'value' => 0],
             ['redactor_id', 'default', 'value' => 0],
+            ['price', 'default', 'value' => 0],
             [['user', 'category', 'album', 'redactor_id', 'status', 'geolocation_id'], 'integer'],
             [['created', 'date_redact'], 'safe'],
             [['events_date'], 'required'],
@@ -93,7 +98,7 @@ class Events extends ActiveRecord
             ['price_currency', 'in', 'range' => PriceHelper::getPriceCurrenciesISO()],
             ['price_visual', 'in', 'range' => PriceHelper::getPriceVisualListKeys()],
             ['email', 'email'],
-            ['price', 'integer', 'min' => 1, 'max' => 10000],
+            ['price', 'integer', 'min' => 0, 'max' => 100000],
             ['phones', 'match', 'pattern' => PhoneHelper::PHONE_INTERNATIONAL_REGEX],
             ['events_date', 'match', 'pattern' => '/^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})$/'],
             ['site', 'url', 'defaultScheme' => 'http'],
@@ -104,10 +109,20 @@ class Events extends ActiveRecord
     /**
      * imageUploaderBehavior - https://github.com/demisang/yii2-image-uploader
      * Needed for 'Events' image uploading and cropping in admin area.
+     * timestamp - https://yiiframework.com.ua/ru/doc/guide/2/concept-behaviors/
      */
     public function behaviors()
     {
         return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'date_redact',
+                ],
+                'value' => function () {
+                    return date('U');
+                },
+            ],
         'imageUploaderBehavior' => [
           'class' => 'demi\image\ImageUploaderBehavior',
           'imageConfig' => [
@@ -137,6 +152,28 @@ class Events extends ActiveRecord
             'backendSubdomain' => 'admin.',
           ],
         ],
+            'sitemap' => [
+                'class' => SitemapBehavior::className(),
+                'scope' => function ($model) {
+                    $model->select(['id', 'created', 'date_redact']);
+                    $model->andWhere(['status' => 1]);
+                },
+                'dataClosure' => function ($model) {
+                    if ($model->date_redact==0) {
+                        $date = new DateTime("@$model->created");
+                        $time_last_mod = $date->format('Y-m-d');
+                    } else {
+                        $date = new DateTime("@$model->date_redact");
+                        $time_last_mod = $date->format('Y-m-d');
+                    }
+                    return [
+                        'loc' => Url::to('/events/'.$model->id, 'https'),
+                        'lastmod' => $time_last_mod,
+                        'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
+                        'priority' => 0.8
+                    ];
+                }
+            ]
       ];
     }
 
@@ -171,8 +208,6 @@ class Events extends ActiveRecord
 
     /**
      * Gets the events from DB and returns an array of data
-     * [?][TODO]
-     * $overpastEvents = Events::find()->where("date < :date", [':date' => time()])->orderBy('id desc')->limit(5)->all();.
      *
      * @param array $where WHERE clause to add for more precise selection. Defaults to select everything with published status
      * @param int   $page  page number. Must be >0 for pagination to appear
@@ -182,9 +217,14 @@ class Events extends ActiveRecord
     public static function getEvents($where = [], $page = null)
     {
 
+        /* TODO: Overpassed events. $overpastEvents = Events::find()->where("date < :date", [':date' => time()])->orderBy('id desc')->limit(5)->all(); */
+
         /* Default arguments for 'where' and $andWhere clauses */
         $where['status'] = self::STATUS_PUBLISHED;
+
         $andWhere = ['>', 'events_date', date('Y-m-d H:i:s', time())]; /* Only active events */
+        $andWhere = []; /* Only all events */
+        $eventsOrderBy = 'events_date desc';/* Only all events. Default order by id desc */
 
         /**
          * Getting the events: let's start by partially adding parameters in case we have pagination
@@ -192,7 +232,11 @@ class Events extends ActiveRecord
          * Read more about QB syntax here: http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html
          * Also we are using 'with()' for eager loading from user description table.
          */
-        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);
+        /**
+         * if want to print not all events, uncomment next line. Parameter 'where' must not empty. Parameter 'orderBy' default: id desc;
+         */
+        /*$eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy(self::$eventsOrderBy);*/ /* Only active events */
+        $eventsQuery = self::find()->with(['userDescription'])->where($where)->andWhere($andWhere)->orderBy($eventsOrderBy);/* Only all events sort by events date*/
 
         /* If we have pagination */
         if ($page) {
@@ -243,7 +287,8 @@ class Events extends ActiveRecord
              * Description key is needed for single events page (SEO purposes). You can add additional stuff for singles here
              */
             if (isset($where['id'])) {
-                $modelEvents[$i]['description'] = $events[$i]->description;
+                $modelEvents[$i]['description'] = $events[$i]->description ?? '';
+                $modelEvents[$i]['site'] = $events[$i]->site;
                 $modelEvents[$i]['userName'] = $events[$i]->userDescription->nickname;
                 $modelEvents[$i]['userAvatar'] = UserAvatar::getAvatarPath($events[$i]->user);
                 $modelEvents[$i]['userCulture'] = ArrayHelper::getValue(UserDescription::cultureList(true), $events[$i]->userDescription->culture);
@@ -253,8 +298,8 @@ class Events extends ActiveRecord
                 $modelEvents[$i]['img_big'] = $events[$i]->getImageSrc('960x360_');
 
                 /* Getting recommended events */
-                /* x TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
-                /* x TODO: make it as a separate method */
+                /* TODO: How to count recommendations? Probably by likes count? https://trello.com/c/tgqgMiFJ */
+                /* TODO: make it as a separate method */
 
                 $where['category'] = $events[$i]->category;
                 $andWhere = ['!=', 'id', $events[$i]->id];
@@ -271,7 +316,7 @@ class Events extends ActiveRecord
                     for ($s = 0; $s < $count; ++$s) {
                         $modelEvents[$i]['recommended'][$s]['id'] = $recommendedEvents[$s]->id;
                         $modelEvents[$i]['recommended'][$s]['title'] = $recommendedEvents[$s]->title;
-                        $modelEvents[$i]['recommended'][$s]['img'] = null; /* TODO: similar to news getSrc() */
+                        $modelEvents[$i]['recommended'][$s]['img'] = $recommendedEvents[$s]->getImageSrc('320x120_'); /* TODO: similar to news getSrc() */
                     }
                 }
             }

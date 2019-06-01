@@ -6,7 +6,7 @@ use yii\widgets\Breadcrumbs;
 use common\components\helpers\ElementsHelper;
 use common\components\helpers\StringHelper;
 use common\models\geolocation\Geolocation;
-
+use frontend\widgets\WidgetCommentsDisqus;
 use frontend\widgets\WidgetComments;
 
 /* Registering GoogleMaps JS file for map to be shown only on this pages */
@@ -244,6 +244,13 @@ Html::tag('div',
     Html::tag('div',
       $modelEvents[0]['description'],
       ['class' => 'u-letter-box--medium events__body']
+    ).
+
+    /* Event website */
+    Html::tag('div',
+      '<b>'.Yii::t('app', 'More details:').'</b>'.
+      '&nbsp;<noindex><a href="'.$modelEvents[0]['site'].'" target="_blank" rel="nofollow">'.$modelEvents[0]['site'].'</a></noindex>',
+      ['class' => 'u-letter-box--medium events__site']
     ),
 
     ['class' => 'u-window-box--super']
@@ -253,7 +260,9 @@ Html::tag('div',
 
 /* RECOMMENDED EVENTS */
 if (isset($modelEvents[0]['recommended'])) {
-
+    echo Html::beginTag('div', [
+      'class' => 'recommended-bottom-wrap'
+    ]);
   // SEPARATOR
   echo ElementsHelper::separatorDiamond(Yii::t('app', 'Recommended events')),
 
@@ -292,6 +301,7 @@ if (isset($modelEvents[0]['recommended'])) {
 
   // SIMILAR EVENTS WRAP END
   echo Html::endTag('div');
+    echo Html::endTag('div');
 }
 
 // SHARE LINE
@@ -325,10 +335,11 @@ Html::tag('div',
 );
 
 # Comments
-echo WidgetComments::widget([
+/*echo WidgetComments::widget([
   'elem_id' => $modelEvents[0]['id'] ?? ''
-]);
+]);*/
 
+echo  WidgetCommentsDisqus::widget();
 
 /* JS: @see js/outstyle.portal.event.js */
 ?>

@@ -1,5 +1,5 @@
 @import url("/frontend/web/css/font/fonts.css");
-@import url("/frontend/web/css/portal.css");
+@import url("/frontend/web/css/outstyle/base.layout.css");
 html,
 body {
     height: 100%;
@@ -264,4 +264,28 @@ a.desc:after {
 #errors_container {
   clear:both;
   min-height: 43px;
+}
+.loader--medium {
+    width: 24px;
+    height: 24px;
+}
+.u-r {
+    float: right;
+}
+.u-l {
+    float: left;
+}
+#geolocation_fields_loader {
+    margin-right:12px;
+}
+
+/* Lists */
+.list-group-info {
+    border-top: 1px solid #f1f1f1;
+      margin-top: 10px;
+      font-size: 10px;
+      line-height: 1;
+      padding: 1em;
+      color: #999;
+      padding-bottom: 0;
 }

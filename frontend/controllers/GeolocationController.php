@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Response;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 
 use common\models\geolocation\Geolocation;
 use common\models\geolocation\GeolocationCountries;
@@ -73,5 +74,40 @@ class GeolocationController extends \yii\web\Controller
         return [
             $provider => $response,
         ];
+    }
+
+    public function actionCheck($provider)
+    {
+        if ($provider == 'vk') {
+            $curlData = GeolocationCities::curlVkCities();
+
+            if (isset($curlData['error'])) {
+                $headers = Yii::$app->response->headers;
+                $headers->add('X-IC-Trigger', '{"vkApiError":['.Json::encode($curlData).']}');
+                Yii::error($curlData['error'], 'thirdparty');
+                return $curlData['error'];
+            }
+
+            $headers = Yii::$app->response->headers;
+            $headers->add('X-IC-Trigger', '{"vkApiSuccess":[]}');
+
+            return 1;
+        }
+
+        if ($provider == 'google') {
+            $response = Geolocation::getGoogleGeocode('Киев, бульвар Шевченко');
+
+            if (!$response) {
+                $error = 'Empty file_get_contents() response';
+                $headers = Yii::$app->response->headers;
+                $headers->add('X-IC-Trigger', '{"googleApiError":['.Json::encode($error).']}');
+                return $error;
+            }
+
+            $headers = Yii::$app->response->headers;
+            $headers->add('X-IC-Trigger', '{"googleApiSuccess":[]}');
+
+            return 1;
+        }
     }
 }

@@ -139,9 +139,6 @@ jQuery(document).ready(function () {
 
       init_news();
     },50);
-	if (jQuery("#bnr").length == 0) {
-		jQuery("#content").prepend('<noindex><a href="https://vk.com/outstyle_org?w=wall-152369034_421" target="_blank" rel="nofollow" id="bnr"><img src="/images/bigsize.png" class="o-image"></a></noindex>');
-	}
   });
 
   /* --- Before sending our Intercooler AJAX request, we check for stored values from way.js and pass them too --- */
