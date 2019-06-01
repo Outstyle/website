@@ -73,8 +73,19 @@ class MessagesController extends OutstyleSocialController
         /* Getting dialogue members and setting appropriate dialogue name for 1x1 chat */
         $dialogMembers = DialogMembers::getDialogMembersById($dialogId);
         $dialogMembers = DialogMembers::setupData($dialogMembers);
-        $firstDialogMember = array_key_first($dialogMembers);
         
+        /* HACK: This polyfill needs to be removed. array_key_first is only for 7.3.*+ php ver */
+        if (!function_exists('array_key_first')) {
+            function array_key_first(array $arr)
+            {
+                foreach ($arr as $key => $unused) {
+                    return $key;
+                }
+                return null;
+            }
+        }
+        $firstDialogMember = array_key_first($dialogMembers);
+
         $dialog = Dialog::findOne($dialogId);
         if (!$dialog->name) {
             $dialog->name = UserNickname::composeFullName($dialogMembers[$firstDialogMember]['userDescription']);
