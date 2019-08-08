@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\User;
 use Yii;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
@@ -296,4 +297,6 @@ class SiteController extends ParentController
             'model' => $model,
         ]);
     }
+
+
 }

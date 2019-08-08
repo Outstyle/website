@@ -18,7 +18,6 @@ use common\components\helpers\SEOHelper;
 SEOHelper::setMetaInfo($this);
 SEOHelper::setCanonicalForPage($this);
 
-
 echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter',
     $this->render('_newsgrid',
     [
