@@ -25,7 +25,25 @@ foreach ($model as $item){
         $date = new DateTime("@$dateRedact");
         $pubDate = $date->format(DateTime::RFC822);
     }
-    $fullText = strip_tags($item['text']);
+    //delete html tags and api-tags.
+
+
+    $fullText = $item['text'];
+    //delete instagram data from text
+    $fullText = preg_replace('~<blockquote class="instagram-media" (.*?)</blockquote>~Usi', "", $fullText);
+
+    //delete twitter data from text
+    $fullText = preg_replace('~<blockquote class="twitter-tweet" (.*?)</blockquote>~Usi', "", $fullText);
+
+    //delete youtube frame, music
+    $fullText = preg_replace('~<iframe (.*?)</iframe>~Usi', "", $fullText);
+
+    //other iframe
+    $fullText = preg_replace('~<<div class="iframe-wrap" (.*?)</div>~Usi', "", $fullText);
+
+    //decode and strip tags
+    $fullText = html_entity_decode(strip_tags($item['text']));
+    //add img
     $srcImg = Url::toRoute('/',true).'/frontend/web/images/news/'.$item['img'];
 
     $typeImg = '';
@@ -35,7 +53,14 @@ foreach ($model as $item){
 
     if($jpg){$typeImg = 'image/jpeg';}
     if($png){$typeImg = 'image/png';}
-
+    //change category name
+    $catName = '';
+    if($item['category'] == 3){
+        $catName = 'Музыка';
+    }
+    else{
+        $catName = $item['catName'];
+    }
     $feed->addItem();
     $feed
         ->addItemTitle(StringHelper::truncateWords($item['name'], 200))
@@ -43,7 +68,7 @@ foreach ($model as $item){
     $feed
         ->addItemLink(Url::toRoute(['news/' . $item['url']], true))
         ->addItemAuthor($item['username'])
-        ->addItemCategory($item['catName'])
+        ->addItemCategory($catName)
         ->addItemPubDate($pubDate);
     $feed->addItemElement('yandex:full-text', $fullText);
     if(!empty($item['img']))
