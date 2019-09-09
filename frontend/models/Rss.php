@@ -18,16 +18,20 @@ class Rss extends DOMDocument
     private $item;
 
 
-    public function __construct()
+    public function __construct($rssArrayParam=[])
     {
         parent::__construct();
         $this->formatOutput = true;
         $this->encoding = 'utf-8';
         $rssElement = $this->createElement('rss');
         $rssElement->setAttribute('version', '2.0');
-        $rssElement->setAttribute('xmlns:atom', 'http://www.w3.org/2005/Atom');
-        $rssElement->setAttribute('xmlns:yandex', 'http://news.yandex.ru');
-        $rssElement->setAttribute('xmlns:media','http://search.yahoo.com/mrss/');
+        //if isset parameters from rss
+        if(!empty($rssArrayParam)){
+            foreach ($rssArrayParam as $keyParam => $valueParam){
+                $rssElement->setAttribute($keyParam, $valueParam);
+            }
+        }
+
         $this->rss = $this->appendChild($rssElement);
     }
 
