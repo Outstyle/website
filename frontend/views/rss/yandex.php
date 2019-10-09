@@ -43,16 +43,29 @@ foreach ($model as $item){
 
     //decode and strip tags
     $fullText = html_entity_decode(strip_tags($item['text']));
+
+    //remove non-printable characters
+    $fullText = str_replace("\r\n",'', $fullText);
+    $fullText = trim($fullText);
+
     //add img
     $srcImg = Url::toRoute('/',true).'/frontend/web/images/news/'.$item['img'];
 
     $typeImg = '';
 
     $jpg = strripos($item['img'], '.jpg');
+    $jpeg = strripos($item['img'], '.jpeg');
     $png = strripos($item['img'], '.png');
 
-    if($jpg){$typeImg = 'image/jpeg';}
-    if($png){$typeImg = 'image/png';}
+    if($jpg || $jpeg){
+        $typeImg = 'image/jpeg';
+    }
+    elseif($png) {
+        $typeImg = 'image/png';
+    }
+    else{
+        $typeImg = 'image/ief';
+    }
     //change category name
     $catName = '';
 
@@ -68,12 +81,16 @@ foreach ($model as $item){
         ->addItemDescription(strip_tags($item['small']));
     $feed
         ->addItemLink(Url::toRoute(['news/' . $item['url']], true))
-        ->addItemAuthor($item['username'])
+        ->addItemAuthor($item['username'].'@outstyle.org')
         ->addItemCategory($catName)
         ->addItemPubDate($pubDate);
     $feed->addItemElement('yandex:full-text', $fullText);
     if(!empty($item['img']))
-    $feed->addItemElement('enclosure','',['url'=>$srcImg, 'type'=> $typeImg]);
+        $feed->addItemElement('enclosure','',[
+            'url'=>$srcImg,
+            'type'=> $typeImg,
+            'length'=>200
+        ]);
 
 }
 

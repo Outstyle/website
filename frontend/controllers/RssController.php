@@ -174,9 +174,8 @@ class RssController extends ParentController
         ]);
         //create array with parameters
         $rssArrayParam = [
-            'xmlns:atom'=>'http://www.w3.org/2005/Atom',
+            'version'=>'2.0',
             'xmlns:rambler'=>'http://news.rambler.ru',
-            'xmlns:media'=>'http://search.yahoo.com/mrss/'
         ];
 
         //create a new Rss from model

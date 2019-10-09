@@ -35,20 +35,25 @@ class Rss extends DOMDocument
         $this->rss = $this->appendChild($rssElement);
     }
 
-    public function addChannel($href = null)
+    public function addChannel($href = null, $useChannelAtom = true, $useChannelGenerator = true, $useChannelDocs = true)
     {
         $channelElement = $this->createElement('channel');
         $this->channel = $this->rss->appendChild($channelElement);
-
-        $this->addChannelElement('atom:link', '', [
-            'href' => $href
-                ? $href
-                : $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
-            'rel' => 'self',
-            'type' => 'application/rss+xml'
-        ]);
-        $this->addChannelGenerator();
-        $this->addChannelDocs();
+        if($useChannelAtom) {
+            $this->addChannelElement('atom:link', '', [
+                'href' => $href
+                    ? $href
+                    : $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                'rel' => 'self',
+                'type' => 'application/rss+xml'
+            ]);
+        }
+        if($useChannelGenerator){
+            $this->addChannelGenerator();
+        }
+        if($useChannelDocs){
+            $this->addChannelDocs();
+        }
         return $this;
     }
 
