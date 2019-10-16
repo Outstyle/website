@@ -5,9 +5,12 @@ use common\components\helpers\ElementsHelper;
 
 /* @var $this yii\web\View */
 $this->title = $modelEvents[0]['title'];
+$description = (($modelEvents[0]['description']) ? $modelEvents[0]['description'] : $modelEvents[0]['name']);
+$description = strip_tags($description);
 $this->registerMetaTag([
   'name' => 'description',
-  'content' => (($modelEvents[0]['description']) ? $modelEvents[0]['description'] : $modelEvents[0]['name'])
+  'content' => $description
+
 ]);
 
 /**
