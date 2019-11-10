@@ -170,7 +170,11 @@ Html::tag('div',
   ),
   ['class' => 'o-grid__cell o-grid__cell--width-100']
 );
-
+//script in body
+$script = '';
+if(isset($visibleScript) && $visibleScript==1){
+    $script =  $bodyScript;
+}
 // MAIN TITLE AND TEXT
 echo
 Html::tag('div',
@@ -178,7 +182,10 @@ Html::tag('div',
     Html::tag('h1',
       $modelNews[0]['name'],
       ['class' => 'news-single__title u-c']
-    ).
+    )
+    .
+    Html::tag('div', $script,['class'=>'ga-script'])
+    .
     Html::tag('div',
       $modelNews[0]['text'],
       ['class' => 'news-single__text']
