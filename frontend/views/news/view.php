@@ -18,6 +18,8 @@ echo
 ElementsHelper::ajaxGridWrap('news-single', 'o-grid--no-gutter color-content--bg',
   $this->render('_newssingle', [
       'modelNews' => $modelNews,
+      'visibleScript' => $visibleScript,
+      'bodyScript' => $bodyScript,
     ]
   )
 );
