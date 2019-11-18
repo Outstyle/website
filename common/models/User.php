@@ -29,7 +29,6 @@ use developeruz\db_rbac\interfaces\UserRbacInterface;
 
 class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 {
-
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -46,6 +45,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
      */
     public $newPass;
     public $newPass_repeat;
+    public $change_password;
     public $newEmail;
 
     /**
@@ -61,7 +61,6 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 
     public function rules()
     {
-
         return [
             ['lastvisit', 'default', 'value' => 0],
 
@@ -74,6 +73,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 
             [['newPass'], 'string', 'length' => [6, 255]],
             [['newPass_repeat'], 'string', 'length' => [6, 255]],
+            [['change_password'], 'string', 'length' => [6, 255]],
 
             [['password_reset_token'], 'safe'],
             [['password_hash'], 'string', 'length' => [6, 255]],
@@ -101,6 +101,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
             'oldPass' => Yii::t('app', 'Старый пароль:'),
             'newPass' => Yii::t('app', 'Новый пароль:'),
             'newPass_repeat' => Yii::t('app', 'Повторите пароль:'),
+            'change_password' => Yii::t('app', 'Сменить пароль:'),
             'newEmail' => Yii::t('app', 'Новый адрес:'),
 
 
@@ -109,6 +110,18 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        // Change password only on update, and only if this var is filled (backend side)
+        if (!$insert) {
+            if ($this->change_password) {
+                $this->setPassword($this->change_password);
+            }
+        }
+
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -269,13 +282,13 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
         return $this->username;
     }
 
-    public static function usersSelect(){
-         $model = self::find()->orderBy('username')->all();
-         $r = [];
-         foreach($model AS $v){
-             $r[$v->id] = $v->username;
-         }
-         return $r;
+    public static function usersSelect()
+    {
+        $model = self::find()->orderBy('username')->all();
+        $r = [];
+        foreach ($model as $v) {
+            $r[$v->id] = $v->username;
+        }
+        return $r;
     }
-
 }

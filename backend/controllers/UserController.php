@@ -109,20 +109,22 @@ class UserController extends Controller
         /* Data init: getting $_GET data */
         $data = Yii::$app->request->get();
 
-        if (!isset($data['soft'])) return;
+        if (!isset($data['soft'])) {
+            return;
+        }
 
         $user = $this->findModel($id);
 
         /* Soft delete - changing status to 0 */
         if ($data['soft'] == 'true') {
-          $user->status = User::STATUS_DELETED;
-          $user->update();
+            $user->status = User::STATUS_DELETED;
+            $user->update();
         }
 
         /* Soft restore - changing status to 10 */
         if ($data['soft'] == 'restore') {
-          $user->status = User::STATUS_ACTIVE;
-          $user->update();
+            $user->status = User::STATUS_ACTIVE;
+            $user->update();
         }
         return $this->redirect(['index']);
     }

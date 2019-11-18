@@ -42,31 +42,31 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => Yii::t('app', 'Ф.И.О'),
-                'value'=> $model->userdescriptions->name,
+                'value'=> $model->userdescription->name,
             ],
             [
                 'label' => Yii::t('app', 'Статус'),
-                'value'=> $model->userdescriptions->status,
+                'value'=> $model->userdescription->status,
             ],
             [
                 'label' => Yii::t('app', 'День рождения'),
-                'value'=> $model->userdescriptions->birthday,
+                'value'=> $model->userdescription->birthday,
             ],
             [
                 'label' => Yii::t('app', 'Пол'),
-                'value'=> (isset($model->userdescriptions->sex) && $model->userdescriptions->sex)?UserDescription::getSexList($model->userdescriptions->sex):'',
+                'value'=> (isset($model->userdescription->sex) && $model->userdescription->sex)?UserDescription::getSexList($model->userdescription->sex):'',
             ],
             [
                 'label' => Yii::t('app', 'Семейное положение'),
-                'value'=> (isset($model->userdescriptions->family) && $model->userdescriptions->family)?UserDescription::getFamilyList($model->userdescriptions->family):'',
+                'value'=> (isset($model->userdescription->family) && $model->userdescription->family)?UserDescription::getFamilyList($model->userdescription->family):'',
             ],
             [
                 'label' => Yii::t('app', 'Телефон'),
-                'value'=> $model->userdescriptions->phone,
+                'value'=> $model->userdescription->phone,
             ],
             [
                 'label' => Yii::t('app', 'Skype'),
-                'value'=> $model->userdescriptions->skype,
+                'value'=> $model->userdescription->skype,
             ],
             [
                 'label' => Yii::t('app', 'Страна'),
@@ -78,15 +78,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => Yii::t('app', 'Сайт'),
-                'value'=> $model->userdescriptions->site,
+                'value'=> $model->userdescription->site,
             ],
             [
                 'label' => Yii::t('app', 'Я в культуре'),
-                'value'=> $model->userdescriptions->culture,
+                'value'=> $model->userdescription->culture,
             ],
             [
                 'label' => Yii::t('app', 'Кратко о себе'),
-                'value'=> $model->userdescriptions->about,
+                'value'=> $model->userdescription->about,
             ],
         ],
     ]) ?>
