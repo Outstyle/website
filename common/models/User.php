@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use Yii;
@@ -51,6 +52,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
      */
     public $newPass;
     public $newPass_repeat;
+    public $change_password;
     public $newEmail;
 
     /**
@@ -69,7 +71,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
         return [
             ['lastvisit', 'default', 'value' => 0],
 
-            [['username', 'auth_key', 'password_hash','password_reset_token', 'newPass', 'newPass_repeat', 'newEmail'], 'filter', 'filter' => 'trim'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'newPass', 'newPass_repeat', 'newEmail'], 'filter', 'filter' => 'trim'],
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['status'], 'integer'],
             [['username', 'password_reset_token', 'email'], 'string', 'max' => 255],
@@ -78,6 +80,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
 
             [['newPass'], 'string', 'length' => [6, 255]],
             [['newPass_repeat'], 'string', 'length' => [6, 255]],
+            [['change_password'], 'string', 'length' => [6, 255]],
 
             [['password_reset_token'], 'safe'],
             [['password_hash'], 'string', 'length' => [6, 255]],
@@ -105,6 +108,7 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
             'oldPass' => Yii::t('app', 'Старый пароль:'),
             'newPass' => Yii::t('app', 'Новый пароль:'),
             'newPass_repeat' => Yii::t('app', 'Повторите пароль:'),
+            'change_password' => Yii::t('app', 'Сменить пароль:'),
             'newEmail' => Yii::t('app', 'Новый адрес:'),
 
 
@@ -113,6 +117,18 @@ class User extends ActiveRecord implements IdentityInterface, UserRbacInterface
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        // Change password only on update, and only if this var is filled (backend side)
+        if (!$insert) {
+            if ($this->change_password) {
+                $this->setPassword($this->change_password);
+            }
+        }
+
+        return parent::beforeSave($insert);
     }
 
     /**

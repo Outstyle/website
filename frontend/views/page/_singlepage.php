@@ -38,7 +38,7 @@ MCs, DJs, Writers, Bboys, а также тех, кому эта культура
 <img src="/images/news/590a374b062c7.png" style="height: 100px; width: 100px; display: block; margin: auto;" alt="">
 </p>
 <p class="blog_about_link_title" style="text-align: center;">
-<a href="mailto:info@outstyle.org">info@outstyle.org</a>
+<a href="mailto:press@outstyle.org">press@outstyle.org</a>
 </p>
 <p class="blog_about_link_descr" style="text-align: center;">
 В данный момент мы ищем людей, которые смогут писать интересные новости и статьи для портала :)

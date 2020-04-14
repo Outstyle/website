@@ -23,6 +23,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => $this->title]);
         <ul class="nav nav-sidebar">
           <li><a href="<?=Url::to(['/category']); ?>"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Elements (Categories)</a></li>
           <li><a href="<?=Url::to(['/photoalbum']); ?>"><span class="glyphicon glyphicon-camera" aria-hidden="true"></span> Photoalbums</a></li>
+           <li><a href="<?=Url::to(['/setting']); ?>"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Настройки</a></li>
         </ul>
       </div>
       <div class="col-sm-8 offset-sm-3 col-md-9 offset-md-2 main">

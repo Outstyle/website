@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 use common\models\News;
 use backend\models\Category;
 use frontend\components\ParentController;
+use common\models\SettingScript;
+use yii\helpers\ArrayHelper;
 
 class NewsController extends ParentController
 {
@@ -202,6 +204,7 @@ class NewsController extends ParentController
      */
     public function actionView($url = null)
     {
+        $visibleScript = $bodyScript = '';
         $data = Yii::$app->request->get();
         $where = [];
 
@@ -224,11 +227,34 @@ class NewsController extends ParentController
         }
 
         /**
+         * Get settings for scripts (display or no)
+         * if isset visibleScript, get setting body_script
+         */
+
+        $visibleScript = SettingScript::findOne(['param'=>'visible_script']);
+        if(isset($visibleScript)){
+            $visibleScript = ArrayHelper::getValue($visibleScript, function ($visibleScript)
+            {
+                return $visibleScript->value;
+            });
+
+            $bodyScript = SettingScript::findOne(['param'=>'body_script']);
+            if(!empty($bodyScript['value'])){
+                $bodyScript = ArrayHelper::getValue($bodyScript, function ($bodyScript) {
+                    return $bodyScript->value;
+                });
+
+            }
+        }
+
+        /**
          * http://intercoolerjs.org/docs.html
          * Intercooler headers to trigger certain events.
          *
          * Rendering as HTML code and rendering only partial view to avoid all page refresh
          */
+
+
 
         if (isset($data['ic-request'])) {
             $headers = Yii::$app->response->headers;
@@ -238,6 +264,8 @@ class NewsController extends ParentController
                 'modelNews' => $modelNews,
                 'modelNewsRecommended' => $modelNews['recommended'] ?? 0,
                 'modelNewsSimilar' => $modelNews['similar'] ?? 0,
+                'visibleScript' => $visibleScript,
+                'bodyScript' => $bodyScript,
             ]);
         }
 
@@ -252,6 +280,8 @@ class NewsController extends ParentController
             'modelNews' => $modelNews,
             'modelNewsRecommended' => $modelNews['recommended'] ?? 0,
             'modelNewsSimilar' => $modelNews['similar'] ?? 0,
+            'visibleScript' => $visibleScript,
+            'bodyScript' => $bodyScript,
         ]);
     }
 
