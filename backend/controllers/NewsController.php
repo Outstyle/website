@@ -63,14 +63,14 @@ class NewsController extends Controller
                 },
                 'afterDelete' => function ($model) {
                     /* @var $model \yii\db\ActiveRecord */
-                        if (Yii::$app->request->isAjax) {
-                            Yii::$app->response->getHeaders()->set('Vary', 'Accept');
-                            Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
+                    if (Yii::$app->request->isAjax) {
+                        Yii::$app->response->getHeaders()->set('Vary', 'Accept');
+                        Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
 
-                            return ['status' => 'success', 'message' => 'Image deleted'];
-                        } else {
-                            return Yii::$app->response->redirect(['news/view', 'id' => $model->primaryKey]);
-                        }
+                        return ['status' => 'success', 'message' => 'Image deleted'];
+                    } else {
+                        return Yii::$app->response->redirect(['news/view', 'id' => $model->primaryKey]);
+                    }
                 },
             ],
             'cropImage' => [
@@ -257,21 +257,19 @@ class NewsController extends Controller
      */
     protected function setData($data, $model)
     {
-        if(empty($model->url)){
+        if (empty($model->url)) {
             $model->url = StringHelper::slugify($model->name);
-        }
-        else{
+        } else {
             $model->url = StringHelper::slugify($model->url);
         }
 
-        if($model->isNewRecord){
+        if ($model->isNewRecord) {
             $model->user = Yii::$app->user->id;
-        }
-        else{
+        } else {
             $model->user = $model->user;
         }
         $model->redactor_id = Yii::$app->user->id;
-        $model->article = (Yii::$app->controller->id == 'news') ? 0 : 1;
+        $model->type = News::NEWS_TYPE[Yii::$app->controller->id];
 
         return $model;
     }

@@ -8,15 +8,19 @@
 /backend/web/images
 /backend/web/assets
 /backend/web/index.php
-/console
 /tests
+
+# exclude configs
 /frontend/config
 /backend/config
 /common/config
-/common/thirdparty/
+/console/config
+/console/runtime
+/console/runtime
 
 #misc
 /webstat
+/common/thirdparty
 
 # Other root files, like certificates or robots
 /.idea

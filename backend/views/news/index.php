@@ -13,6 +13,7 @@ use backend\models\StatusPublication;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 /* TODO: Rewrite this shit v */
+
 $controllerId = Yii::$app->controller->id;
 
 $this->title = Yii::t('app', ucfirst($controllerId));
@@ -22,7 +23,7 @@ $users = User::usersSelect();
 $status = StatusPublication::getStatusList();
 
 ?>
-<div class="<?=$controllerId; ?>-index">
+<div class="<?= $controllerId; ?>-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <p class="u-pull-right">
@@ -31,15 +32,15 @@ $status = StatusPublication::getStatusList();
 
     <?= GridView::widget([
         'tableOptions' => [
-          'class' => 'table table-striped table-bordered table-notdborder table-mini',
+            'class' => 'table table-striped table-bordered table-notdborder table-mini',
         ],
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             [
-              'attribute' => 'id',
-              'contentOptions' => [
-                  'style' => 'width:40px;max-width: 40px;',
+                'attribute' => 'id',
+                'contentOptions' => [
+                    'style' => 'width:40px;max-width: 40px;',
                 ],
             ],
             'name',

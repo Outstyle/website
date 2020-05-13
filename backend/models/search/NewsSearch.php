@@ -17,7 +17,7 @@ class NewsSearch extends News
     public function rules()
     {
         return [
-            [['id', 'user', 'category', 'article', 'redactor_id', 'status'], 'integer'],
+            [['id', 'user', 'category', 'type', 'redactor_id', 'status'], 'integer'],
             [['name', 'url', 'title', 'description', 'small', 'text', 'img', 'created', 'date_redact'], 'safe'],
         ];
     }
@@ -40,10 +40,11 @@ class NewsSearch extends News
      */
     public function search($params, $controllerId = 'news')
     {
-        if ($controllerId == 'article') {
-            $args = array('article' => 1);
-        } else {
-            $args = array('article' => 0);
+        $args = [];
+        if (isset(News::NEWS_TYPE[$controllerId])) {
+            $args = [
+                'type' => News::NEWS_TYPE[$controllerId]
+            ];
         }
 
         $query = News::find()->where($args);
@@ -64,7 +65,7 @@ class NewsSearch extends News
             'user' => $this->user,
             'category' => $this->category,
             'created' => $this->created,
-            'article' => $this->article,
+            'type' => $this->type,
             'status' => $this->status,
         ]);
 
@@ -75,7 +76,7 @@ class NewsSearch extends News
             ->andFilterWhere(['like', 'small', $this->small])
             ->andFilterWhere(['like', 'text', $this->text])
             ->andFilterWhere(['like', 'img', $this->img])
-            ->andFilterWhere(['like', 'article', $this->article]);
+            ->andFilterWhere(['like', 'type', $this->type]);
 
         return $dataProvider;
     }

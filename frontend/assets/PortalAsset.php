@@ -33,6 +33,7 @@ class PortalAsset extends AssetBundle
 
         'css/outstyle/social.comments.css',
 
+        'css/outstyle/portal.header.css',
         'css/outstyle/portal.media.css',
     ];
     public $js = [

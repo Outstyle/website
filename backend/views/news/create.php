@@ -8,11 +8,11 @@ use yii\helpers\Html;
 $this->title = Yii::t('app', 'Create news');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'News'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$controllerId = Yii::$app->controller->id;
 ?>
-<div class="news-create">
+<div class="<?= $controllerId; ?>-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
+    <h1><?= Html::encode($this->title) ?><span class="label label-primary pull-right"><?= $controllerId; ?></span></h1>
     <?= $this->render('_form', [
         'model' => $model,
     ]) ?>

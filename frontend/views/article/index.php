@@ -12,15 +12,17 @@ use common\components\helpers\SEOHelper;
  * @var $categories      common/models/News
  * @var $page            common/models/News
  * @var $category        common/models/News
-*/
+ */
 
 SEOHelper::setMetaInfo($this);
 
-echo ElementsHelper::ajaxGridWrap('articles', 'news',
-    $this->render('_articlegrid', [
-      'modelNews' => $modelNews,
-      'newsCategories' => $newsCategories,
-      'page' => $page,
-      'category' => $category ?? '',
+echo ElementsHelper::ajaxGridWrap(
+    'articles',
+    'news',
+    $this->render('//article/_articlegrid', [
+        'modelNews' => $modelNews,
+        'newsCategories' => $newsCategories,
+        'page' => $page,
+        'category' => $category ?? '',
     ])
-  );
+);

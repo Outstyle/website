@@ -3,16 +3,14 @@
 namespace frontend\controllers;
 
 /* TODO - get rid off unused stuff */
+
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\Json;
-use yii\web\Controller;
-use yii\web\UploadedFile;
-use common\CImageHandler;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
+
 use common\models\News;
 use backend\models\Category;
 use frontend\components\ParentController;
@@ -21,35 +19,54 @@ use yii\helpers\ArrayHelper;
 
 class NewsController extends ParentController
 {
+    /**
+     * @inheritdoc
+     */
     public $layout = 'portal';
-    public $partialViewFile = '_newsblock'; /* Used in actionShow for 'news' representation */
-    public $isArticle = 0; /* Is our news representing an article in this controller? */
+
+    /**
+     * Used in actionShow for 'news' representation
+     * This is the template for any other controller to use
+     *
+     * @var string
+     */
+    public $partialViewFile = '_newsblock';
+
+    /**
+     * Since our news entity can represent various other entities,
+     * (news can be article, can be videonews, release or reviews),
+     * we must set up this variable for any other controller to know
+     * what entity to query from.
+     *
+     * @var int
+     */
+    public $newsType = News::NEWS_TYPE_DEFAULT;
 
     public function behaviors()
     {
         return [
-          'access' => [
-            'class' => AccessControl::className(),
-            'rules' => [
-            [
-              'actions' => [
-                'index',
-                'view',
-                'viewcategory',
-                'show',
-              ],
-              'allow' => true,
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => [
+                            'index',
+                            'view',
+                            'viewcategory',
+                            'show',
+                        ],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => [
+                            'add',
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
             ],
-            [
-              'actions' => [
-                'add',
-              ],
-              'allow' => true,
-              'roles' => ['@'],
-            ],
-          ],
-        ],
-      ];
+        ];
     }
 
     /**
@@ -62,8 +79,8 @@ class NewsController extends ParentController
         $data = Yii::$app->request->get();
         $where = $response = [];
 
-        /* Checking if our news is currently representing an article. If so, adding to our query params */
-        $where['article'] = $this->isArticle;
+        /* Checking if our news is currently representing another type. If so, adding to our query params */
+        $where['type'] = $this->newsType;
 
         /* Initial page to start load news from */
         $page = (!empty($data['page'])) ? (int) $data['page'] : 0;
@@ -73,7 +90,7 @@ class NewsController extends ParentController
         $newsCategories = Category::getCategories(['id' => News::NEWS_CATEGORIES]);
         ++$page;
 
-        /*
+        /**
          * http://intercoolerjs.org/docs.html
          * Intercooler headers to trigger certain events
          *
@@ -84,28 +101,28 @@ class NewsController extends ParentController
             $response['page'] = $page;
             $headers = Yii::$app->response->headers;
             $headers->add('X-IC-Title', rawurlencode(Yii::$app->controller->id));
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return $this->renderPartial('index', [
-              'modelNews' => $modelNews,
-              'newsCategories' => $newsCategories,
-              'outstyle_news_height' => $outstyle_news_height,
-              'page' => $page,
+                'modelNews' => $modelNews,
+                'newsCategories' => $newsCategories,
+                'outstyle_news_height' => $outstyle_news_height,
+                'page' => $page,
             ]);
         }
 
         /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
         Yii::$app->opengraph->set([
-            'title' => Yii::t('seo', Yii::$app->controller->id.'.title'),
-            'description' => Yii::t('seo', Yii::$app->controller->id.'.description'),
+            'title' => Yii::t('seo', Yii::$app->controller->id . '.title'),
+            'description' => Yii::t('seo', Yii::$app->controller->id . '.description'),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 
         return $this->render('index', [
-          'modelNews' => $modelNews,
-          'newsCategories' => $newsCategories,
-          'outstyle_news_height' => $outstyle_news_height,
-          'page' => $page,
+            'modelNews' => $modelNews,
+            'newsCategories' => $newsCategories,
+            'outstyle_news_height' => $outstyle_news_height,
+            'page' => $page,
         ]);
     }
 
@@ -147,7 +164,7 @@ class NewsController extends ParentController
         }
 
         /* Checking if our news is currently representing an article */
-        $where['article'] = $this->isArticle;
+        $where['type'] = $this->newsType;
 
         /* If news does not exist - we show 404 */
         $modelNews = News::getNews($where, $page);
@@ -156,12 +173,12 @@ class NewsController extends ParentController
         if (!$modelNews) {
             $response['lastPageReached'] = 1;
             $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return;
         }
 
-        /*
+        /**
          * http://intercoolerjs.org/docs.html
          * Intercooler headers to trigger certain events
          *
@@ -174,7 +191,7 @@ class NewsController extends ParentController
             $response['page'] = $page;
 
             $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return $this->renderPartial($this->partialViewFile, [
                 'modelNews' => $modelNews,
@@ -210,7 +227,7 @@ class NewsController extends ParentController
 
         if ($url) {
             $where['url'] = $url;
-            $where['article'] = $this->isArticle;
+            $where['type'] = $this->newsType;
         }
 
         $cache = Yii::$app->cache;
@@ -231,19 +248,17 @@ class NewsController extends ParentController
          * if isset visibleScript, get setting body_script
          */
 
-        $visibleScript = SettingScript::findOne(['param'=>'visible_script']);
-        if(isset($visibleScript)){
-            $visibleScript = ArrayHelper::getValue($visibleScript, function ($visibleScript)
-            {
+        $visibleScript = SettingScript::findOne(['param' => 'visible_script']);
+        if (isset($visibleScript)) {
+            $visibleScript = ArrayHelper::getValue($visibleScript, function ($visibleScript) {
                 return $visibleScript->value;
             });
 
-            $bodyScript = SettingScript::findOne(['param'=>'body_script']);
-            if(!empty($bodyScript['value'])){
+            $bodyScript = SettingScript::findOne(['param' => 'body_script']);
+            if (!empty($bodyScript['value'])) {
                 $bodyScript = ArrayHelper::getValue($bodyScript, function ($bodyScript) {
                     return $bodyScript->value;
                 });
-
             }
         }
 
@@ -297,7 +312,7 @@ class NewsController extends ParentController
         $where = [];
         if ($category) {
             $where['category'] = (Category::findOne(['url' => $category])->id) ?? '';
-            $where['article'] = $this->isArticle;
+            $where['type'] = $this->newsType;
         }
 
         /* Initial page to start load news from */
@@ -314,17 +329,17 @@ class NewsController extends ParentController
 
         /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
         Yii::$app->opengraph->set([
-            'title' => Yii::t('seo', Yii::$app->controller->id.'.'.$category.'.title'),
-            'description' => Yii::t('seo', Yii::$app->controller->id.'.'.$category.'.description'),
+            'title' => Yii::t('seo', Yii::$app->controller->id . '.' . $category . '.title'),
+            'description' => Yii::t('seo', Yii::$app->controller->id . '.' . $category . '.description'),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 
         return $this->render('index', [
-          'modelNews' => $modelNews,
-          'newsCategories' => Category::getCategories(['id' => News::NEWS_CATEGORIES]),
-          'outstyle_news_height' => $outstyle_news_height,
-          'page' => $page,
-          'category' => $where['category'] ?? 0,
+            'modelNews' => $modelNews,
+            'newsCategories' => Category::getCategories(['id' => News::NEWS_CATEGORIES]),
+            'outstyle_news_height' => $outstyle_news_height,
+            'page' => $page,
+            'category' => $where['category'] ?? 0,
         ]);
     }
 }
