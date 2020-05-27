@@ -21,7 +21,7 @@ if ($page == 1) {
 }
 
 if (isset($modelNews)) {
-    echo ElementsHelper::loadMore(Url::toRoute('article/show'), '#outstyle_articles .articles__body', '{"page":' . (int) $page . ',"category":' . (int) $category . '}');
+    echo ElementsHelper::loadMore(Url::toRoute(Yii::$app->controller->id . '/show'), '#outstyle_articles .articles__body', '{"page":' . (int) $page . ',"category":' . (int) $category . '}');
     foreach ($modelNews as $article) {
         echo
 
