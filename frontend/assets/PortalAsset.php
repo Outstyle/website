@@ -39,7 +39,7 @@ class PortalAsset extends AssetBundle
     public $js = [
         'js/misc/jquery.easyModal.js',
         'js/misc/packery.pkgd.min.js',
-        'js/misc/intercooler-1.2.1.min.js',
+        'js/misc/intercooler-1.0.3.min.js',
         'js/misc/select2/select2.full.min.js',
         'js/misc/owlcarousel/owl.carousel.min.js',
         'js/misc/fancybox/jquery.fancybox.min.js',
