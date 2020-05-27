@@ -26,7 +26,16 @@ if (empty($category)) {
            * @var $modelNews    common/models/News  -> getNews()
            */
     foreach ($newsCategories as $c) {
-        echo ElementsHelper::ajaxedCheckbox('categories[]', $c->id, Yii::t('app', $c->name), Url::toRoute('article/show'), '#outstyle_articles .articles__body', '#article-filter-form');
+        echo ElementsHelper::ajaxedCheckbox(
+            'categories[]',
+            $c->id,
+            Yii::t('app', $c->name),
+            Url::toRoute(
+                Yii::$app->controller->id . '/show'
+            ),
+            '#outstyle_articles .articles__body',
+            '#article-filter-form'
+        );
     }
 
     echo Html::endForm(),
@@ -82,15 +91,15 @@ echo Html::a(
 );
 echo $this->render('@modals/google/GoogleFormsAddArticle');
 
-/*
-* --- Main article blocks ---
-* Notice, that we are passing $modelNews from 'NewsController', using News model.
-* That's because 'article' is only a representation of 'news' and uses the same array of values.
-*/
+/**
+ * --- Main article blocks ---
+ * Notice, that we are passing $modelNews from 'NewsController', using News model.
+ * That's because 'article' is only a representation of 'news' and uses the same array of values.
+ */
 
 echo Html::tag(
     'div',
-    $this->render('_articleblock', [
+    $this->render('//article/_articleblock', [
         'modelNews' => $modelNews,
         'page' => $page,
         'category' => $category,

@@ -108,8 +108,8 @@ function articlesGridInit() {
      * See X-IC-Trigger headers: http://intercoolerjs.org/reference.html
      */
     jQuery("body")
-        .off("article")
-        .on("article", function (event, data) {
+        .off("article releases reviews videonews")
+        .on("article releases reviews videonews", function (event, data) {
             if (data.page) {
                 jQuery("#page").val(data.page);
             }

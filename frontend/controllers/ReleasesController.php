@@ -7,6 +7,6 @@ use common\models\News;
 class ReleasesController extends NewsController
 {
     /* Since for article view we must use another representation, let's redefine this value to needed file for rendering */
-    public $partialViewFile = '_articleblock';
+    public $partialViewFile = '//article/_articleblock';
     public $newsType = News::NEWS_TYPE_RELEASE;
 }
