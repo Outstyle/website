@@ -103,6 +103,7 @@ echo Html::tag(
         'modelNews' => $modelNews,
         'page' => $page,
         'category' => $category,
+        'outstyle_news_height' => $outstyle_news_height,
     ]),
     [
         'class' => 'o-grid__cell o-grid__cell--width-100 u-pillar-box--super news-single articles__body',
@@ -112,6 +113,8 @@ echo Html::tag(
 /* This input is for sending pages */
 echo Html::hiddenInput('page', $page, ['id' => 'page']);
 
+/* This input is needed for smooth Packery init after each AJAX call */
+echo Html::hiddenInput('outstyle_news_height', '', ['id' => 'outstyle_news_height']);
 
 /* JS: @see js/outstyle.portal.articles.grid.js */
 ?>

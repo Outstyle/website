@@ -21,13 +21,12 @@ if ($page == 1) {
 }
 
 if (isset($modelNews)) {
-    echo ElementsHelper::loadMore(Url::toRoute(Yii::$app->controller->id . '/show'), '#outstyle_articles .articles__body', '{"page":' . (int) $page . ',"category":' . (int) $category . '}');
     foreach ($modelNews as $article) {
         echo
 
-            /*
-         * Article picture block
-         */
+            /**
+             * Article picture block
+             */
 
             //article box begin
             Html::beginTag('div', [
@@ -290,6 +289,21 @@ if (isset($modelNews)) {
                 ]
             ),
             Html::endTag('div');
+    }
+
+    if ($page) {
+        if ($outstyle_news_height) {
+            $outstyle_news_height = $outstyle_news_height - 500;
+        }
+        if ($page == 1) {
+            $outstyle_news_height = 10;
+        }
+        echo
+            Html::tag(
+                'div',
+                ElementsHelper::loadMore(Url::toRoute(Yii::$app->controller->id . '/show'), '#outstyle_articles .articles__body', '{"page":' . (int) $page . ',"category":' . (int) $category . '}'),
+                ['style' => "top:{$outstyle_news_height}px;position:absolute;z-index:10000;"]
+            );
     }
 }
 

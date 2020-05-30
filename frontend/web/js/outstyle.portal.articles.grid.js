@@ -59,6 +59,10 @@ function articlesGridInit() {
     jQuery(document)
         .off("beforeAjaxSend.ic")
         .on("beforeAjaxSend.ic", function (event, settings) {
+
+            var outstyle_news_height = jQuery('#content').height();
+            settings.data = settings.data + '&outstyle_news_height=' + outstyle_news_height;
+
             var article = way.get("article.filter");
             if (article) {
                 article = jQuery.param(article);
@@ -112,6 +116,13 @@ function articlesGridInit() {
         .on("article releases reviews videonews", function (event, data) {
             if (data.page) {
                 jQuery("#page").val(data.page);
+            }
+
+            if (data.outstyle_news_height) {
+                jQuery('#outstyle_news_height').val(data.outstyle_news_height);
+                jQuery('#outstyle_articles').css({
+                    'min-height': data.outstyle_news_height + 'px'
+                });
             }
 
             init_articles();

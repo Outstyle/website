@@ -393,6 +393,7 @@ h1.block__title {
 }
 
 #outstyle_news #loadmore,
+#outstyle_articles #loadmore,
 .block__item #loadmore {
     width: 26px;
     height: 26px;
