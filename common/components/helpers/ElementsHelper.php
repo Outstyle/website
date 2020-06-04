@@ -26,15 +26,15 @@ class ElementsHelper extends Html
      * Use 'getElementIdByControllerId' method to get it's numeric value for DB storing
      */
     public static $allowedElements = [
-      'NONE',
-      'news',
-      'article',
-      'school',
-      'events',
-      'board',
-      'comments',
-      'photo',
-      'video',
+        'NONE',
+        'news',
+        'article',
+        'school',
+        'events',
+        'board',
+        'comments',
+        'photo',
+        'video',
     ];
 
     /**
@@ -97,7 +97,7 @@ class ElementsHelper extends Html
         }
 
         if (!isset($options['id'])) {
-            $options['id'] = self::DEFAULT_ID_PREFIX.$el_type;
+            $options['id'] = self::DEFAULT_ID_PREFIX . $el_type;
         }
 
         if (!isset($options['class'])) {
@@ -107,18 +107,24 @@ class ElementsHelper extends Html
         $class = preg_replace('!\s+!', ' ', trim("o-grid o-grid--wrap {$add_classes} {$el_type}"));
 
         return
-        Html::tag('div',
-          Html::tag('div',
-            Html::tag('div',
-              $content,
-            [
-              'class' => $class,
-              'ic-target' => '#'.self::DEFAULT_TARGET_ID,
-              'ic-push-url' => 'true',
-              'ic-select-from-response' => '#'.self::DEFAULT_AJAX_ID,
-            ]),
-          $options),
-        ['id' => self::DEFAULT_AJAX_ID]);
+            Html::tag(
+                'div',
+                Html::tag(
+                    'div',
+                    Html::tag(
+                        'div',
+                        $content,
+                        [
+                            'class' => $class,
+                            'ic-target' => '#' . self::DEFAULT_TARGET_ID,
+                            'ic-push-url' => 'true',
+                            'ic-select-from-response' => '#' . self::DEFAULT_AJAX_ID,
+                        ]
+                    ),
+                    $options
+                ),
+                ['id' => self::DEFAULT_AJAX_ID]
+            );
     }
 
     /**
@@ -142,21 +148,22 @@ class ElementsHelper extends Html
         $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-like i-icon {$isLikeActive}"));
 
         return
-        Html::button(
-          Html::tag('i', '', [
-            'class' => 'icon-heart',
-          ])
-          .Html::tag('span', $likesCount),
-        [
-          'class' => $class,
-          'title' => Yii::t('app', 'Like'),
-          'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-          'ic-include' => '{"elem_type":"'.$elem_type.'","id":'.(int) $elem_id.'}',
-          'ic-action' => 'toggleClass:active',
-          'ic-target' => 'find span',
-          'ic-get-from' => Url::toRoute('likes/like'),
-          'ic-push-url' => 'false',
-        ]);
+            Html::button(
+                Html::tag('i', '', [
+                    'class' => 'icon-heart',
+                ])
+                    . Html::tag('span', $likesCount),
+                [
+                    'class' => $class,
+                    'title' => Yii::t('app', 'Like'),
+                    'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+                    'ic-include' => '{"elem_type":"' . $elem_type . '","id":' . (int) $elem_id . '}',
+                    'ic-action' => 'toggleClass:active',
+                    'ic-target' => 'find span',
+                    'ic-get-from' => Url::toRoute('likes/like'),
+                    'ic-push-url' => 'false',
+                ]
+            );
     }
 
     /**
@@ -169,17 +176,19 @@ class ElementsHelper extends Html
     public static function videoLink($video_hash = '', $video_title = '')
     {
         return
-        Html::a($video_title, Url::toRoute('/video-'.$video_hash, true),
-          [
-            'class' => 'user__videotitle',
-            'ic-action' => 'userShowVideoModal',
-            'ic-get-from' => Url::toRoute('/video-'.$video_hash),
-            'ic-select-from-response' => '#'.self::DEFAULT_TARGET_ID,
-            'ic-target' => '#uservideo .modal__iframe',
-            'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-            'ic-push-url' => 'false',
-          ]
-        );
+            Html::a(
+                $video_title,
+                Url::toRoute('/video-' . $video_hash, true),
+                [
+                    'class' => 'user__videotitle',
+                    'ic-action' => 'userShowVideoModal',
+                    'ic-get-from' => Url::toRoute('/video-' . $video_hash),
+                    'ic-select-from-response' => '#' . self::DEFAULT_TARGET_ID,
+                    'ic-target' => '#uservideo .modal__iframe',
+                    'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+                    'ic-push-url' => 'false',
+                ]
+            );
     }
 
     /**
@@ -191,17 +200,19 @@ class ElementsHelper extends Html
     public static function photoLink($photo_id = '', $photo_title = '')
     {
         return
-        Html::a($photo_title, Url::toRoute('/photos/'.$photo_id, true),
-          [
-            'class' => 'photo__link',
-            'ic-action' => 'userShowPhotoModal',
-            'ic-post-to' => Url::toRoute('/photos/'.$photo_id),
-            'ic-select-from-response' => '#'.self::DEFAULT_AJAX_ID,
-            'ic-target' => '#userphoto .modal__iframe',
-            'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-            'ic-push-url' => 'false',
-          ]
-        );
+            Html::a(
+                $photo_title,
+                Url::toRoute('/photos/' . $photo_id, true),
+                [
+                    'class' => 'photo__link',
+                    'ic-action' => 'userShowPhotoModal',
+                    'ic-post-to' => Url::toRoute('/photos/' . $photo_id),
+                    'ic-select-from-response' => '#' . self::DEFAULT_AJAX_ID,
+                    'ic-target' => '#userphoto .modal__iframe',
+                    'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+                    'ic-push-url' => 'false',
+                ]
+            );
     }
 
     /**
@@ -218,7 +229,7 @@ class ElementsHelper extends Html
     public static function linkElement($elem_name = '', $elem_text = '', $url = false, $icon = '', $elem_title = '')
     {
         /* INITIAL for ic-select-from-response: http://intercoolerjs.org/attributes/ic-select-from-response.html */
-        $selected_element = '#'.self::DEFAULT_AJAX_ID;
+        $selected_element = '#' . self::DEFAULT_AJAX_ID;
         $elem_class = $elem_name;
 
         /*
@@ -226,63 +237,63 @@ class ElementsHelper extends Html
          * For more names, please add manually here
          */
         switch ($elem_name) {
-          case 'comment':
-            $elem_title = Yii::t('app', 'Comment');
-            break;
+            case 'comment':
+                $elem_title = Yii::t('app', 'Comment');
+                break;
 
-          case 'views':
-            $elem_title = Yii::t('app', 'Views');
-            $elem_class .= ' innactive';
-            break;
+            case 'views':
+                $elem_title = Yii::t('app', 'Views');
+                $elem_class .= ' innactive';
+                break;
 
-          case 'repost':
-            $elem_title = Yii::t('app', 'Repost');
-            break;
+            case 'repost':
+                $elem_title = Yii::t('app', 'Repost');
+                break;
 
-          case 'readmore':
-            $elem_title = Yii::t('app', 'Read more...');
-            break;
+            case 'readmore':
+                $elem_title = Yii::t('app', 'Read more...');
+                break;
 
-          case 'category':
-            $elem_title = Yii::t('app', 'More from '.$elem_text);
-            break;
+            case 'category':
+                $elem_title = Yii::t('app', 'More from ' . $elem_text);
+                break;
 
-          case 'friend':
-            $selected_element = '#content';
-            break;
+            case 'friend':
+                $selected_element = '#content';
+                break;
 
-          case 'title':
-            $elem_title = strip_tags($elem_text);
-            $elem_class .= ' c-text--shadow block__'.$elem_name;
-            break;
+            case 'title':
+                $elem_title = strip_tags($elem_text);
+                $elem_class .= ' c-text--shadow block__' . $elem_name;
+                break;
 
-          case 'newdialogue':
-            $elem_class .= ' search-mode-switch';
-            break;
+            case 'newdialogue':
+                $elem_class .= ' search-mode-switch';
+                break;
 
-          case 'roundbutton':
-            $current_url = Url::to(['/'.Yii::$app->request->pathInfo], true);
-            if ($url == $current_url) {
-                $elem_class .= ' active';
-            }
-            break;
+            case 'roundbutton':
+                $current_url = Url::to(['/' . Yii::$app->request->pathInfo], true);
+                if ($url == $current_url) {
+                    $elem_class .= ' active';
+                }
+                break;
 
-          default:
-            $elem_title = ($elem_title) ? $elem_title : 'UNTITLED';
+            default:
+                $elem_title = ($elem_title) ? $elem_title : 'UNTITLED';
         }
 
         /* Adding controller to class */
-        $elem_class .= ' '.Yii::$app->controller->id.'__'.$elem_name;
+        $elem_class .= ' ' . Yii::$app->controller->id . '__' . $elem_name;
 
         /*
          * Wrapping up our element in case if it has no tags
          */
 
-         if ($elem_text != strip_tags($elem_text)) {
-             $elem_text = trim($elem_text);
-         } else {
-             $elem_text = "<span>{$elem_text}</span>";
-         }
+        if ($elem_text != strip_tags($elem_text)) {
+            $elem_text = trim($elem_text);
+        } else {
+            $elem_text = "<span>{$elem_text}</span>";
+        }
 
         /*
          * Checking for an icon bundles.
@@ -290,10 +301,10 @@ class ElementsHelper extends Html
          */
         if ($icon) {
             if (strpos($icon, 'zmdi') !== false) {
-                $icon = 'zmdi '.$icon;
+                $icon = 'zmdi ' . $icon;
             }
 
-            $elem_text = Html::tag('i', '', ['class' => "{$icon}"]).$elem_text;
+            $elem_text = Html::tag('i', '', ['class' => "{$icon}"]) . $elem_text;
             $elem_class .= ' i-icon';
         }
 
@@ -308,7 +319,7 @@ class ElementsHelper extends Html
         if ($url && strpos($url, "#") === false) {
             $attr['ic-get-from'] = $url;
             $attr['ic-indicator'] = self::DEFAULT_AJAX_LOADER;
-            $attr['ic-target'] = '#'.self::DEFAULT_TARGET_ID;
+            $attr['ic-target'] = '#' . self::DEFAULT_TARGET_ID;
             $attr['ic-push-url'] = 'true';
             $attr['ic-select-from-response'] = $selected_element;
         }
@@ -340,14 +351,14 @@ class ElementsHelper extends Html
     public static function loadMore($append_from = '', $target_el = '', $include = '')
     {
         return Html::tag('span', '', [
-          'id' => 'loadmore',
-          'ic-append-from' => $append_from,
-          'ic-trigger-on' => 'scrolled-into-view',
-          'ic-target' => $target_el,
-          'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-          'ic-push-url' => 'false',
-          'ic-include' => $include,
-          'ic-on-beforeSend' => 'document.getElementById(\'loadmore\').remove()',
+            'id' => 'loadmore',
+            'ic-append-from' => $append_from,
+            'ic-trigger-on' => 'scrolled-into-view',
+            'ic-target' => $target_el,
+            'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+            'ic-push-url' => 'false',
+            'ic-include' => $include,
+            'ic-on-beforeSend' => 'document.getElementById(\'loadmore\').remove()',
         ]);
     }
 
@@ -368,51 +379,57 @@ class ElementsHelper extends Html
     public static function ajaxedCheckbox($name = '', $value = '', $title = '', $url = '', $target_el = '', $include = '', $method = 'get-from')
     {
         return
-        Html::tag('label',
+            Html::tag(
+                'label',
 
-          //checkbox
-          Html::checkbox($name, false,
-            [
-              'value' => $value,
-              'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-              'ic-target' => $target_el,
-              'ic-push-url' => 'false',
-              'ic-trigger-delay' => '200ms',
-              'ic-include' => $include,
-              'ic-'.$method => $url,
-            ]
-          ).
+                //checkbox
+                Html::checkbox(
+                    $name,
+                    false,
+                    [
+                        'value' => $value,
+                        'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+                        'ic-target' => $target_el,
+                        'ic-push-url' => 'false',
+                        'ic-trigger-delay' => '200ms',
+                        'ic-include' => $include,
+                        'ic-' . $method => $url,
+                    ]
+                ) .
 
-          //checkbox square for styling
-          Html::tag('div',
-            '<i class="zmdi zmdi-check"></i>',
-            [
-              'class' => 'checkbox__square u-pull-left c-field--ordinary',
-            ]
-          )
-          .'<span>'.trim($title).'</span>',
+                    //checkbox square for styling
+                    Html::tag(
+                        'div',
+                        '<i class="zmdi zmdi-check"></i>',
+                        [
+                            'class' => 'checkbox__square u-pull-left c-field--ordinary',
+                        ]
+                    )
+                    . '<span>' . trim($title) . '</span>',
 
-          [
-            'class' => 'u-pillar-box--medium u-pull-left noselect checkbox__wrap',
-          ]
-        ).
+                [
+                    'class' => 'u-pillar-box--medium u-pull-left noselect checkbox__wrap',
+                ]
+            ) .
 
-        //fake checkbox label for swapping while element is active and AJAX event is going
-        Html::tag('label',
+            //fake checkbox label for swapping while element is active and AJAX event is going
+            Html::tag(
+                'label',
 
-          //fake checkbox square for styling
-          Html::tag('div',
-            '<i class="zmdi zmdi-check"></i>',
-            [
-              'class' => 'checkbox__square u-pull-left c-field--ordinary',
-              'data-fake-id' => $value,
-            ]
-          )
-          .'<span>'.trim($title).'</span>',
-          [
-            'class' => 'u-pillar-box--medium u-pull-left noselect checkbox__wrap--disabled',
-          ]
-        );
+                //fake checkbox square for styling
+                Html::tag(
+                    'div',
+                    '<i class="zmdi zmdi-check"></i>',
+                    [
+                        'class' => 'checkbox__square u-pull-left c-field--ordinary',
+                        'data-fake-id' => $value,
+                    ]
+                )
+                    . '<span>' . trim($title) . '</span>',
+                [
+                    'class' => 'u-pillar-box--medium u-pull-left noselect checkbox__wrap--disabled',
+                ]
+            );
     }
 
     /**
@@ -431,35 +448,39 @@ class ElementsHelper extends Html
 
         //should our diamond box border be full width with linethrough?
         if (!$linethrough) {
-            $divOneAttrs['class'] = 'u-pillar-box--'.$size;
+            $divOneAttrs['class'] = 'u-pillar-box--' . $size;
             $divTwoAttrs['class'] = 'c-diamond c-diamond__border c-diamond__border--small';
         } else {
-            $divTwoAttrs['class'] = 'c-diamond c-diamond__border c-diamond__border--small u-pillar-box--'.$size;
+            $divTwoAttrs['class'] = 'c-diamond c-diamond__border c-diamond__border--small u-pillar-box--' . $size;
         }
 
         //positioning of label and additional classes and decorations
         if (strpos($labelAlign, 'toggleable')) {
-            $text = '<i class="zmdi zmdi-chevron-down"></i>'.$text.'<i class="zmdi zmdi-chevron-down"></i>';
+            $text = '<i class="zmdi zmdi-chevron-down"></i>' . $text . '<i class="zmdi zmdi-chevron-down"></i>';
         }
 
         return
-        Html::tag('div',
-          Html::tag('div',
-            Html::tag('div',
-              Html::tag('div',
-                '<span class="u-pillar-box--xlarge">'.trim($text).'</span>',
+            Html::tag(
+                'div',
+                Html::tag(
+                    'div',
+                    Html::tag(
+                        'div',
+                        Html::tag(
+                            'div',
+                            '<span class="u-pillar-box--xlarge">' . trim($text) . '</span>',
+                            [
+                                'class' => "c-diamond__label c-diamond--small c-diamond__label--{$labelAlign}",
+                            ]
+                        ),
+                        $divTwoAttrs
+                    ),
+                    $divOneAttrs
+                ),
                 [
-                  'class' => "c-diamond__label c-diamond--small c-diamond__label--{$labelAlign}",
+                    'class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-100 o-grid__cell--labeled',
                 ]
-              ),
-              $divTwoAttrs
-            ),
-            $divOneAttrs
-          ),
-          [
-            'class' => 'o-grid__cell o-grid__cell--no-gutter o-grid__cell--width-100 o-grid__cell--labeled',
-          ]
-        );
+            );
     }
 
     /**
@@ -470,11 +491,13 @@ class ElementsHelper extends Html
      */
     public static function separatorWidget($effect = 0, $style = 'none')
     {
-        return Html::tag('div',
-          '',
-          [
-            'class' => "box box__shadow box__shadow--effect{$effect} box--{$style}"
-          ]);
+        return Html::tag(
+            'div',
+            '',
+            [
+                'class' => "box box__shadow box__shadow--effect{$effect} box--{$style}"
+            ]
+        );
     }
 
     /**
@@ -486,45 +509,46 @@ class ElementsHelper extends Html
      * @return  html
      */
     public static function widgetButton(
-      $action = 'edit',
-      $position = 'topleft',
-      $size = 'lg',
-      $indicator = self::DEFAULT_AJAX_LOADER
+        $action = 'edit',
+        $position = 'topleft',
+        $size = 'lg',
+        $indicator = self::DEFAULT_AJAX_LOADER
     ) {
         /*
          * Setting params for button, based on action
          * For more names, please add manually here
          */
         switch ($action) {
-          case 'edit':
-            $title = Yii::t('app', 'Edit');
-            $icon = 'edit';
-            break;
+            case 'edit':
+                $title = Yii::t('app', 'Edit');
+                $icon = 'edit';
+                break;
 
-          case 'delete':
-            $title = Yii::t('app', 'Delete');
-            $icon = 'close-circle';
-            break;
+            case 'delete':
+                $title = Yii::t('app', 'Delete');
+                $icon = 'close-circle';
+                break;
 
-          default:
-            $title = 'UNTITLED';
-            $icon = 'http';
+            default:
+                $title = 'UNTITLED';
+                $icon = 'http';
         }
 
         $class = preg_replace('!\s+!', ' ', trim("zmdi-icon--hoverable i-widgetbutton i-widgetbutton--{$position} i-{$icon}"));
 
         return
-        Html::button(
-          Html::tag('i', '', [
-            'class' => "zmdi zmdi-{$icon} zmdi-hc-{$size}",
-          ]),
-        [
-          'class' => $class,
-          'title' => $title,
-          'ic-indicator' => $indicator,
-          'ic-get-from' => Url::toRoute([Yii::$app->controller->id.'/'.$action]),
-          'ic-push-url' => 'false'
-        ]);
+            Html::button(
+                Html::tag('i', '', [
+                    'class' => "zmdi zmdi-{$icon} zmdi-hc-{$size}",
+                ]),
+                [
+                    'class' => $class,
+                    'title' => $title,
+                    'ic-indicator' => $indicator,
+                    'ic-get-from' => Url::toRoute([Yii::$app->controller->id . '/' . $action]),
+                    'ic-push-url' => 'false'
+                ]
+            );
     }
 
     /**
@@ -550,82 +574,93 @@ class ElementsHelper extends Html
         foreach ($categories as $category) {
             $categories_list .=
 
-            //category label
-            Html::label(
-              Html::input('checkbox', $name, $category->id,
-                []
-              ).
-              Html::tag('i',
-                '',
-                [
-                  'class' => "zmdi zmdi-circle-o color-{$category->url}",
-                ]
-              ).
-              '<span>'.Yii::t('app', $category->name).'</span>',
-              null,
-              []
-            );
+                //category label
+                Html::label(
+                    Html::input(
+                        'checkbox',
+                        $name,
+                        $category->id,
+                        []
+                    ) .
+                        Html::tag(
+                            'i',
+                            '',
+                            [
+                                'class' => "zmdi zmdi-circle-o color-{$category->url}",
+                            ]
+                        ) .
+                        '<span>' . Yii::t('app', $category->name) . '</span>',
+                    null,
+                    []
+                );
         }
 
         return
-        Html::tag('div',
+            Html::tag(
+                'div',
 
-          //filter box form with persistent data
-          Html::beginForm('', 'post',
-            [
-              'id' => Yii::$app->controller->id.'-filter-form',
-              'class' => 'u-window-box--small tooltip-box__body',
-              'way-data' => Yii::$app->controller->id.'.filter',
-              'way-persistent' => 'true',
-            ]
-          ).
+                //filter box form with persistent data
+                Html::beginForm(
+                    '',
+                    'post',
+                    [
+                        'id' => Yii::$app->controller->id . '-filter-form',
+                        'class' => 'u-window-box--small tooltip-box__body',
+                        'way-data' => Yii::$app->controller->id . '.filter',
+                        'way-persistent' => 'true',
+                    ]
+                ) .
 
-          //filter box label
-          Html::tag('p',
-            Yii::t('app', 'Filter'),
-            [
-              'class' => 'c-text--shadow tooltip-box__header',
-            ]
-          ).
+                    //filter box label
+                    Html::tag(
+                        'p',
+                        Yii::t('app', 'Filter'),
+                        [
+                            'class' => 'c-text--shadow tooltip-box__header',
+                        ]
+                    ) .
 
-          //filter box items (categories array)
-          Html::tag('div',
-            $categories_list,
-            [
-              'class' => 'u-window-box--small',
-            ]
-          ).
+                    //filter box items (categories array)
+                    Html::tag(
+                        'div',
+                        $categories_list,
+                        [
+                            'class' => 'u-window-box--small',
+                        ]
+                    ) .
 
-          //filter box submit button
-          Html::tag('p',
-            Html::button(
-              Html::tag('i',
-                '',
+                    //filter box submit button
+                    Html::tag(
+                        'p',
+                        Html::button(
+                            Html::tag(
+                                'i',
+                                '',
+                                [
+                                    'class' => 'zmdi zmdi-check color-breaking',
+                                ]
+                            ),
+                            [
+                                'id' => Yii::$app->controller->id . '-filter__submit',
+                                'class' => 'zmdi-icon--hoverable',
+                                'ic-indicator' => self::DEFAULT_AJAX_LOADER,
+                                'ic-target' => $target_el,
+                                'ic-push-url' => 'false',
+                                'ic-include' => $include,
+                                'ic-' . $method => $url,
+                            ]
+                        ),
+                        [
+                            'class' => 'tooltip-box__footer',
+                        ]
+                    ) .
+
+                    Html::endForm(),
                 [
-                  'class' => 'zmdi zmdi-check color-breaking',
+                    'id' => 'filter-box',
+                    'class' => 'tooltip-box noselect',
                 ]
-              ),
-              [
-                'id' => Yii::$app->controller->id.'-filter__submit',
-                'class' => 'zmdi-icon--hoverable',
-                'ic-indicator' => self::DEFAULT_AJAX_LOADER,
-                'ic-target' => $target_el,
-                'ic-push-url' => 'false',
-                'ic-include' => $include,
-                'ic-'.$method => $url,
-              ]
-            ),
-            [
-              'class' => 'tooltip-box__footer',
-            ]
-          ).
-
-          Html::endForm(),
-          [
-            'id' => 'filter-box',
-            'class' => 'tooltip-box noselect',
-          ]
-        );
+            );
     }
 
     /**
@@ -647,56 +682,62 @@ class ElementsHelper extends Html
         if (isset($categories)) {
             $categories = array_map(function ($category) {
                 return array(
-                  'id' => $category['id'],
-                  'text' => $category['name'],
-              );
+                    'id' => $category['id'],
+                    'text' => $category['name'],
+                );
             }, $categories);
         }
 
         switch ($type) {
-          case 'geolocation':
-            return
-            Html::tag('div',
+            case 'geolocation':
+                return
+                    Html::tag(
+                        'div',
 
-              //filter box form with persistent data
-              Html::beginForm('', 'post',
-                [
-                  'id' => $controllerId.'-filter-block',
-                  'class' => 'u-window-box--large',
-                  'way-data' => $controllerId.'.filter.'.$type,
-                  'way-persistent' => 'true',
-                ]
-              ).
+                        //filter box form with persistent data
+                        Html::beginForm(
+                            '',
+                            'post',
+                            [
+                                'id' => $controllerId . '-filter-block',
+                                'class' => 'u-window-box--large',
+                                'way-data' => $controllerId . '.filter.' . $type,
+                                'way-persistent' => 'true',
+                            ]
+                        ) .
 
-              //filter box label
-              Html::tag('h4',
-                Yii::t('app', 'Find schools'),
-                [
-                  'class' => 'block__title',
-                ]
-              ).
+                            //filter box label
+                            Html::tag(
+                                'h4',
+                                Yii::t('app', 'Find schools'),
+                                [
+                                    'class' => 'block__title',
+                                ]
+                            ) .
 
-              Html::a('<i class="zmdi zmdi-plus-circle-o zmdi-hc-3x"></i>', '#googleforms_add_school',
-                [
-                  'class' => 'btn btn__addnew roundcorners modal-open',
-                  'title' => 'Добавить школу'
-                ]).
+                            Html::a(
+                                '<i class="zmdi zmdi-plus-circle-o zmdi-hc-3x"></i>',
+                                '#googleforms_add_school',
+                                [
+                                    'class' => 'btn btn__addnew roundcorners modal-open',
+                                    'title' => 'Добавить школу'
+                                ]
+                            ) .
 
-              \Yii::$app->view->render('@modals/google/GoogleFormsAddSchool').
+                            \Yii::$app->view->render('@modals/google/GoogleFormsAddSchool') .
 
-              \Yii::$app->view->render('@common/views/geolocation/_filterblock', [
-                'categories' => $categories,
-                ]).
+                            \Yii::$app->view->render('@common/views/geolocation/_filterblock', [
+                                'categories' => $categories,
+                            ]) .
 
-              Html::endForm(),
-              [
-                'id' => $controllerId.'-filter-block--'.$type,
-                'class' => 'color-content--bg',
-              ]
-            );
+                            Html::endForm(),
+                        [
+                            'id' => $controllerId . '-filter-block--' . $type,
+                            'class' => 'color-content--bg',
+                        ]
+                    );
 
-            break;
-
+                break;
         }
     }
 
@@ -715,26 +756,28 @@ class ElementsHelper extends Html
         /* Gallery loop */
         foreach ($photos_array as $k => $photo) {
             $response .=
-            Html::tag('div',
+                Html::tag(
+                    'div',
 
-              /* Gallery image with lightbox */
-              Html::tag('a',
-                Html::img(
-                  '/frontend/web/images/photoalbum/'.$photo['img_thumbnail'],
-                  [
-                   'class' => 'gallery__image o-image',
-                  ]
-                ),
-                [
-                  'data-fancybox' => 'gallery',
-                  'href' => '/frontend/web/images/photoalbum/'.$photo['img'],
-                ]
-              ),
+                    /* Gallery image with lightbox */
+                    Html::tag(
+                        'a',
+                        Html::img(
+                            '/frontend/web/images/photoalbum/' . $photo['img_thumbnail'],
+                            [
+                                'class' => 'gallery__image o-image',
+                            ]
+                        ),
+                        [
+                            'data-fancybox' => 'gallery',
+                            'href' => '/frontend/web/images/photoalbum/' . $photo['img'],
+                        ]
+                    ),
 
-              [
-                'class' => 'gallery__item',
-              ]
-            );
+                    [
+                        'class' => 'gallery__item',
+                    ]
+                );
         }
 
         return $response;
@@ -751,7 +794,7 @@ class ElementsHelper extends Html
     {
         echo Html::beginTag('div', ['id' => 'errors_container']);
         foreach ($errors as $field_name => $error) {
-            echo Html::ul([strtoupper($field_name).': '.$error[0]], ['class' => 'alert alert-red']);
+            echo Html::ul([strtoupper($field_name) . ': ' . $error[0]], ['class' => 'alert alert-red']);
         }
         echo Html::endTag('div');
     }

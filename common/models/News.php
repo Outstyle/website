@@ -57,7 +57,7 @@ class News extends ActiveRecord
      */
     const NEWS_TYPE_DEFAULT = 0;
     const NEWS_TYPE_ARTICLE = 1;
-    const NEWS_TYPE_VIDEONEWS = 2;
+    const NEWS_TYPE_VIDEOZ = 2;
     const NEWS_TYPE_REVIEW = 3;
     const NEWS_TYPE_RELEASE = 4;
 
@@ -69,7 +69,7 @@ class News extends ActiveRecord
     const NEWS_TYPE = [
         'news' => self::NEWS_TYPE_DEFAULT,
         'article' => self::NEWS_TYPE_ARTICLE,
-        'videonews' => self::NEWS_TYPE_VIDEONEWS,
+        'videoz' => self::NEWS_TYPE_VIDEOZ,
         'reviews' => self::NEWS_TYPE_REVIEW,
         'releases' => self::NEWS_TYPE_RELEASE
     ];

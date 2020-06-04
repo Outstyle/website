@@ -42,15 +42,15 @@ AppAsset::register($this);
             'itemsOptions' => ['class' => 'dropdown-submenu'],
             'submenuOptions' => ['class' => 'dropdown-menu'],
             'items' => [
-                ['label' => Yii::t('app', 'News'), 'url' => ['/news/index']],
-                ['label' => Yii::t('app', 'Articles'), 'url' => ['/article/index']],
-                ['label' => Yii::t('app', 'Video'), 'url' => ['/videonews/index']],
-                ['label' => Yii::t('app', 'Releases'), 'url' => ['/releases/index']],
-                ['label' => Yii::t('app', 'Reviews'), 'url' => ['/reviews/index']],
+                ['label' => Yii::t('app', 'News'), 'url' => ['/news']],
+                ['label' => Yii::t('app', 'Articles'), 'url' => ['/article']],
+                ['label' => Yii::t('app', 'Video'), 'url' => ['/videoz']],
+                ['label' => Yii::t('app', 'Releases'), 'url' => ['/releases']],
+                ['label' => Yii::t('app', 'Reviews'), 'url' => ['/reviews']],
             ],
         ];
-        $menuItems[] = ['label' => Yii::t('app', 'Школы'), 'url' => ['/school/index']];
-        $menuItems[] = ['label' => Yii::t('app', 'События'), 'url' => ['/events/index']];
+        $menuItems[] = ['label' => Yii::t('app', 'Школы'), 'url' => ['/school']];
+        $menuItems[] = ['label' => Yii::t('app', 'События'), 'url' => ['/events']];
         $menuItems[] = [
             'label' => Yii::t('app', 'Выход ({user})', ['user' => Yii::$app->user->identity->username]),
             'url' => ['/site/logout'],
