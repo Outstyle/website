@@ -12,7 +12,7 @@ use common\components\helpers\SEOHelper;
  * @var $categories             common/models/News
  * @var $categorу               common/models/News
  * @var $page                   common/models/News
- * @var $outstyle_news_height   common/models/News  needed for Packery layout
+ * @var $contentHeight   common/models/News  needed for Packery layout
  */
 
 SEOHelper::setMetaInfo($this);
@@ -24,7 +24,7 @@ echo ElementsHelper::ajaxGridWrap(
         'modelNews' => $modelNews,
         'newsCategories' => $newsCategories,
         'page' => $page,
-        'outstyle_news_height' => $outstyle_news_height,
+        'contentHeight' => $contentHeight,
         'category' => $category ?? '',
     ])
 );

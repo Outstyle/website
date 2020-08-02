@@ -48,17 +48,22 @@ class PortalAsset extends AssetBundle
         'js/misc/ohsnap.min.js',
         'js/misc/echo.min.js',
         'js/misc/preciseTextResize.js',
+        'js/misc/xStore.min.js',
         'js/misc/way.min.js',
 
+        /* website (portal) related JS code - must follow hierarchy */
+        /* [system functions first, user related last] */
+        'js/outstyle.log.js',
+        'js/outstyle.localstorage.js',
+        'js/outstyle.checkboxes.js',
         'js/outstyle.modal.js',
         'js/outstyle.comments.js',
         'js/outstyle.portal.news.js',
-        'js/outstyle.portal.articles.grid.js',
         'js/outstyle.portal.article.js',
         'js/outstyle.portal.event.js',
         'js/outstyle.portal.school.js',
         'js/outstyle.googletags.js',
-        'js/outstyle.ya.js',
+        //'js/outstyle.ya.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

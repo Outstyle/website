@@ -164,6 +164,7 @@ return [
     'Subscribe to our channels: ' => 'Подпишись на наши каналы: ',
     'Status' => 'Статус',
     'Teaches' => 'Обучает',
+    'There is no data within this filtered category!' => 'В этой категории и с этим фильтром нет данных для отображения',
     'This album has no photos yet.' => 'В этом альбоме ещё нет фотографий.',
     'This category has no active events!' => 'В этой категории нет активных событий!',
     'This email address is already taken' => 'Этот адрес электронной почты уже занят',

@@ -15,14 +15,14 @@ if (!outstyle.errors) {
     outstyle.errors = {};
 }
 
-jQuery(document).ready(function() {
-    (function() {
+jQuery(document).ready(function () {
+    (function () {
         "use strict";
 
         /* Handle error triggering from our server (headers) */
-        jQuery('body').on('showErrors', function(event, data) {
+        jQuery('body').on('showErrors', function (event, data) {
             ohSnapX();
-            jQuery.each(data, function(key, value) {
+            jQuery.each(data, function (key, value) {
                 ohSnap(decodeURIComponent(value).replace(/\+/g, " "), {
                     'color': 'red'
                 });
@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
         });
 
         /* Handle broken images error */
-        jQuery("img").one("error", function() {
+        jQuery("img").one("error", function () {
             jQuery(this).attr("src", "/images/images/250x250_noimage.jpg");
         });
 

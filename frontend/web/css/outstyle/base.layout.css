@@ -239,7 +239,8 @@ img.school__image {
     color: #9033bb;
 }
 
-.news-single .zmdi-icon--hoverable, a.i-icon {
+.news-single .zmdi-icon--hoverable,
+a.i-icon {
     color: #c5c5c5;
 }
 
@@ -307,8 +308,7 @@ img.school__image {
     visibility: hidden;
 }
 
-#article-filter-form,
-#events-filter-form {
+#filter-form {
     margin: 0 auto;
 }
 
@@ -628,6 +628,7 @@ a.article__title:hover {
     display: block;
 }
 
+
 /* --- REGISTERED USER ELEMENTS --- */
 .user-registered .i-like.active {
     color: #3d8aef;
@@ -782,8 +783,18 @@ a.article__title:hover {
 }
 
 /* --- H1 - H6 STYLES --- */
-.articles__body h1, .articles__body h2, .articles__body h3, .articles__body h4, .articles__body h5, .articles__body h6,
-.articles__body h1 a, .articles__body h2 a, .articles__body h3 a, .articles__body h4 a, .articles__body h5 a, .articles__body h6 a,
+.articles__body h1,
+.articles__body h2,
+.articles__body h3,
+.articles__body h4,
+.articles__body h5,
+.articles__body h6,
+.articles__body h1 a,
+.articles__body h2 a,
+.articles__body h3 a,
+.articles__body h4 a,
+.articles__body h5 a,
+.articles__body h6 a,
 .c-text__color--redshadow {
     line-height: 1;
     color: #ed1f24;

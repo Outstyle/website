@@ -14,16 +14,12 @@ use yii\web\Response;
 use common\models\News;
 use backend\models\Category;
 use frontend\components\ParentController;
+use frontend\components\OutstylePortalController;
 use common\models\SettingScript;
 use yii\helpers\ArrayHelper;
 
-class NewsController extends ParentController
+class NewsController extends OutstylePortalController
 {
-    /**
-     * @inheritdoc
-     */
-    public $layout = 'portal';
-
     /**
      * Used in actionShow for 'news' representation
      * This is the template for any other controller to use
@@ -84,7 +80,7 @@ class NewsController extends ParentController
 
         /* Initial page to start load news from */
         $page = (!empty($data['page'])) ? (int) $data['page'] : 0;
-        $outstyle_news_height = (!empty($data['outstyle_news_height'])) ? (int) $data['outstyle_news_height'] : 0;
+        $contentHeight = (!empty($data['contentHeight'])) ? (int) $data['contentHeight'] : 0;
 
         $modelNews = News::getNews($where, $page);
         $newsCategories = Category::getCategories(['id' => News::NEWS_CATEGORIES]);
@@ -97,7 +93,7 @@ class NewsController extends ParentController
          * Rendering as HTML code and rendering only partial view to avoid all page refresh
          */
         if (isset($data['ic-request'])) {
-            $response['outstyle_news_height'] = $outstyle_news_height;
+            $response['contentHeight'] = $contentHeight;
             $response['page'] = $page;
             $headers = Yii::$app->response->headers;
             $headers->add('X-IC-Title', rawurlencode(Yii::$app->controller->id));
@@ -106,7 +102,7 @@ class NewsController extends ParentController
             return $this->renderPartial('index', [
                 'modelNews' => $modelNews,
                 'newsCategories' => $newsCategories,
-                'outstyle_news_height' => $outstyle_news_height,
+                'contentHeight' => $contentHeight,
                 'page' => $page,
             ]);
         }
@@ -121,7 +117,7 @@ class NewsController extends ParentController
         return $this->render('index', [
             'modelNews' => $modelNews,
             'newsCategories' => $newsCategories,
-            'outstyle_news_height' => $outstyle_news_height,
+            'contentHeight' => $contentHeight,
             'page' => $page,
         ]);
     }
@@ -138,7 +134,7 @@ class NewsController extends ParentController
 
         /* Data validation */
         $page = $data['page'] ?? 0;
-        $outstyle_news_height = $data['outstyle_news_height'] ?? 0;
+        $contentHeight = $data['contentHeight'] ?? 0;
         $category = $data['category'] ?? 0;
 
         /* Category filter validation - only numeric values are acceptable (needed for cleaning up values from API - users side) */
@@ -172,8 +168,18 @@ class NewsController extends ParentController
         /* If we don't have our model filled, that means we won't send another request, cause we're reached the end of news */
         if (!$modelNews) {
             $response['lastPageReached'] = 1;
+            $response['page'] = $page;
             $headers = Yii::$app->response->headers;
             $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
+
+            // If we dont have anything in certain category, and it was a straight filter request
+            if ($page == 0) {
+                return '<center class="u-window-box--super events__body">' . Yii::t('app', 'This category has no active events!') . '</center>';
+            }
+            // If it was an empty model with filters applied (no posts in certain category)
+            if ($page == 1) {
+                return '<center class="u-window-box--super events__body">' . Yii::t('app', 'There is no data within this filtered category!') . '</center>';
+            }
 
             return;
         }
@@ -187,7 +193,7 @@ class NewsController extends ParentController
         if (isset($data['ic-request'])) {
             $page++; // Let's add +1 to our page int, so rendered part would know from where to start
 
-            $response['outstyle_news_height'] = ($page == 1) ? 500 : $outstyle_news_height;
+            $response['contentHeight'] = ($page == 1) ? 500 : $contentHeight;
             $response['page'] = $page;
 
             $headers = Yii::$app->response->headers;
@@ -196,7 +202,7 @@ class NewsController extends ParentController
             return $this->renderPartial($this->partialViewFile, [
                 'modelNews' => $modelNews,
                 'page' => $page,
-                'outstyle_news_height' => $outstyle_news_height,
+                'contentHeight' => $contentHeight,
                 'category' => $category,
             ]);
         }
@@ -207,7 +213,7 @@ class NewsController extends ParentController
         return [
             'modelNews' => $modelNews,
             'page' => $page,
-            'outstyle_news_height' => $outstyle_news_height,
+            'contentHeight' => $contentHeight,
             'category' => $category,
         ];
     }
@@ -317,7 +323,7 @@ class NewsController extends ParentController
 
         /* Initial page to start load news from */
         $page = $data['page'] ?? 0;
-        $outstyle_news_height = $data['outstyle_news_height'] ?? 0;
+        $contentHeight = $data['contentHeight'] ?? 0;
 
         $modelNews = News::getNews($where, $page);
         $page++;
@@ -337,7 +343,7 @@ class NewsController extends ParentController
         return $this->render('index', [
             'modelNews' => $modelNews,
             'newsCategories' => Category::getCategories(['id' => News::NEWS_CATEGORIES]),
-            'outstyle_news_height' => $outstyle_news_height,
+            'contentHeight' => $contentHeight,
             'page' => $page,
             'category' => $where['category'] ?? 0,
         ]);

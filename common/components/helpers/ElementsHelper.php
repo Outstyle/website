@@ -591,7 +591,9 @@ class ElementsHelper extends Html
                         ) .
                         '<span>' . Yii::t('app', $category->name) . '</span>',
                     null,
-                    []
+                    [
+                        'class' => 'checkbox__wrap'
+                    ]
                 );
         }
 
@@ -605,9 +607,7 @@ class ElementsHelper extends Html
                     'post',
                     [
                         'id' => Yii::$app->controller->id . '-filter-form',
-                        'class' => 'u-window-box--small tooltip-box__body',
-                        'way-data' => Yii::$app->controller->id . '.filter',
-                        'way-persistent' => 'true',
+                        'class' => 'u-window-box--small tooltip-box__body'
                     ]
                 ) .
 

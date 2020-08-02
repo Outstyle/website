@@ -322,7 +322,7 @@ class News extends ActiveRecord
                         ->limit(self::$similarPageSize)
                         ->all();
                     if (!empty($similarNews)) {
-                        $count = (count($similarNews) >= self::$similarPageSize) ? self::$similarPageSize : count($similarNews);
+                        $count = (count($similarNews) >= self::$similarPageSize) ? self::$similarPageSize : 0;
                         for ($s = 0; $s < $count; ++$s) {
                             $modelNews[$i]['similar'][$s]['name'] = $similarNews[$s]->name;
                             $modelNews[$i]['similar'][$s]['url'] = $similarNews[$s]->url;

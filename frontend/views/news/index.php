@@ -6,11 +6,11 @@ use common\components\helpers\SEOHelper;
 /**
  * Main news grid, that must be wrapped by #ajax for Intercooler
  *
- * @var $this            yii\web\View
+ * @var $this                   yii\web\View
  * @var $modelNews              common/models/News
  * @var $newsCategories         common/models/News
  * @var $page                   common/models/News
- * @var $outstyle_news_height   common/models/News  needed for Packery layout
+ * @var $contentHeight          common/models/News  needed for Packery layout
  */
 
 
@@ -27,7 +27,7 @@ echo ElementsHelper::ajaxGridWrap(
             'modelNews' => $modelNews,
             'newsCategories' => $newsCategories,
             'page' => $page,
-            'outstyle_news_height' => $outstyle_news_height,
+            'contentHeight' => $contentHeight,
             'category' => $category ?? '',
         ]
     )

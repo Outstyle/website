@@ -129,7 +129,7 @@ if (isset($modelNews)) {
                             //main text
                             Html::tag(
                                 'p',
-                                strip_tags(StringHelper::cutString($article['text'], 520), '<code><p>'),
+                                strip_tags(StringHelper::cutString($article['text'], 480), '<code><p>'),
                                 [
                                     'class' => 'article__text',
                                 ]
@@ -290,27 +290,21 @@ if (isset($modelNews)) {
             ),
             Html::endTag('div');
     }
-
     if ($page) {
-        if ($outstyle_news_height) {
-            $outstyle_news_height = $outstyle_news_height - 500;
-        }
         if ($page == 1) {
-            $outstyle_news_height = 10;
+            $contentHeight = 10;
         }
         echo
             Html::tag(
                 'div',
-                ElementsHelper::loadMore(Url::toRoute(Yii::$app->controller->id . '/show'), '#outstyle_articles .articles__body', '{"page":' . (int) $page . ',"category":' . (int) $category . '}'),
-                ['style' => "top:{$outstyle_news_height}px;position:absolute;z-index:10000;"]
+                ElementsHelper::loadMore(
+                    Url::toRoute(Yii::$app->controller->id . '/show'),
+                    '#outstyle_articles .articles__body',
+                    '{"page":' . (int) $page . ',"category":' . (int) $category . '}'
+                ),
+                [
+                    'style' => "top:{$contentHeight}px;position:absolute;z-index:10000;"
+                ]
             );
     }
 }
-
-/* JS: @see js/outstyle.portal.article.js */
-?>
-<script>
-    jQuery(document).ready(function() {
-        articleInit();
-    });
-</script>
