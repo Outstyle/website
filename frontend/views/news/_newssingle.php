@@ -305,6 +305,18 @@ Can be:
 ?>
 <script>
     jQuery(document).ready(function() {
-        newsInit();
+        echo.init({
+            offset: 500,
+            callback: function(element, op) {
+                jQuery("img").error(function() {
+                    jQuery(this).hide();
+                });
+            }
+        });
+
+        jQuery("#news-single-recommended .grayscale, #news-single-similar .grayscale").hover(function() {
+            jQuery(this).toggleClass('grayscale');
+        });
+
     });
 </script>
