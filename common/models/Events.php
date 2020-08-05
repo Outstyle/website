@@ -74,15 +74,15 @@ class Events extends ActiveRecord
     {
         return [
             [
-              [
-                'user',
-                'title',
-                'category',
-                'description',
-                'price',
-                'price_currency',
-              ],
-              'required',
+                [
+                    'user',
+                    'title',
+                    'category',
+                    'description',
+                    'price',
+                    'price_currency',
+                ],
+                'required',
             ],
             ['date_redact', 'default', 'value' => 0],
             ['redactor_id', 'default', 'value' => 0],
@@ -123,35 +123,35 @@ class Events extends ActiveRecord
                     return date('U');
                 },
             ],
-        'imageUploaderBehavior' => [
-          'class' => 'demi\image\ImageUploaderBehavior',
-          'imageConfig' => [
-            'imageAttribute' => 'img',
-            'savePathAlias' => '@frontend/web/images/events',
-            'rootPathAlias' => '@frontend/web/images',
-            'noImageBaseName' => 'noimage.jpg',
-            'imageSizes' => [
-              '' => 1000, /* Also serves as a maxWidth limit for uploaded file and only for this set of image sizes */
-              '960x360_' => 960, /* 16 / 6 AR */
-              '320x120_' => 320, /* 16 / 6 AR */
-              /* '360x540_' => 360, /* 2 / 3 AR */
+            'imageUploaderBehavior' => [
+                'class' => 'demi\image\ImageUploaderBehavior',
+                'imageConfig' => [
+                    'imageAttribute' => 'img',
+                    'savePathAlias' => '@frontend/web/images/events',
+                    'rootPathAlias' => '@frontend/web/images',
+                    'noImageBaseName' => 'noimage.jpg',
+                    'imageSizes' => [
+                        '' => 1000, /* Also serves as a maxWidth limit for uploaded file and only for this set of image sizes */
+                        '960x360_' => 960, /* 16 / 6 AR */
+                        '320x120_' => 320, /* 16 / 6 AR */
+                        /* '360x540_' => 360, /* 2 / 3 AR */
+                    ],
+                    'imageValidatorParams' => [
+                        'minWidth' => 200,
+                        'minHeight' => 200,
+                        'maxWidth' => 5000,
+                        'maxHeight' => 5000,
+                    ],
+                    'aspectRatio' => [
+                        16 / 6,
+                        /* 2 / 3, */
+                    ],
+                    'imageRequire' => false,
+                    'fileTypes' => 'jpg,jpeg,gif,png',
+                    'maxFileSize' => 3145728,
+                    'backendSubdomain' => 'admin.',
+                ],
             ],
-            'imageValidatorParams' => [
-              'minWidth' => 200,
-              'minHeight' => 200,
-              'maxWidth' => 5000,
-              'maxHeight' => 5000,
-            ],
-            'aspectRatio' => [
-              16 / 6,
-              /* 2 / 3, */
-            ],
-            'imageRequire' => false,
-            'fileTypes' => 'jpg,jpeg,gif,png',
-            'maxFileSize' => 3145728,
-            'backendSubdomain' => 'admin.',
-          ],
-        ],
             'sitemap' => [
                 'class' => SitemapBehavior::className(),
                 'scope' => function ($model) {
@@ -159,7 +159,7 @@ class Events extends ActiveRecord
                     $model->andWhere(['status' => 1]);
                 },
                 'dataClosure' => function ($model) {
-                    if ($model->date_redact==0) {
+                    if ($model->date_redact == 0) {
                         $date = new DateTime("@$model->created");
                         $time_last_mod = $date->format('Y-m-d');
                     } else {
@@ -167,14 +167,14 @@ class Events extends ActiveRecord
                         $time_last_mod = $date->format('Y-m-d');
                     }
                     return [
-                        'loc' => Url::to('/events/'.$model->id, 'https'),
+                        'loc' => Url::to('/events/' . $model->id, 'https'),
                         'lastmod' => $time_last_mod,
                         'changefreq' => SitemapBehavior::CHANGEFREQ_DAILY,
                         'priority' => 0.8
                     ];
                 }
             ]
-      ];
+        ];
     }
 
     /**
@@ -241,9 +241,9 @@ class Events extends ActiveRecord
         /* If we have pagination */
         if ($page) {
             $pagination = new Pagination([
-              'defaultPageSize' => self::$defaultPageSize,
-              'totalCount' => $eventsQuery->count(),
-              'page' => $page - 1,
+                'defaultPageSize' => self::$defaultPageSize,
+                'totalCount' => $eventsQuery->count(),
+                'page' => $page - 1,
             ]);
 
             $eventsQuery = $eventsQuery->offset($pagination->offset)->limit($pagination->limit);
@@ -289,9 +289,9 @@ class Events extends ActiveRecord
             if (isset($where['id'])) {
                 $modelEvents[$i]['description'] = $events[$i]->description ?? '';
                 $modelEvents[$i]['site'] = $events[$i]->site;
-                $modelEvents[$i]['userName'] = $events[$i]->userDescription->nickname;
+                $modelEvents[$i]['userName'] = $events[$i]->userDescription->nickname ?? '';
                 $modelEvents[$i]['userAvatar'] = UserAvatar::getAvatarPath($events[$i]->user);
-                $modelEvents[$i]['userCulture'] = ArrayHelper::getValue(UserDescription::cultureList(true), $events[$i]->userDescription->culture);
+                $modelEvents[$i]['userCulture'] = ArrayHelper::getValue(UserDescription::cultureList(true), $events[$i]->userDescription->culture ?? '');
                 $modelEvents[$i]['comments'] = Comments::getComments(['elem_type' => 'events', 'elem_id' => $events[$i]->id]);
                 $modelEvents[$i]['categories'] = Category::getCategories(['id' => self::EVENTS_CATEGORIES]);
 
@@ -306,11 +306,11 @@ class Events extends ActiveRecord
                 unset($where['id']);
 
                 $recommendedEvents = self::find()
-                ->where($where)
-                ->andWhere($andWhere)
-                ->orderBy(self::$eventsOrderBy)
-                ->limit(self::$recommendedPageSize)
-                ->all();
+                    ->where($where)
+                    ->andWhere($andWhere)
+                    ->orderBy(self::$eventsOrderBy)
+                    ->limit(self::$recommendedPageSize)
+                    ->all();
                 if (!empty($recommendedEvents)) {
                     $count = (count($recommendedEvents) >= self::$recommendedPageSize) ? self::$recommendedPageSize : count($recommendedEvents);
                     for ($s = 0; $s < $count; ++$s) {
