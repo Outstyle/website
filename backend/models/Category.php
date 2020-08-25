@@ -35,8 +35,7 @@ class Category extends \yii\db\ActiveRecord
             [['name', 'url'], 'string', 'max' => 32],
             ['url', 'filter', 'filter' => function ($value) {
                 return StringHelper::slugify($value);
-            }
-            ],
+            }],
         ];
     }
 

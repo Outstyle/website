@@ -394,6 +394,7 @@ h1.block__title {
 
 #outstyle_news #loadmore,
 #outstyle_articles #loadmore,
+#outstyle_events #loadmore,
 .block__item #loadmore {
     width: 26px;
     height: 26px;

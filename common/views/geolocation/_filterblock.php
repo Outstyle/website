@@ -23,43 +23,68 @@ if (!isset($showLabels)) {
 $controllerId = Yii::$app->controller->id;
 
 echo
-  # country select
-  Html::tag('div',
-    Html::tag('div',
-      ($showLabels ? Html::tag('label', Yii::t('app', 'Country'),
-        [
-          'class' => 'control-label',
-          'for' => 'country'
-        ]
-      ) : '').
-      Html::dropDownList('country', null,
-        GeolocationCountries::getAllActiveCountriesDropdown(),
-        [
-          'id' => 'geolocation_country',
-          'class' => "form-trigger select-{$controllerId}-country",
-          'ic-trigger-on' => 'change'
-        ]
-      ),
-    ['class' => "form-group field-{$controllerId}-country"]).
+    # country select
+    Html::tag(
+        'div',
+        Html::tag(
+            'div',
+            ($showLabels ? Html::tag(
+                'label',
+                Yii::t('app', 'Country'),
+                [
+                    'class' => 'control-label',
+                    'for' => 'country'
+                ]
+            ) : '') .
+                Html::dropDownList(
+                    'country',
+                    null,
+                    GeolocationCountries::getAllActiveCountriesDropdown(),
+                    [
+                        'id' => 'geolocation_country',
+                        'class' => "form-trigger select-{$controllerId}-country",
+                        'ic-trigger-on' => 'change'
+                    ]
+                ),
+            ['class' => "form-group field-{$controllerId}-country"]
+        ) .
 
-    # city select
-    Html::tag('div',
-        ($showLabels ? Html::tag('label', Yii::t('app', 'City'),
-        [
-          'class' => 'control-label',
-          'for' => 'city'
-        ]
-      ) : '').
-      Html::dropDownList('city', null,
-        GeolocationCities::getAllActiveCitiesDropdown(),
-        [
-          'id' => 'geolocation_city',
-          'class' => "form-trigger select-{$controllerId}-city",
-          'ic-trigger-on' => 'change'
-        ]
-      ),
-    ['class' => "form-group field-{$controllerId}-city"]),
+            # city select
+            Html::tag(
+                'div',
+                ($showLabels ? Html::tag(
+                    'label',
+                    Yii::t('app', 'City'),
+                    [
+                        'class' => 'control-label',
+                        'for' => 'city'
+                    ]
+                ) : '') .
+                    Html::dropDownList(
+                        'city',
+                        null,
+                        GeolocationCities::getAllActiveCitiesDropdown(),
+                        [
+                            'id' => 'geolocation_city',
+                            'class' => "form-trigger select-{$controllerId}-city",
+                        ]
+                    ) .
+                    Html::hiddenInput(
+                        'city_query',
+                        null,
+                        [
+                            'id'            => 'geolocation_cities_query',
+                            'class'         => "form-control select-{$controllerId}-cities",
+                            'ic-trigger-on' => 'change',
+                            'ic-target' => '#outstyle_' . $controllerId . ' .' . $controllerId,
+                            'ic-push-url' => 'false',
+                            'ic-get-from' => Url::toRoute($controllerId . '/show')
+                        ]
+                    ),
+                ['class' => "form-group field-{$controllerId}-city"]
+            ),
 
-  [
-    'id' => 'geolocation__filter'
-  ]);
+        [
+            'id' => 'geolocation__filter'
+        ]
+    );

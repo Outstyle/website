@@ -13,7 +13,6 @@ use yii\web\Response;
 
 use common\models\News;
 use backend\models\Category;
-use frontend\components\ParentController;
 use frontend\components\OutstylePortalController;
 use common\models\SettingScript;
 use yii\helpers\ArrayHelper;

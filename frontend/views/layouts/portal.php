@@ -32,7 +32,7 @@ Spaceless::begin();
     <link rel="shortcut icon" type="image/png" href="/css/favicon.png">
     <!-- google -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <!-- <script src="//maps.googleapis.com/maps/api/js?key=<?= Yii::$app->params['googleMapsApiKey']; ?>&amp;extension=.js"></script> -->
+    <script src="//maps.googleapis.com/maps/api/js?key=<?= Yii::$app->params['googleMapsApiKey']; ?>&amp;extension=.js"></script>
     <!-- <script data-ad-client="ca-pub-9873762851395779" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <!-- google -->
 </head>

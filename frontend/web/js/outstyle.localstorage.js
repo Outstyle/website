@@ -42,7 +42,9 @@ jQuery(document).ready(function () {
             articles: this.filters.get('article', []),
             videoz: this.filters.get('videoz', []),
             releases: this.filters.get('releases', []),
-            reviews: this.filters.get('reviews', [])
+            reviews: this.filters.get('reviews', []),
+            events: this.filters.get('events', []),
+            schools: this.filters.get('schools', [])
         });
 
         /* Restores values from localStorage by provided url */

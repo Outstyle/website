@@ -14,13 +14,17 @@ use common\components\helpers\SEOHelper;
 
 SEOHelper::setMetaInfo($this);
 
-echo ElementsHelper::ajaxGridWrap(Yii::$app->controller->id, 'o-grid--no-gutter',
-    $this->render('_eventsgrid',
-      [
-        'modelEvents' => $modelEvents,
-        'eventsCategories' => $eventsCategories,
-        'page' => $page,
-        'category' => $category ?? ''
-      ]
+echo ElementsHelper::ajaxGridWrap(
+    Yii::$app->controller->id,
+    'o-grid--no-gutter',
+    $this->render(
+        '_eventsgrid',
+        [
+            'modelEvents' => $modelEvents,
+            'eventsCategories' => $eventsCategories,
+            'page' => $page,
+            'contentHeight' => $contentHeight,
+            'category' => $category ?? ''
+        ]
     )
-  );
+);

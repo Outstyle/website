@@ -64,6 +64,7 @@ jQuery(document).ready(function () {
          */
         jQuery("body").on("news", function (event, data) {
             setTimeout(function () {
+                // [!] Destroying layout is needed to fill the small or large square gaps with every new page request
                 jQuery('#outstyle_news .news')
                     .packery()
                     .packery('destroy');
@@ -132,35 +133,14 @@ jQuery(document).ready(function () {
                     .packery('layout');
 
                 /* Bind local events only once */
-                if (!DOM.$newsContainer.hasClass('news-binded')) {
+                if (!DOM.$newsContainer.hasClass('binded')) {
                     _bindLocalEvents(DOM);
-                    DOM.$newsContainer.addClass('news-binded');
+                    DOM.$newsContainer.addClass('binded');
                 }
-
-                /* --- Bind some events to this page elements --- */
-                jQuery(".news__filter-button").on("click", function () {
-                    jQuery(this).after(
-                        jQuery('#filter-box').slideDown('fast')
-                    );
-                });
-                jQuery('#news-filter-form input[type=checkbox]').on("change", function () {
-                    if (this.checked) {
-                        jQuery(this).next('i').removeClass('zmdi-circle-o').addClass('zmdi-circle');
-                    } else {
-                        jQuery(this).next('i').removeClass('zmdi-circle').addClass('zmdi-circle-o');
-                    }
-                });
-
-
-                /* --- Now to init images lazy loading --- */
-                echo.init({
-                    offset: 1000
-                });
 
                 _log("[NEWS] outstyle.news.init finished");
             }
         };
-
 
 
         /**
@@ -172,6 +152,7 @@ jQuery(document).ready(function () {
 
             /* --- If Packery has finally loaded - initiating some other events --- */
             jQuery(DOM.$newsGrid).on('layoutComplete', function (event, laidOutItems) {
+
                 /* --- Fit text size for each Packery block --- */
                 jQuery('.news__title').preciseTextResize({
                     parent: '.news__overlay',
@@ -184,6 +165,24 @@ jQuery(document).ready(function () {
                 jQuery(DOM.$newsContainer).css({
                     'visibility': 'visible'
                 });
+
+                jQuery.each(laidOutItems, function (key, value) {
+                    jQuery(value.element).find('.news__filter-button').on("click", function () {
+                        jQuery(this).after(jQuery('#filter-box').slideDown('fast'));
+                    });
+                });
+            });
+
+            jQuery('#news-filter-form input[type=checkbox]').on("change", function () {
+                if (this.checked) {
+                    jQuery(this).next('i').removeClass('zmdi-circle-o').addClass('zmdi-circle');
+                } else {
+                    jQuery(this).next('i').removeClass('zmdi-circle').addClass('zmdi-circle-o');
+                }
+            });
+
+            echo.init({
+                offset: 1000
             });
 
             _log('🔥 [NEWS] local events binding finished');

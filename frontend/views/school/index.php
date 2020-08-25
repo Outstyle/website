@@ -14,12 +14,16 @@ use common\components\helpers\SEOHelper;
 
 SEOHelper::setMetaInfo($this);
 
-echo ElementsHelper::ajaxGridWrap('school', 'o-grid--no-gutter',
-    $this->render('_schoolgrid',
-    [
-      'model' => $model,
-      'categories' => $categories,
-      'page' => $page,
-      'page_height' => $page_height,
-    ])
-  );
+echo ElementsHelper::ajaxGridWrap(
+    'school',
+    'o-grid--no-gutter padding-mobile',
+    $this->render(
+        '_schoolgrid',
+        [
+            'model' => $model,
+            'categories' => $categories,
+            'page' => $page,
+            'contentHeight' => $contentHeight,
+        ]
+    )
+);

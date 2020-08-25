@@ -26,27 +26,27 @@ class SchoolController extends ParentController
     public function behaviors()
     {
         return [
-          'access' => [
-            'class' => AccessControl::className(),
-            'rules' => [
-              [
-                'actions' => [
-                  'index',
-                  'view',
-                  'show',
-                  'get',
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => [
+                            'index',
+                            'view',
+                            'show',
+                            'get',
+                        ],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => [
+                            'add',
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
-                'allow' => true,
-              ],
-              [
-                'actions' => [
-                  'add',
-                ],
-                'allow' => true,
-                'roles' => ['@'],
-              ],
             ],
-          ],
         ];
     }
 
@@ -61,12 +61,11 @@ class SchoolController extends ParentController
         $where = $response = [];
 
         /* Initial page to start load schools from */
-        $page = (!empty($data['page'])) ? (int) $data['page'] : 0;
-        $page_height = (!empty($data['page_height'])) ? (int) $data['page_height'] : 0;
+        $page = $data['page'] ?? 0;
+        $contentHeight = $data['contentHeight'] ?? 0;
 
         $model = School::getSchools($where, $page);
-        $categories = Category::getCategories(['id' => School::SCHOOL_CATEGORIES]);
-        ++$page;
+        $page++;
 
         /*
          * http://intercoolerjs.org/docs.html
@@ -75,33 +74,33 @@ class SchoolController extends ParentController
          * Rendering as HTML code and rendering only partial view to avoid all page refresh
          */
         if (isset($data['ic-request'])) {
-            $response['page_height'] = $page_height;
+            $response['contentHeight'] = ($page == 1) ? 500 : $contentHeight;
             $response['page'] = $page;
 
             $headers = Yii::$app->response->headers;
             $headers->add('X-IC-Title', rawurlencode(Yii::$app->controller->id));
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return $this->renderPartial('index', [
-              'model' => $model,
-              'categories' => $categories,
-              'page' => $page,
-              'page_height' => $page_height,
+                'model' => $model,
+                'categories' => Category::getCategories(['id' => School::SCHOOL_CATEGORIES]),
+                'page' => $page,
+                'contentHeight' => $contentHeight,
             ]);
         }
 
         /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
         Yii::$app->opengraph->set([
-            'title' => Yii::t('seo', Yii::$app->controller->id.'.title'),
-            'description' => Yii::t('seo', Yii::$app->controller->id.'.description'),
+            'title' => Yii::t('seo', Yii::$app->controller->id . '.title'),
+            'description' => Yii::t('seo', Yii::$app->controller->id . '.description'),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 
         return $this->render('index', [
-          'model' => $model,
-          'categories' => $categories,
-          'page' => $page,
-          'page_height' => $page_height,
+            'model' => $model,
+            'categories' => Category::getCategories(['id' => School::SCHOOL_CATEGORIES]),
+            'page' => $page,
+            'contentHeight' => $contentHeight,
         ]);
     }
 
@@ -137,15 +136,13 @@ class SchoolController extends ParentController
     {
         $data = Yii::$app->request->get();
         $where = [];
-        $page_height = '';
-        $schools_to_show = ''; /* Needed for precise schools filtration, showing what cities having what schools */
 
         /* Data validation */
-        $page = (!empty($data['page'])) ? (int) $data['page'] : 0;
-        $page_height = (!empty($data['page_height'])) ? (int) $data['page_height'] : 0;
+        $page = $data['page'] ?? 0;
+        $contentHeight = $data['contentHeight'] ?? 0;
+        $category = $data['category'] ?? 0;
 
         /* Category filter validation - only numeric values are acceptable (needed for cleaning up values from API - users side) */
-        $category = (!empty($data['category'])) ? $data['category'] : 0;
         if (is_array($category)) {
             foreach ($category as $k => $v) {
                 if (!is_numeric($v)) {
@@ -182,7 +179,7 @@ class SchoolController extends ParentController
         if (!$model) {
             $response['lastPageReached'] = 1;
             $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return;
         }
@@ -194,18 +191,18 @@ class SchoolController extends ParentController
          * Rendering as HTML code and rendering only partial view to avoid all page refresh
          */
         if (isset($data['ic-request'])) {
-            ++$page; // Let's add +1 to our page int, so rendered part would know from where to start
+            $page++; // Let's add +1 to our page int, so rendered part would know from where to start
 
-            $response['page_height'] = ($page == 1) ? 500 : $page_height;
+            $response['contentHeight'] = ($page == 1) ? 250 : $contentHeight;
             $response['page'] = $page;
 
             $headers = Yii::$app->response->headers;
-            $headers->add('X-IC-Trigger', '{"'.Yii::$app->controller->id.'":['.Json::encode($response).']}');
+            $headers->add('X-IC-Trigger', '{"' . Yii::$app->controller->id . '":[' . Json::encode($response) . ']}');
 
             return $this->renderPartial($this->partialViewFile, [
                 'model' => $model,
                 'page' => $page,
-                'page_height' => $page_height,
+                'contentHeight' => $contentHeight,
                 'categories' => $categories,
                 'category' => $category,
             ]);
@@ -235,7 +232,7 @@ class SchoolController extends ParentController
         $categories = Category::getCategories(['id' => School::SCHOOL_CATEGORIES]);
 
         $cache = Yii::$app->cache;
-        $key = Yii::$app->controller->id.$id;
+        $key = Yii::$app->controller->id . $id;
         $model = $cache->get($key);
 
         if ($model === false) {
@@ -248,18 +245,18 @@ class SchoolController extends ParentController
 
         /* Open Graph: https://github.com/dragonjet/yii2-opengraph */
         Yii::$app->opengraph->set([
-            'title' => Yii::t('seo', '{'.Yii::$app->controller->id.'} - {category} school in {city}', [
-              Yii::$app->controller->id => $model[0]['title'],
-              'category' => $model[0]['category'],
-              'city' => $model[0]['geolocation']['city'],
+            'title' => Yii::t('seo', '{' . Yii::$app->controller->id . '} - {category} school in {city}', [
+                Yii::$app->controller->id => $model[0]['title'],
+                'category' => $model[0]['category'],
+                'city' => $model[0]['geolocation']['city'],
             ]),
             'description' => StringHelper::cutString($model[0]['description'] ?? '', 140),
             'image' => Url::toRoute(['css/i/opengraph/outstyle_default_968x504.jpg'], true),
         ]);
 
         return $this->render('view', [
-           'model' => $model,
-           'categories' => $categories,
+            'model' => $model,
+            'categories' => $categories,
         ]);
     }
 

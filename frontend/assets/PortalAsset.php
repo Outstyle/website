@@ -30,6 +30,7 @@ class PortalAsset extends AssetBundle
         'css/outstyle/misc.layout.css',
         'css/outstyle/misc.modal.css',
         'css/outstyle/portal.news.css',
+        'css/outstyle/portal.schools.css',
 
         'css/outstyle/social.comments.css',
 
@@ -58,10 +59,13 @@ class PortalAsset extends AssetBundle
         'js/outstyle.checkboxes.js',
         'js/outstyle.modal.js',
         'js/outstyle.comments.js',
+        'js/outstyle.geolocation.js',
         'js/outstyle.portal.news.js',
         'js/outstyle.portal.article.js',
         'js/outstyle.portal.event.js',
+        'js/outstyle.portal.event.single.js',
         'js/outstyle.portal.school.js',
+        'js/outstyle.google.maps.js',
         'js/outstyle.googletags.js',
         //'js/outstyle.ya.js',
     ];

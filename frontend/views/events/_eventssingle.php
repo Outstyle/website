@@ -9,10 +9,6 @@ use common\models\geolocation\Geolocation;
 use frontend\widgets\WidgetCommentsDisqus;
 use frontend\widgets\WidgetComments;
 
-/* Registering GoogleMaps JS file for map to be shown only on this pages */
-
-$this->registerJsFile('//maps.googleapis.com/maps/api/js?key=' . Yii::$app->params['googleMapsApiKey'] . '&amp;extension=.js', ['position' => yii\web\View::POS_HEAD]);
-
 echo
     Html::tag(
         'div',
@@ -384,11 +380,3 @@ echo
 ]);*/
 
 echo  WidgetCommentsDisqus::widget();
-
-/* JS: @see js/outstyle.portal.event.js */
-?>
-<script>
-    jQuery(document).ready(function() {
-        eventInit();
-    });
-</script>

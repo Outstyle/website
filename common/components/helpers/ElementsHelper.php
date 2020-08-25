@@ -701,8 +701,6 @@ class ElementsHelper extends Html
                             [
                                 'id' => $controllerId . '-filter-block',
                                 'class' => 'u-window-box--large',
-                                'way-data' => $controllerId . '.filter.' . $type,
-                                'way-persistent' => 'true',
                             ]
                         ) .
 
@@ -715,16 +713,16 @@ class ElementsHelper extends Html
                                 ]
                             ) .
 
-                            Html::a(
-                                '<i class="zmdi zmdi-plus-circle-o zmdi-hc-3x"></i>',
-                                '#googleforms_add_school',
-                                [
-                                    'class' => 'btn btn__addnew roundcorners modal-open',
-                                    'title' => 'Добавить школу'
-                                ]
-                            ) .
+                            // Html::a(
+                            //     '<i class="zmdi zmdi-plus-circle-o zmdi-hc-3x"></i>',
+                            //     '#googleforms_add_school',
+                            //     [
+                            //         'class' => 'btn btn__addnew roundcorners modal-open',
+                            //         'title' => 'Добавить школу'
+                            //     ]
+                            // ) .
 
-                            \Yii::$app->view->render('@modals/google/GoogleFormsAddSchool') .
+                            // \Yii::$app->view->render('@modals/google/GoogleFormsAddSchool') .
 
                             \Yii::$app->view->render('@common/views/geolocation/_filterblock', [
                                 'categories' => $categories,

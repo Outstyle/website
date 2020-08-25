@@ -1,0 +1,54 @@
+/* --- NEWS + BLOCKS --- */
+#outstyle_schools {
+    height: 100%;
+    min-height: 1250px;
+    overflow: hidden;
+}
+
+/* --- SCHOOLS PAGE --- */
+#school-filter-block--geolocation {
+    position: absolute;
+    z-index: 5;
+    right: .5em;
+    top: .5em;
+    visibility: hidden;
+    width: 500px;
+    height: 250px;
+}
+
+#school-filter-block--geolocation #geolocation__filter {
+    margin-top: 2.3em;
+}
+
+.school__loader {
+    z-index: 10;
+    right: 190px;
+    margin: 0;
+}
+
+.school__body .c-diamond {
+    margin-bottom: 1.5em;
+    margin-top: 2.7em;
+}
+
+.school_single .school__body {
+    font-size: 1.1em;
+}
+
+.school__gallery {
+    height: 150px;
+}
+
+.school_single img.school__image {
+    min-width: 500px;
+}
+
+img.school__image {
+    opacity: 0.3;
+}
+
+span#loadmore {
+    width: 26px;
+    height: 26px;
+    display: block;
+}

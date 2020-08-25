@@ -27,9 +27,7 @@ if (empty($category)) {
         '',
         '',
         [
-            'id' => 'events-filter-form',
-            'way-data' => 'events.filter',
-            'way-persistent' => 'true',
+            'id' => 'filter-form'
         ]
     );
 
@@ -38,7 +36,7 @@ if (empty($category)) {
       * @var $modelNews    common/models/News  -> getNews()
       */
     foreach ($eventsCategories as $c) {
-        echo ElementsHelper::ajaxedCheckbox('categories[]', $c->id, Yii::t('app', $c->name), Url::toRoute('events/show'), '#outstyle_events .events__body', '#events-filter-form');
+        echo ElementsHelper::ajaxedCheckbox('categories[]', $c->id, Yii::t('app', $c->name), Url::toRoute('events/show'), '#outstyle_events .events__body', '#filter-form');
     }
 
     echo Html::endForm(),
@@ -108,6 +106,7 @@ echo
                     'modelEvents' => $modelEvents,
                     'page' => $page,
                     'category' => $category,
+                    'contentHeight' => $contentHeight,
                 ]
             ),
             ['class' => 'u-window-box--super events__body']
@@ -118,66 +117,8 @@ echo
 /* This input is for sending pages */
 echo Html::hiddenInput('page', $page, ['id' => 'page']);
 
-?>
-<script>
-    jQuery(document).ready(function() {
+/* This input is needed for smooth Packery init after each AJAX call */
+echo Html::hiddenInput('contentHeight', '', ['id' => 'contentHeight']);
 
-        function init_events() {
-
-            jQuery('.event__title').preciseTextResize({
-                parent: '.event__title-wrap',
-                grid: [{
-                    0: {
-                        125: {
-                            1: 42,
-                            4: 32,
-                            6: 26,
-                            10: 24,
-                            13: 22,
-                            15: 21,
-                            20: 20,
-                            25: 18,
-                            30: 16,
-                            35: 14
-                        }
-                    },
-                }],
-            });
-
-
-            /* --- Also we need to prepend filter containter back to prevent it's disappearing after AJAX call --- */
-            jQuery("#events-filter").prependTo("#outstyle_events").css({
-                'visibility': 'visible'
-            });
-
-        }
-
-        init_events();
-
-        /* --- Getting stored values from way.js storage before sending our ajax request --- */
-        jQuery(document).off("beforeAjaxSend.ic").on("beforeAjaxSend.ic", function(event, settings) {
-
-            var events = way.get("events.filter");
-            if (events) {
-                events = jQuery.param(events);
-                settings.data = settings.data + '&' + events;
-            }
-
-        });
-
-
-        /**
-         * Triggering on 'events' event from ArticleController
-         * See X-IC-Trigger headers: http://intercoolerjs.org/reference.html
-         */
-        jQuery("body").off("events").on("events", function(event, data) {
-            if (data.page) {
-                jQuery('#page').val(data.page);
-            }
-
-            init_events();
-
-        });
-
-    });
-</script>
+/* Pass controller ID for JS to rely on */
+echo '<script>var CURRENT_CONTROLLER_ID = "' . Yii::$app->controller->id . '";</script>';
