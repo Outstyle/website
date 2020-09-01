@@ -141,10 +141,11 @@ jQuery(document).ready(function () {
             var countryId = parseInt(jQuery('#geolocation_country').val()),
                 schoolsId = jQuery('#geolocation_cities_query').val();
 
-            settings.data = settings.data +
-                '&countryId=' + countryId +
-                '&schoolsId=' + schoolsId;
-
+            if (countryId && schoolsId) {
+                settings.data = settings.data +
+                    '&countryId=' + countryId +
+                    '&schoolsId=' + schoolsId;
+            }
         });
 
         /* --- Take out only needed functions to global scope --- */

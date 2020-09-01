@@ -390,10 +390,6 @@ function schoolInit() {
 
     jQuery('.block__item .overlay').show();
 
-    /* --- Now to init images lazy loading, Google Maps and carousel --- */
-    echo.init({
-        offset: 1000
-    });
     initGoogleMap(mapDiv);
     initOwlCarousel(carouselDiv);
 

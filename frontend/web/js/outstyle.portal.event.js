@@ -47,7 +47,10 @@ jQuery(document).ready(function () {
          * See X-IC-Trigger headers: http://intercoolerjs.org/reference.html
          */
         jQuery("body").on("events", function (event, data) {
-            init(event.type, data);
+            // Timeout is needed to refresh DOM elements like `contentHeight` from older state
+            setTimeout(function () {
+                init(event.type, data);
+            }, 120);
         });
 
         /* --- GLOBAL BINDS END --- */

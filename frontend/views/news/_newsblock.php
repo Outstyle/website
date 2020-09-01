@@ -115,7 +115,7 @@ if (isset($modelNews)) {
 
     if ($page) {
         if ($contentHeight) {
-            $contentHeight = $contentHeight - 500;
+            $contentHeight = $contentHeight - 1000;
         }
         if ($page == 1) {
             $contentHeight = 10;

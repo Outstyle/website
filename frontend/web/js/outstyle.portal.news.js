@@ -112,13 +112,17 @@ jQuery(document).ready(function () {
 
                 if (data.page) {
                     DOM.$newsPage.val(data.page);
-                }
-
-                if (data.contentHeight) {
-                    DOM.$newsContainerHeight.val(data.contentHeight);
-                    DOM.$newsContainer.css({
-                        "min-height": data.contentHeight + "px",
-                    });
+                    if (data.contentHeight && data.page > 1) {
+                        DOM.$newsContainerHeight.val(data.contentHeight);
+                        DOM.$newsContainer.css({
+                            "min-height": data.contentHeight + "px",
+                        });
+                    } else {
+                        DOM.$newsContainerHeight.val(100);
+                        DOM.$newsContainer.css({
+                            "min-height": "100px",
+                        });
+                    }
                 }
 
                 jQuery('body').trigger('checkboxesInit', DOM.forElement);
@@ -137,6 +141,10 @@ jQuery(document).ready(function () {
                     _bindLocalEvents(DOM);
                     DOM.$newsContainer.addClass('binded');
                 }
+
+                echo.init({
+                    offset: 1000
+                });
 
                 _log("[NEWS] outstyle.news.init finished");
             }
@@ -179,10 +187,6 @@ jQuery(document).ready(function () {
                 } else {
                     jQuery(this).next('i').removeClass('zmdi-circle').addClass('zmdi-circle-o');
                 }
-            });
-
-            echo.init({
-                offset: 1000
             });
 
             _log('🔥 [NEWS] local events binding finished');

@@ -48,8 +48,11 @@ jQuery(document).ready(function () {
          * See X-IC-Trigger headers: http://intercoolerjs.org/reference.html
          */
         jQuery("body").on("article releases reviews videoz", function (event, data) {
-            /* Since article can be represented as other entities, add them up in `.on` event */
-            init(event.type, data);
+            // Timeout is needed to refresh DOM elements like `contentHeight` from older state
+            setTimeout(function () {
+                /* Since article can be represented as other entities, add them up in `.on` event */
+                init(event.type, data);
+            }, 120);
         });
 
         /* --- GLOBAL BINDS END --- */
@@ -73,13 +76,17 @@ jQuery(document).ready(function () {
 
                 if (data.page) {
                     DOM.$articlesPage.val(data.page);
-                }
-
-                if (data.contentHeight) {
-                    DOM.$articlesContainerHeight.val(data.contentHeight);
-                    DOM.$articlesContainer.css({
-                        "min-height": data.contentHeight + "px",
-                    });
+                    if (data.contentHeight && data.page > 1) {
+                        DOM.$articlesContainerHeight.val(data.contentHeight);
+                        DOM.$articlesContainer.css({
+                            "min-height": data.contentHeight + "px",
+                        });
+                    } else {
+                        DOM.$articlesContainerHeight.val(100);
+                        DOM.$articlesContainer.css({
+                            "min-height": "100px",
+                        });
+                    }
                 }
 
                 jQuery('body').trigger('checkboxesInit', DOM.forElement);
